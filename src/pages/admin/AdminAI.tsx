@@ -26,6 +26,8 @@ export default function AdminAI() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [fileText, setFileText] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const chatEnd = useRef<HTMLDivElement>(null);
 
@@ -45,13 +47,13 @@ export default function AdminAI() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-      toast({ title: "File too large", description: "Max 10MB", variant: "destructive" });
+    if (file.size > 20 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Max 20MB", variant: "destructive" });
       return;
     }
 
     // Upload to storage
-    const ext = file.name.split(".").pop();
+    const ext = file.name.split(".").pop()?.toLowerCase() || "";
     const path = `admin/${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from("ai-uploads").upload(path, file);
     if (error) {
@@ -59,22 +61,52 @@ export default function AdminAI() {
       return;
     }
     const { data: urlData } = supabase.storage.from("ai-uploads").getPublicUrl(path);
-    setImagePreview(urlData.publicUrl);
-    toast({ title: "File uploaded", description: "Ready to send with your message" });
+    
+    // For non-image files, extract text client-side if possible
+    const isImage = file.type.startsWith("image/");
+    const isText = ["txt", "csv", "json", "xml", "md"].includes(ext);
+    
+    if (isText) {
+      const text = await file.text();
+      setFileText(text.slice(0, 50000)); // limit to 50k chars
+      setFileName(file.name);
+      setImagePreview(null);
+    } else if (isImage) {
+      setImagePreview(urlData.publicUrl);
+      setFileText(null);
+      setFileName(file.name);
+    } else {
+      // PDF, PPT, Excel — upload URL, AI will analyze the image/description
+      setImagePreview(urlData.publicUrl);
+      setFileText(null);
+      setFileName(file.name);
+    }
+    
+    toast({ title: "File uploaded", description: `${file.name} ready to send` });
   };
 
   const sendMessage = async () => {
     if (!input.trim() && !imagePreview) return;
     
+    // Build content with file context
+    let msgContent = input.trim() || "Analyze this file";
+    if (fileText) {
+      msgContent += `\n\n--- FILE: ${fileName} ---\n${fileText}`;
+    } else if (fileName && !imagePreview?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+      msgContent += `\n\n[Uploaded file: ${fileName} — URL: ${imagePreview}]`;
+    }
+    
     const userMsg: Message = {
       role: "user",
-      content: input.trim() || "Analyze this file",
-      imageUrl: imagePreview || undefined,
+      content: msgContent,
+      imageUrl: imagePreview?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) ? imagePreview : undefined,
     };
     
     setMessages(prev => [...prev, userMsg]);
     setInput("");
     setImagePreview(null);
+    setFileText(null);
+    setFileName(null);
     setIsLoading(true);
 
     try {
@@ -257,12 +289,19 @@ export default function AdminAI() {
         </div>
 
         {/* Image Preview */}
-        {imagePreview && (
+        {(imagePreview || fileText || fileName) && (
           <div className="px-4 pb-2">
             <div className="relative inline-block">
-              <img src={imagePreview} alt="Preview" className="h-20 rounded-lg border border-border" />
+              {imagePreview?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) ? (
+                <img src={imagePreview} alt="Preview" className="h-20 rounded-lg border border-border" />
+              ) : (
+                <div className="h-20 px-4 rounded-lg border border-border bg-card flex items-center gap-2">
+                  <ImagePlus className="h-5 w-5 text-primary" />
+                  <span className="text-xs font-mono text-muted-foreground max-w-[200px] truncate">{fileName}</span>
+                </div>
+              )}
               <button
-                onClick={() => setImagePreview(null)}
+                onClick={() => { setImagePreview(null); setFileText(null); setFileName(null); }}
                 className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center"
               >×</button>
             </div>
@@ -276,7 +315,7 @@ export default function AdminAI() {
               type="file"
               ref={fileRef}
               onChange={handleFileUpload}
-              accept="image/*,.pdf,.doc,.docx,.txt,.csv"
+              accept="image/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls,.ppt,.pptx,.json,.xml,.md"
               className="hidden"
             />
             <Button
@@ -300,7 +339,7 @@ export default function AdminAI() {
             />
             <Button
               onClick={sendMessage}
-              disabled={isLoading || (!input.trim() && !imagePreview)}
+              disabled={isLoading || (!input.trim() && !imagePreview && !fileText && !fileName)}
               className="shrink-0"
             >
               <Send className="h-4 w-4" />
