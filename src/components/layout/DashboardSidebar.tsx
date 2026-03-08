@@ -93,6 +93,10 @@ const adminNav: NavItem[] = [
   { titleKey: "Topics & MCQs", icon: BookOpen, href: "/admin/topics" },
   { titleKey: "Current Affairs", icon: Newspaper, href: "/admin/current-affairs" },
   { titleKey: "PYQ Manage", icon: FolderOpen, href: "/admin/pyq" },
+  { titleKey: "Resources", icon: FolderOpen, href: "/admin/resources" },
+  { titleKey: "FAQ", icon: HelpCircle, href: "/admin/faq" },
+  { titleKey: "SSB Sets", icon: Shield, href: "/admin/ssb" },
+  { titleKey: "Success Stories", icon: Star, href: "/admin/success-stories" },
 ];
 
 const bottomNav: NavItem[] = [

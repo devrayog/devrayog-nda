@@ -53,6 +53,12 @@ import SSBOverview from "@/pages/ssb/SSBOverview";
 import SSBPractice from "@/pages/ssb/SSBPractice";
 import ScreenoutAnalysis from "@/pages/ssb/ScreenoutAnalysis";
 import PersonalityTips from "@/pages/ssb/PersonalityTips";
+import PPDTPractice from "@/pages/ssb/PPDTPractice";
+import TATPractice from "@/pages/ssb/TATPractice";
+import WATPractice from "@/pages/ssb/WATPractice";
+import SRTPractice from "@/pages/ssb/SRTPractice";
+import SDTPractice from "@/pages/ssb/SDTPractice";
+import SSBComingSoon from "@/pages/ssb/SSBComingSoon";
 
 // Community
 import Community from "@/pages/community/Community";
@@ -143,13 +149,13 @@ function AppRoutes() {
       {/* Protected — SSB */}
       <Route path="/ssb" element={<ProtectedRoute><SSBOverview /></ProtectedRoute>} />
       <Route path="/ssb/oir" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
-      <Route path="/ssb/ppdt" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
-      <Route path="/ssb/tat" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
-      <Route path="/ssb/wat" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
-      <Route path="/ssb/srt" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
-      <Route path="/ssb/sdt" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
-      <Route path="/ssb/gd" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
-      <Route path="/ssb/interview" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
+      <Route path="/ssb/ppdt" element={<ProtectedRoute><PPDTPractice /></ProtectedRoute>} />
+      <Route path="/ssb/tat" element={<ProtectedRoute><TATPractice /></ProtectedRoute>} />
+      <Route path="/ssb/wat" element={<ProtectedRoute><WATPractice /></ProtectedRoute>} />
+      <Route path="/ssb/srt" element={<ProtectedRoute><SRTPractice /></ProtectedRoute>} />
+      <Route path="/ssb/sdt" element={<ProtectedRoute><SDTPractice /></ProtectedRoute>} />
+      <Route path="/ssb/gd" element={<ProtectedRoute><SSBComingSoon /></ProtectedRoute>} />
+      <Route path="/ssb/interview" element={<ProtectedRoute><SSBComingSoon /></ProtectedRoute>} />
       <Route path="/ssb/personality" element={<ProtectedRoute><PersonalityTips /></ProtectedRoute>} />
       <Route path="/ssb/screenout" element={<ProtectedRoute><ScreenoutAnalysis /></ProtectedRoute>} />
 
