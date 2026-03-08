@@ -53,6 +53,12 @@ import SSBOverview from "@/pages/ssb/SSBOverview";
 import SSBPractice from "@/pages/ssb/SSBPractice";
 import ScreenoutAnalysis from "@/pages/ssb/ScreenoutAnalysis";
 import PersonalityTips from "@/pages/ssb/PersonalityTips";
+import PPDTPractice from "@/pages/ssb/PPDTPractice";
+import TATPractice from "@/pages/ssb/TATPractice";
+import WATPractice from "@/pages/ssb/WATPractice";
+import SRTPractice from "@/pages/ssb/SRTPractice";
+import SDTPractice from "@/pages/ssb/SDTPractice";
+import SSBComingSoon from "@/pages/ssb/SSBComingSoon";
 
 // Community
 import Community from "@/pages/community/Community";
