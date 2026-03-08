@@ -5,6 +5,8 @@ import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Brain, Shield, Globe, BarChart3, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { Suspense, lazy } from "react";
+const ShieldGlobe = lazy(() => import("@/components/3d/ShieldGlobe"));
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
