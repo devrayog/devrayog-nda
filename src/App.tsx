@@ -56,12 +56,21 @@ import PersonalityTips from "@/pages/ssb/PersonalityTips";
 
 // Community
 import Community from "@/pages/community/Community";
+import MentorConnect from "@/pages/community/MentorConnect";
+import StudyPartner from "@/pages/community/StudyPartner";
+import SuccessStories from "@/pages/community/SuccessStories";
 
 // Fitness
 import FitnessPlan from "@/pages/fitness/FitnessPlan";
+import RunningTracker from "@/pages/fitness/RunningTracker";
+import MedicalStandards from "@/pages/fitness/MedicalStandards";
 
 // Resources
 import Resources from "@/pages/resources/Resources";
+import RecommendedBooks from "@/pages/resources/RecommendedBooks";
+import VideoLectures from "@/pages/resources/VideoLectures";
+import DownloadsPage from "@/pages/resources/Downloads";
+import FAQPage from "@/pages/resources/FAQ";
 
 // Admin
 import AdminDashboard from "@/pages/admin/AdminDashboard";
