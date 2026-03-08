@@ -131,6 +131,48 @@ export type Database = {
         }
         Relationships: []
       }
+      current_affairs: {
+        Row: {
+          body: string | null
+          category: string
+          created_at: string
+          created_by: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          link: string | null
+          published_at: string
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          link?: string | null
+          published_at?: string
+          title: string
+        }
+        Update: {
+          body?: string | null
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          link?: string | null
+          published_at?: string
+          title?: string
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           created_at: string

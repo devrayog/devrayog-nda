@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Users, MessageSquare, BarChart3, Settings, Lock, Megaphone, BookOpen, HelpCircle } from "lucide-react";
+import { Shield, Users, MessageSquare, BarChart3, Settings, Lock, Megaphone, BookOpen, HelpCircle, Newspaper } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import AdminBroadcast from "@/components/admin/AdminBroadcast";
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Links */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <Link to="/admin/topics">
             <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
               <CardContent className="p-4 flex items-center gap-3">
@@ -127,6 +127,17 @@ export default function AdminDashboard() {
                 <div>
                   <p className="font-bold text-sm">Question Bank</p>
                   <p className="text-[10px] text-muted-foreground">Manage MCQ questions per topic</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/admin/current-affairs">
+            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
+              <CardContent className="p-4 flex items-center gap-3">
+                <Newspaper className="h-6 w-6 text-success" />
+                <div>
+                  <p className="font-bold text-sm">Current Affairs</p>
+                  <p className="text-[10px] text-muted-foreground">Publish & manage news articles</p>
                 </div>
               </CardContent>
             </Card>
