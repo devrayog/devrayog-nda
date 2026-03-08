@@ -43,7 +43,7 @@ export default function Leaderboard() {
         .not("dna_score", "is", null)
         .order(sortBy, { ascending: false, nullsFirst: false })
         .limit(100);
-      if (data) setEntries(data as LeaderboardEntry[]);
+      if (data) setEntries(data as unknown as LeaderboardEntry[]);
       setLoading(false);
     };
     load();
