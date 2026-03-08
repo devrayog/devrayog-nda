@@ -38,8 +38,9 @@ export default function Leaderboard() {
     const load = async () => {
       setLoading(true);
       const { data } = await supabase
-        .from("leaderboard_profiles" as any)
-        .select("*")
+        .from("profiles")
+        .select("user_id, full_name, username, avatar_url, dna_score, streak, total_questions_solved, accuracy, state, service, target_exam")
+        .not("dna_score", "is", null)
         .order(sortBy, { ascending: false, nullsFirst: false })
         .limit(100);
       if (data) setEntries(data as LeaderboardEntry[]);
