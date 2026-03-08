@@ -36,6 +36,9 @@ import GirlsNDA from "@/pages/GirlsNDA";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import Achievements from "@/pages/Achievements";
 import DiagnosticTest from "@/pages/DiagnosticTest";
+import TermsOfService from "@/pages/TermsOfService";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import Guide from "@/pages/Guide";
 
 // Study
 import MathsHub from "@/pages/study/MathsHub";
