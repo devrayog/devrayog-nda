@@ -61,6 +61,8 @@ import Resources from "@/pages/resources/Resources";
 
 // Admin
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminTopics from "@/pages/admin/AdminTopics";
+import AdminQuestions from "@/pages/admin/AdminQuestions";
 
 const queryClient = new QueryClient();
 
