@@ -45,13 +45,13 @@ export default function AdminAI() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-      toast({ title: "File too large", description: "Max 10MB", variant: "destructive" });
+    if (file.size > 20 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Max 20MB", variant: "destructive" });
       return;
     }
 
     // Upload to storage
-    const ext = file.name.split(".").pop();
+    const ext = file.name.split(".").pop()?.toLowerCase() || "";
     const path = `admin/${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from("ai-uploads").upload(path, file);
     if (error) {
@@ -59,8 +59,28 @@ export default function AdminAI() {
       return;
     }
     const { data: urlData } = supabase.storage.from("ai-uploads").getPublicUrl(path);
-    setImagePreview(urlData.publicUrl);
-    toast({ title: "File uploaded", description: "Ready to send with your message" });
+    
+    // For non-image files, extract text client-side if possible
+    const isImage = file.type.startsWith("image/");
+    const isText = ["txt", "csv", "json", "xml", "md"].includes(ext);
+    
+    if (isText) {
+      const text = await file.text();
+      setFileText(text.slice(0, 50000)); // limit to 50k chars
+      setFileName(file.name);
+      setImagePreview(null);
+    } else if (isImage) {
+      setImagePreview(urlData.publicUrl);
+      setFileText(null);
+      setFileName(file.name);
+    } else {
+      // PDF, PPT, Excel — upload URL, AI will analyze the image/description
+      setImagePreview(urlData.publicUrl);
+      setFileText(null);
+      setFileName(file.name);
+    }
+    
+    toast({ title: "File uploaded", description: `${file.name} ready to send` });
   };
 
   const sendMessage = async () => {
