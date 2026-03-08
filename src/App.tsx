@@ -39,6 +39,9 @@ import MathsHub from "@/pages/study/MathsHub";
 import GATHub from "@/pages/study/GATHub";
 import EnglishHub from "@/pages/study/EnglishHub";
 import TopicDetail from "@/pages/study/TopicDetail";
+import VocabularyBuilder from "@/pages/study/VocabularyBuilder";
+import FormulaSheet from "@/pages/study/FormulaSheet";
+import RevisionPlanner from "@/pages/study/RevisionPlanner";
 
 // Tests
 import MockTestList from "@/pages/tests/MockTestList";
