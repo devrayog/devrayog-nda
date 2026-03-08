@@ -108,7 +108,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Links */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Link to="/admin/topics">
             <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
               <CardContent className="p-4 flex items-center gap-3">
