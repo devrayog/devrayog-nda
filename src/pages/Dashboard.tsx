@@ -189,6 +189,7 @@ export default function Dashboard() {
           </div>
         </motion.div>
       </div>
+      <AchievementCelebration achievement={celebration} onClose={clearCelebration} />
     </DashboardLayout>
   );
 }
