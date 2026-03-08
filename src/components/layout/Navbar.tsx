@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Sun, Moon, Globe, Menu, X, Bell, LogOut, User } from "lucide-react";
+import { Sun, Moon, Globe, Menu, X, Bell, LogOut, User, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
