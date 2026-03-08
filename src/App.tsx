@@ -64,6 +64,8 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminTopics from "@/pages/admin/AdminTopics";
 import AdminQuestions from "@/pages/admin/AdminQuestions";
 import AdminCurrentAffairs from "@/pages/admin/AdminCurrentAffairs";
+import AdminPYQ from "@/pages/admin/AdminPYQ";
+import QuestionBank from "@/pages/QuestionBank";
 
 const queryClient = new QueryClient();
 
@@ -118,7 +120,7 @@ function AppRoutes() {
       <Route path="/tests/take/:testId" element={<ProtectedRoute><MockTestEngine /></ProtectedRoute>} />
       <Route path="/daily-challenge" element={<ProtectedRoute><DailyChallenge /></ProtectedRoute>} />
       <Route path="/error-log" element={<ProtectedRoute><ErrorLog /></ProtectedRoute>} />
-      <Route path="/question-bank" element={<ProtectedRoute><PlaceholderPage title="QUESTION BANK" description="Browse all questions by topic and difficulty level." /></ProtectedRoute>} />
+      <Route path="/question-bank" element={<ProtectedRoute><QuestionBank /></ProtectedRoute>} />
 
       {/* Protected — SSB */}
       <Route path="/ssb" element={<ProtectedRoute><SSBOverview /></ProtectedRoute>} />
@@ -159,6 +161,7 @@ function AppRoutes() {
       <Route path="/admin/topics" element={<ProtectedRoute><AdminTopics /></ProtectedRoute>} />
       <Route path="/admin/topics/:topicId/questions" element={<ProtectedRoute><AdminQuestions /></ProtectedRoute>} />
       <Route path="/admin/current-affairs" element={<ProtectedRoute><AdminCurrentAffairs /></ProtectedRoute>} />
+      <Route path="/admin/pyq" element={<ProtectedRoute><AdminPYQ /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />
