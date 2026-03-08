@@ -79,6 +79,10 @@ import AdminTopics from "@/pages/admin/AdminTopics";
 import AdminQuestions from "@/pages/admin/AdminQuestions";
 import AdminCurrentAffairs from "@/pages/admin/AdminCurrentAffairs";
 import AdminPYQ from "@/pages/admin/AdminPYQ";
+import AdminResources from "@/pages/admin/AdminResources";
+import AdminFAQ from "@/pages/admin/AdminFAQ";
+import AdminSSB from "@/pages/admin/AdminSSB";
+import AdminSuccessStories from "@/pages/admin/AdminSuccessStories";
 import QuestionBank from "@/pages/QuestionBank";
 
 const queryClient = new QueryClient();
