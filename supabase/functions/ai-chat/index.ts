@@ -9,7 +9,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages, userContext } = await req.json();
+    const { messages, userContext, imageUrl } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -37,7 +37,31 @@ PERSONALITY:
 - When asked about Maths, give step-by-step solutions.
 - When asked about GK/GAT, give structured answers with key facts.
 - For SSB questions, draw from real SSB process knowledge.
-- Always end with an actionable next step for the student.`;
+- Always end with an actionable next step for the student.
+
+FILE ANALYSIS:
+- If the student shares an image or file, analyze it thoroughly.
+- For handwritten notes: read and provide feedback.
+- For question papers: solve and explain.
+- For photos of textbook pages: summarize key points.
+- Use markdown formatting for structured answers.`;
+
+    // Build messages with potential image content
+    const aiMessages: any[] = [{ role: "system", content: systemPrompt }];
+
+    for (const msg of messages) {
+      if (msg.imageUrl) {
+        aiMessages.push({
+          role: msg.role,
+          content: [
+            { type: "text", text: msg.content || "Please analyze this image." },
+            { type: "image_url", image_url: { url: msg.imageUrl } },
+          ],
+        });
+      } else {
+        aiMessages.push({ role: msg.role, content: msg.content });
+      }
+    }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -47,10 +71,7 @@ PERSONALITY:
       },
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages,
-        ],
+        messages: aiMessages,
         stream: true,
       }),
     });
