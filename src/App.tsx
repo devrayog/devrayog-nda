@@ -36,6 +36,9 @@ import GirlsNDA from "@/pages/GirlsNDA";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import Achievements from "@/pages/Achievements";
 import DiagnosticTest from "@/pages/DiagnosticTest";
+import TermsOfService from "@/pages/TermsOfService";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import Guide from "@/pages/Guide";
 
 // Study
 import MathsHub from "@/pages/study/MathsHub";
@@ -115,6 +118,9 @@ function AppRoutes() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/premium" element={<Premium />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/guide" element={<Guide />} />
 
       {/* Protected — Core */}
       <Route path="/diagnostic" element={<ProtectedRoute><DiagnosticTest /></ProtectedRoute>} />
