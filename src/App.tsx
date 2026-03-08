@@ -64,6 +64,8 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminTopics from "@/pages/admin/AdminTopics";
 import AdminQuestions from "@/pages/admin/AdminQuestions";
 import AdminCurrentAffairs from "@/pages/admin/AdminCurrentAffairs";
+import AdminPYQ from "@/pages/admin/AdminPYQ";
+import QuestionBank from "@/pages/QuestionBank";
 
 const queryClient = new QueryClient();
 
