@@ -88,15 +88,25 @@ export default function AdminAI() {
   const sendMessage = async () => {
     if (!input.trim() && !imagePreview) return;
     
+    // Build content with file context
+    let msgContent = input.trim() || "Analyze this file";
+    if (fileText) {
+      msgContent += `\n\n--- FILE: ${fileName} ---\n${fileText}`;
+    } else if (fileName && !imagePreview?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+      msgContent += `\n\n[Uploaded file: ${fileName} — URL: ${imagePreview}]`;
+    }
+    
     const userMsg: Message = {
       role: "user",
-      content: input.trim() || "Analyze this file",
-      imageUrl: imagePreview || undefined,
+      content: msgContent,
+      imageUrl: imagePreview?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) ? imagePreview : undefined,
     };
     
     setMessages(prev => [...prev, userMsg]);
     setInput("");
     setImagePreview(null);
+    setFileText(null);
+    setFileName(null);
     setIsLoading(true);
 
     try {
