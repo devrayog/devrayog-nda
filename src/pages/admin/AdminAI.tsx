@@ -339,7 +339,7 @@ export default function AdminAI() {
             />
             <Button
               onClick={sendMessage}
-              disabled={isLoading || (!input.trim() && !imagePreview)}
+              disabled={isLoading || (!input.trim() && !imagePreview && !fileText && !fileName)}
               className="shrink-0"
             >
               <Send className="h-4 w-4" />
