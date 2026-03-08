@@ -26,6 +26,8 @@ export default function AdminAI() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [fileText, setFileText] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const chatEnd = useRef<HTMLDivElement>(null);
 
