@@ -36,8 +36,16 @@ export default function Landing() {
     <div className="min-h-screen">
       <Navbar />
 
+      {/* Guide Banner */}
+      <div className="fixed top-16 left-0 right-0 z-40 bg-primary/10 backdrop-blur-sm border-b border-primary/20 py-2 px-4 text-center">
+        <Link to="/guide" className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-2">
+          📖 New here? Read the complete Platform Guide to get started
+          <ArrowRight className="h-3 w-3" />
+        </Link>
+      </div>
+
       {/* Hero with 3D particles background */}
-      <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center pt-28 overflow-hidden">
         <AuroraFlow />
         <div className="absolute inset-0">
           <img src={HERO_BG} alt="NDA Campus" className="w-full h-full object-cover opacity-15" loading="eager" />

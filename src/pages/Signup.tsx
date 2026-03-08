@@ -449,7 +449,12 @@ export default function Signup() {
 
                   <div className="flex items-center gap-3 p-3 border border-gold rounded-lg cursor-pointer hover:bg-primary/5" onClick={() => update("agreedTerms", !data.agreedTerms)}>
                     <Checkbox checked={data.agreedTerms} onCheckedChange={(c) => update("agreedTerms", !!c)} />
-                    <label className="text-sm font-medium cursor-pointer">{t("signup.terms")}</label>
+                    <label className="text-sm font-medium cursor-pointer">
+                      I agree to the{" "}
+                      <Link to="/terms" className="text-primary hover:underline font-bold" onClick={(e) => e.stopPropagation()}>Terms of Service</Link>
+                      {" "}and{" "}
+                      <Link to="/privacy" className="text-primary hover:underline font-bold" onClick={(e) => e.stopPropagation()}>Privacy Policy</Link>
+                    </label>
                   </div>
 
                   <Button onClick={handleCreate} disabled={loading} className="w-full bg-gradient-gold text-primary-foreground font-bold tracking-widest py-5">
