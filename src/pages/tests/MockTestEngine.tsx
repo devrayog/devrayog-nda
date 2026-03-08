@@ -5,8 +5,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Clock, ChevronLeft, ChevronRight, Flag, Brain, CheckCircle, XCircle } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight, Flag, Brain, CheckCircle, XCircle, Bookmark, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import BookmarkButton from "@/components/BookmarkButton";
+import { motion } from "framer-motion";
 
 interface Question {
   id: number;
@@ -30,16 +32,21 @@ export default function MockTestEngine() {
   const numQ = parseInt(params.get("questions") || "15");
   const timeMins = parseInt(params.get("time") || "20");
 
+  // NDA marking scheme
+  const isMaths = subject === "maths";
+  const correctMarks = isMaths ? 2.5 : 4;
+  const negativeMarks = isMaths ? 2.5 / 3 : 4 / 3;
+
   const [phase, setPhase] = useState<Phase>("generating");
   const [questions, setQuestions] = useState<Question[]>([]);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [markedForReview, setMarkedForReview] = useState<Set<number>>(new Set());
   const [timeLeft, setTimeLeft] = useState(timeMins * 60);
-  const [score, setScore] = useState({ correct: 0, wrong: 0, unattempted: 0, total: 0 });
+  const [score, setScore] = useState({ correct: 0, wrong: 0, unattempted: 0, total: 0, marks: 0, maxMarks: 0 });
 
   const meta = user?.user_metadata || {};
 
-  // Generate questions via AI
   useEffect(() => {
     const generate = async () => {
       try {
@@ -94,7 +101,6 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
           }
         }
 
-        // Extract JSON array from response
         const jsonMatch = fullText.match(/\[[\s\S]*\]/);
         if (!jsonMatch) throw new Error("No JSON found");
         const parsed = JSON.parse(jsonMatch[0]) as Question[];
@@ -103,14 +109,12 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
         setPhase("test");
       } catch (e) {
         toast({ title: "Failed to generate questions. Retrying...", variant: "destructive" });
-        // Retry once
         setTimeout(() => navigate("/tests"), 2000);
       }
     };
     generate();
   }, []);
 
-  // Timer
   useEffect(() => {
     if (phase !== "test") return;
     const timer = setInterval(() => {
@@ -127,15 +131,13 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
     const attempted = Object.keys(answers).length;
     const wrong = attempted - correct;
     const unattempted = questions.length - attempted;
-    // NDA scoring: +4 for correct, -1.33 for wrong
-    const totalScore = Math.max(0, (correct * 4 - wrong * 1.33));
-    const maxScore = questions.length * 4;
-    const percentage = Math.round((totalScore / maxScore) * 100);
+    const totalMarks = Math.max(0, correct * correctMarks - wrong * negativeMarks);
+    const maxMarks = questions.length * correctMarks;
+    const percentage = Math.round((totalMarks / maxMarks) * 100);
 
-    setScore({ correct, wrong, unattempted, total: percentage });
+    setScore({ correct, wrong, unattempted, total: percentage, marks: Math.round(totalMarks * 100) / 100, maxMarks });
     setPhase("results");
 
-    // Save to database
     if (user) {
       await supabase.from("test_results").insert({
         user_id: user.id,
@@ -148,8 +150,32 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
         time_taken_seconds: timeMins * 60 - timeLeft,
         questions_data: questions.map(q => ({ ...q, userAnswer: answers[q.id] ?? -1 })),
       });
+
+      // Add wrong answers to error log
+      questions.forEach(q => {
+        if (answers[q.id] !== undefined && answers[q.id] !== q.correct) {
+          supabase.from("error_log").insert({
+            user_id: user.id,
+            question: q.question,
+            user_answer: q.options[answers[q.id]],
+            correct_answer: q.options[q.correct],
+            explanation: q.explanation,
+            subject,
+            topic: q.topic,
+            source: "mock_test",
+          });
+        }
+      });
     }
   }, [questions, answers, user, timeLeft]);
+
+  const toggleReview = (qId: number) => {
+    setMarkedForReview(prev => {
+      const next = new Set(prev);
+      if (next.has(qId)) next.delete(qId); else next.add(qId);
+      return next;
+    });
+  };
 
   const formatTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
 
@@ -160,6 +186,7 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
           <Brain className="h-16 w-16 text-primary mx-auto mb-4 animate-pulse" />
           <h1 className="font-display text-3xl text-gradient-gold mb-2">GENERATING TEST</h1>
           <p className="text-muted-foreground text-sm">AI is creating {numQ} personalized {subject} questions...</p>
+          <p className="text-xs text-muted-foreground mt-1">Marking: +{correctMarks} correct / -{(negativeMarks).toFixed(2)} wrong</p>
           <div className="flex gap-1 justify-center mt-4">
             <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
             <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -177,6 +204,9 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
           <div className="text-center">
             <h1 className="font-display text-4xl text-gradient-gold mb-2">TEST RESULTS</h1>
             <p className="font-display text-6xl text-gradient-gold">{score.total}%</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Marks: {score.marks} / {score.maxMarks} | Marking: +{correctMarks} / -{negativeMarks.toFixed(2)}
+            </p>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
@@ -204,7 +234,10 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
             return (
               <Card key={i} className={`glass-card ${userAns === undefined ? "border-gold" : isCorrect ? "border-success/50" : "border-destructive/50"}`}>
                 <CardContent className="p-4">
-                  <p className="font-bold text-sm mb-2">Q{i + 1}. {q.question}</p>
+                  <div className="flex items-start justify-between mb-2">
+                    <p className="font-bold text-sm">Q{i + 1}. {q.question}</p>
+                    <BookmarkButton itemId={`mock-${q.id}`} itemType="mock_question" title={q.question} />
+                  </div>
                   <div className="grid grid-cols-1 gap-1 mb-2">
                     {q.options.map((opt, oi) => (
                       <div key={oi} className={`text-xs p-2 rounded ${
@@ -251,7 +284,7 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
         </Button>
       </div>
 
-      {/* Question navigation dots */}
+      {/* Question navigation */}
       <div className="fixed top-14 left-0 right-0 z-40 p-2 bg-background/90 border-b border-gold overflow-x-auto">
         <div className="flex gap-1 justify-center">
           {questions.map((_, i) => (
@@ -260,6 +293,7 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
               onClick={() => setCurrent(i)}
               className={`w-7 h-7 rounded-full text-[10px] font-bold transition-all ${
                 i === current ? "bg-gradient-gold text-primary-foreground scale-110" :
+                markedForReview.has(questions[i]?.id) ? "bg-warning/30 text-warning ring-1 ring-warning" :
                 answers[questions[i]?.id] !== undefined ? "bg-success/30 text-success" :
                 "bg-muted text-muted-foreground"
               }`}
@@ -274,7 +308,21 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
       <div className="pt-28 pb-20 px-4 max-w-2xl mx-auto">
         <Card className="glass-card border-gold">
           <CardContent className="p-6">
-            <p className="font-mono text-[10px] text-primary tracking-widest mb-3">{q.topic?.toUpperCase()}</p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="font-mono text-[10px] text-primary tracking-widest">{q.topic?.toUpperCase()}</p>
+              <div className="flex gap-1">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8"
+                  onClick={() => toggleReview(q.id)}
+                  title={markedForReview.has(q.id) ? "Unmark for review" : "Mark for review"}
+                >
+                  <Eye className={`h-4 w-4 ${markedForReview.has(q.id) ? "text-warning" : "text-muted-foreground"}`} />
+                </Button>
+                <BookmarkButton itemId={`mock-${q.id}`} itemType="mock_question" title={q.question} size="icon" />
+              </div>
+            </div>
             <p className="font-bold text-base mb-6 leading-relaxed">{q.question}</p>
             <div className="space-y-3">
               {q.options.map((opt, oi) => (
@@ -301,9 +349,14 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
         <Button variant="outline" size="sm" onClick={() => setCurrent(Math.max(0, current - 1))} disabled={current === 0} className="border-gold">
           <ChevronLeft className="h-4 w-4 mr-1" /> Prev
         </Button>
-        <span className="font-mono text-[10px] text-muted-foreground">
-          {Object.keys(answers).length}/{questions.length} answered
-        </span>
+        <div className="text-center">
+          <span className="font-mono text-[10px] text-muted-foreground block">
+            {Object.keys(answers).length}/{questions.length} answered
+          </span>
+          <span className="font-mono text-[9px] text-warning">
+            {markedForReview.size > 0 && `${markedForReview.size} marked`}
+          </span>
+        </div>
         <Button variant="outline" size="sm" onClick={() => setCurrent(Math.min(questions.length - 1, current + 1))} disabled={current === questions.length - 1} className="border-gold">
           Next <ChevronRight className="h-4 w-4 ml-1" />
         </Button>

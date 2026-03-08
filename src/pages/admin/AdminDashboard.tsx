@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Users, MessageSquare, BarChart3, Settings, Lock, Megaphone, BookOpen, HelpCircle, Newspaper, FolderOpen } from "lucide-react";
+import { Shield, Users, MessageSquare, BarChart3, Lock, Megaphone, BookOpen, HelpCircle, Newspaper, FolderOpen, FileText, Video, Download, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import AdminBroadcast from "@/components/admin/AdminBroadcast";
@@ -16,12 +16,10 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [adminPassword, setAdminPassword] = useState("");
   const [checking, setChecking] = useState(true);
   const [stats, setStats] = useState({ users: 0, tests: 0, feedback: 0, chats: 0 });
   const [feedbackList, setFeedbackList] = useState<any[]>([]);
 
-  // Check admin role from database
   useEffect(() => {
     const checkAdmin = async () => {
       if (!user) return;
@@ -32,7 +30,6 @@ export default function AdminDashboard() {
     checkAdmin();
   }, [user]);
 
-  // Load admin data
   useEffect(() => {
     if (!isAdmin) return;
     const load = async () => {
@@ -79,6 +76,17 @@ export default function AdminDashboard() {
     );
   }
 
+  const adminLinks = [
+    { href: "/admin/topics", icon: BookOpen, title: "Topics & MCQs", desc: "Add/edit study topics & questions", color: "text-primary" },
+    { href: "/admin/current-affairs", icon: Newspaper, title: "Current Affairs", desc: "Publish & manage news articles", color: "text-success" },
+    { href: "/admin/pyq", icon: FolderOpen, title: "PYQ Management", desc: "Add previous year questions & PDFs", color: "text-warning" },
+    { href: "/admin/topics", icon: HelpCircle, title: "Question Bank", desc: "Manage topic-wise MCQs", color: "text-accent" },
+    { href: "/resources/books", icon: BookOpen, title: "Books / Resources", desc: "Add books with title, body, link", color: "text-primary" },
+    { href: "/resources/videos", icon: Video, title: "Video Lectures", desc: "Add video title, body, link", color: "text-accent" },
+    { href: "/resources/downloads", icon: Download, title: "Downloads", desc: "Add downloadable resources", color: "text-success" },
+    { href: "/faq", icon: HelpCircle, title: "FAQ Management", desc: "Add frequently asked questions", color: "text-warning" },
+  ];
+
   return (
     <DashboardLayout>
       <div className="p-6 max-w-6xl mx-auto space-y-6">
@@ -107,60 +115,31 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Quick Links */}
+        {/* Admin Links Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link to="/admin/topics">
-            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
-              <CardContent className="p-4 flex items-center gap-3">
-                <BookOpen className="h-6 w-6 text-primary" />
-                <div>
-                  <p className="font-bold text-sm">Topic Management</p>
-                  <p className="text-[10px] text-muted-foreground">Add/edit study topics & MCQs</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link to="/admin/topics">
-            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
-              <CardContent className="p-4 flex items-center gap-3">
-                <HelpCircle className="h-6 w-6 text-accent" />
-                <div>
-                  <p className="font-bold text-sm">Question Bank</p>
-                  <p className="text-[10px] text-muted-foreground">Manage MCQ questions per topic</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link to="/admin/current-affairs">
-            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
-              <CardContent className="p-4 flex items-center gap-3">
-                <Newspaper className="h-6 w-6 text-success" />
-                <div>
-                  <p className="font-bold text-sm">Current Affairs</p>
-                  <p className="text-[10px] text-muted-foreground">Publish & manage news articles</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link to="/admin/pyq">
-            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
-              <CardContent className="p-4 flex items-center gap-3">
-                <FolderOpen className="h-6 w-6 text-warning" />
-                <div>
-                  <p className="font-bold text-sm">PYQ Management</p>
-                  <p className="text-[10px] text-muted-foreground">Add previous year questions</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+          {adminLinks.map((link, i) => (
+            <Link key={i} to={link.href}>
+              <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer h-full">
+                <CardContent className="p-4 flex flex-col items-center text-center gap-2">
+                  <link.icon className={`h-6 w-6 ${link.color}`} />
+                  <p className="font-bold text-sm">{link.title}</p>
+                  <p className="text-[10px] text-muted-foreground">{link.desc}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
         </div>
 
-        <Tabs defaultValue="feedback">
+        <Tabs defaultValue="broadcast">
           <TabsList className="bg-card border border-gold">
-            <TabsTrigger value="feedback">Feedback</TabsTrigger>
             <TabsTrigger value="broadcast">Broadcast</TabsTrigger>
+            <TabsTrigger value="feedback">Feedback</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="broadcast" className="mt-4">
+            <AdminBroadcast />
+          </TabsContent>
 
           <TabsContent value="feedback" className="space-y-3 mt-4">
             <h2 className="font-display text-xl text-gradient-gold">USER FEEDBACK</h2>
@@ -183,18 +162,12 @@ export default function AdminDashboard() {
             ))}
           </TabsContent>
 
-          <TabsContent value="broadcast" className="mt-4">
-            <AdminBroadcast />
-          </TabsContent>
-
           <TabsContent value="settings" className="space-y-4 mt-4">
             <h2 className="font-display text-xl text-gradient-gold">ADMIN SETTINGS</h2>
             <Card className="glass-card border-gold">
-              <CardHeader><CardTitle className="text-sm">API Key Configuration</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="text-sm">Platform Configuration</CardTitle></CardHeader>
               <CardContent>
-                <p className="text-xs text-muted-foreground mb-3">Custom AI API key for future integrations. Currently using Lovable AI Gateway.</p>
-                <Input placeholder="Enter custom API key (optional)" className="bg-card border-gold" disabled />
-                <p className="text-[10px] text-muted-foreground mt-1">This field will be enabled in a future update.</p>
+                <p className="text-xs text-muted-foreground">All AI features are powered by Lovable AI Gateway. No additional configuration needed.</p>
               </CardContent>
             </Card>
           </TabsContent>
