@@ -80,11 +80,10 @@ export default function AdminDashboard() {
     { href: "/admin/topics", icon: BookOpen, title: "Topics & MCQs", desc: "Add/edit study topics & questions", color: "text-primary" },
     { href: "/admin/current-affairs", icon: Newspaper, title: "Current Affairs", desc: "Publish & manage news articles", color: "text-success" },
     { href: "/admin/pyq", icon: FolderOpen, title: "PYQ Management", desc: "Add previous year questions & PDFs", color: "text-warning" },
-    { href: "/admin/topics", icon: HelpCircle, title: "Question Bank", desc: "Manage topic-wise MCQs", color: "text-accent" },
-    { href: "/resources/books", icon: BookOpen, title: "Books / Resources", desc: "Add books with title, body, link", color: "text-primary" },
-    { href: "/resources/videos", icon: Video, title: "Video Lectures", desc: "Add video title, body, link", color: "text-accent" },
-    { href: "/resources/downloads", icon: Download, title: "Downloads", desc: "Add downloadable resources", color: "text-success" },
-    { href: "/faq", icon: HelpCircle, title: "FAQ Management", desc: "Add frequently asked questions", color: "text-warning" },
+    { href: "/admin/resources", icon: BookOpen, title: "Books / Videos / Downloads", desc: "Manage all resources", color: "text-primary" },
+    { href: "/admin/faq", icon: HelpCircle, title: "FAQ Management", desc: "Add frequently asked questions", color: "text-warning" },
+    { href: "/admin/ssb", icon: Shield, title: "SSB Sets", desc: "Manage PPDT/TAT/WAT/SRT/SDT sets", color: "text-accent" },
+    { href: "/admin/success-stories", icon: Star, title: "Success Stories", desc: "Add real NDA selection stories", color: "text-success" },
   ];
 
   return (
