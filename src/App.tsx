@@ -59,6 +59,7 @@ import Community from "@/pages/community/Community";
 import MentorConnect from "@/pages/community/MentorConnect";
 import StudyPartner from "@/pages/community/StudyPartner";
 import SuccessStories from "@/pages/community/SuccessStories";
+import RealtimeChat from "@/pages/community/RealtimeChat";
 
 // Fitness
 import FitnessPlan from "@/pages/fitness/FitnessPlan";
