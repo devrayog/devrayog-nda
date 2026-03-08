@@ -123,7 +123,8 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/login" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg border border-gold text-center font-bold text-primary tracking-wider">{t("nav.login")}</Link>
+            <Link to="/login" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg border border-gold text-center font-bold text-primary tracking-wider">{t("nav.login")}</Link>
+
               <Link to="/signup" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg bg-gradient-gold text-center font-bold text-primary-foreground tracking-wider">{t("nav.signup")}</Link>
             </>
           )}
