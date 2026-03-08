@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Brain, FileText, Target, Shield, Swords, BarChart3, Flame, Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import { Suspense, lazy } from "react";
+const DNAHelix = lazy(() => import("@/components/3d/DNAHelix"));
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
