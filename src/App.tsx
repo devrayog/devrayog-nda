@@ -155,6 +155,7 @@ function AppRoutes() {
 
       {/* Protected — Community */}
       <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+      <Route path="/community/chat" element={<ProtectedRoute><RealtimeChat /></ProtectedRoute>} />
       <Route path="/mentors" element={<ProtectedRoute><MentorConnect /></ProtectedRoute>} />
       <Route path="/study-partner" element={<ProtectedRoute><StudyPartner /></ProtectedRoute>} />
       <Route path="/success-stories" element={<ProtectedRoute><SuccessStories /></ProtectedRoute>} />
