@@ -1,15 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard, BookOpen, FileText, Brain, MessageSquare, Users, Dumbbell,
   Trophy, BarChart3, Target, Shield, Bookmark, StickyNote, Bell,
-  Settings, FolderOpen, HelpCircle, Star, Swords, Zap
+  Settings, FolderOpen, HelpCircle, Star, Swords, Zap, UserCircle,
+  GraduationCap, Heart, Calculator, Globe, Newspaper, ChevronDown, ChevronRight
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel,
   SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton,
   SidebarHeader, SidebarFooter
 } from "@/components/ui/sidebar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface NavItem {
   titleKey: string;
@@ -18,20 +22,26 @@ interface NavItem {
 }
 
 const mainNav: NavItem[] = [
-  { titleKey: "nav.dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { titleKey: "nav.ai_tutor", icon: Brain, href: "/ai-tutor" },
-  { titleKey: "nav.notifications", icon: Bell, href: "/notifications" },
+  { titleKey: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { titleKey: "AI Tutor", icon: Brain, href: "/ai-tutor" },
+  { titleKey: "Notifications", icon: Bell, href: "/notifications" },
+  { titleKey: "Achievements", icon: Trophy, href: "/achievements" },
+  { titleKey: "Activity Log", icon: BarChart3, href: "/activity" },
+  { titleKey: "DNA Score", icon: Target, href: "/dna-score" },
 ];
 
 const studyNav: NavItem[] = [
   { titleKey: "Study Plan", icon: Target, href: "/study-plan" },
-  { titleKey: "Maths Hub", icon: Zap, href: "/study/maths" },
-  { titleKey: "GAT/GK Hub", icon: BookOpen, href: "/study/gat" },
+  { titleKey: "Maths Hub", icon: Calculator, href: "/study/maths" },
+  { titleKey: "GAT/GK Hub", icon: Globe, href: "/study/gat" },
   { titleKey: "English Hub", icon: FileText, href: "/study/english" },
-  { titleKey: "Current Affairs", icon: Star, href: "/current-affairs" },
+  { titleKey: "Current Affairs", icon: Newspaper, href: "/current-affairs" },
   { titleKey: "PYQ Papers", icon: FolderOpen, href: "/pyq" },
   { titleKey: "Notes", icon: StickyNote, href: "/notes" },
   { titleKey: "Bookmarks", icon: Bookmark, href: "/bookmarks" },
+  { titleKey: "Revision", icon: BookOpen, href: "/revision" },
+  { titleKey: "Formulas", icon: Calculator, href: "/formulas" },
+  { titleKey: "Vocabulary", icon: GraduationCap, href: "/vocabulary" },
 ];
 
 const testNav: NavItem[] = [
@@ -44,24 +54,90 @@ const testNav: NavItem[] = [
 const ssbNav: NavItem[] = [
   { titleKey: "SSB Overview", icon: Shield, href: "/ssb" },
   { titleKey: "OIR Practice", icon: Brain, href: "/ssb/oir" },
-  { titleKey: "Mock Interview", icon: MessageSquare, href: "/ssb/interview" },
+  { titleKey: "PPDT", icon: FileText, href: "/ssb/ppdt" },
+  { titleKey: "TAT", icon: FileText, href: "/ssb/tat" },
+  { titleKey: "WAT", icon: FileText, href: "/ssb/wat" },
+  { titleKey: "SRT", icon: FileText, href: "/ssb/srt" },
+  { titleKey: "SDT", icon: FileText, href: "/ssb/sdt" },
+  { titleKey: "GD", icon: MessageSquare, href: "/ssb/gd" },
+  { titleKey: "Interview", icon: MessageSquare, href: "/ssb/interview" },
+  { titleKey: "Personality Tips", icon: Star, href: "/ssb/personality" },
+  { titleKey: "Screenout", icon: Target, href: "/ssb/screenout" },
 ];
 
 const communityNav: NavItem[] = [
   { titleKey: "Community", icon: Users, href: "/community" },
   { titleKey: "Leaderboard", icon: Trophy, href: "/leaderboard" },
-  { titleKey: "Fitness", icon: Dumbbell, href: "/fitness" },
+  { titleKey: "Mentors", icon: UserCircle, href: "/mentors" },
+  { titleKey: "Study Partners", icon: Users, href: "/study-partner" },
+  { titleKey: "Success Stories", icon: Star, href: "/success-stories" },
+];
+
+const fitnessNav: NavItem[] = [
+  { titleKey: "Fitness Plan", icon: Dumbbell, href: "/fitness" },
+  { titleKey: "Running Tracker", icon: Dumbbell, href: "/fitness/running" },
+  { titleKey: "Medical Standards", icon: Heart, href: "/fitness/medical" },
+];
+
+const resourceNav: NavItem[] = [
   { titleKey: "Resources", icon: FolderOpen, href: "/resources" },
+  { titleKey: "Books", icon: BookOpen, href: "/resources/books" },
+  { titleKey: "Videos", icon: FileText, href: "/resources/videos" },
+  { titleKey: "Downloads", icon: FolderOpen, href: "/resources/downloads" },
+  { titleKey: "FAQ", icon: HelpCircle, href: "/faq" },
+];
+
+const adminNav: NavItem[] = [
+  { titleKey: "Admin Panel", icon: Shield, href: "/admin" },
+  { titleKey: "Topics & MCQs", icon: BookOpen, href: "/admin/topics" },
+  { titleKey: "Current Affairs", icon: Newspaper, href: "/admin/current-affairs" },
+  { titleKey: "PYQ Manage", icon: FolderOpen, href: "/admin/pyq" },
 ];
 
 const bottomNav: NavItem[] = [
-  { titleKey: "nav.profile", icon: Settings, href: "/profile" },
-  { titleKey: "nav.settings", icon: Settings, href: "/settings" },
+  { titleKey: "Profile", icon: UserCircle, href: "/profile" },
+  { titleKey: "Settings", icon: Settings, href: "/settings" },
+  { titleKey: "Feedback", icon: MessageSquare, href: "/feedback" },
+  { titleKey: "Girls NDA", icon: Heart, href: "/girls" },
 ];
+
+function CollapsibleNavGroup({ label, items, defaultOpen = false }: { label: string; items: NavItem[]; defaultOpen?: boolean }) {
+  const location = useLocation();
+  const isActive = items.some(i => location.pathname === i.href || location.pathname.startsWith(i.href + "/"));
+  const [open, setOpen] = useState(defaultOpen || isActive);
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <SidebarGroup>
+        <CollapsibleTrigger className="w-full">
+          <SidebarGroupLabel className="font-mono text-[10px] tracking-[3px] text-primary/70 uppercase flex items-center justify-between cursor-pointer hover:text-primary transition-colors">
+            {label}
+            {open ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+          </SidebarGroupLabel>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton asChild isActive={location.pathname === item.href} tooltip={item.titleKey}>
+                    <Link to={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.titleKey}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </CollapsibleContent>
+      </SidebarGroup>
+    </Collapsible>
+  );
+}
 
 function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
   const location = useLocation();
-
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="font-mono text-[10px] tracking-[3px] text-primary/70 uppercase">
@@ -86,6 +162,15 @@ function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
 }
 
 export default function DashboardSidebar() {
+  const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin")
+      .then(({ data }) => { if (data && data.length > 0) setIsAdmin(true); });
+  }, [user]);
+
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader className="px-4 py-3">
@@ -97,10 +182,13 @@ export default function DashboardSidebar() {
 
       <SidebarContent>
         <NavGroup label="Main" items={mainNav} />
-        <NavGroup label="Study" items={studyNav} />
-        <NavGroup label="Tests" items={testNav} />
-        <NavGroup label="SSB" items={ssbNav} />
-        <NavGroup label="Community" items={communityNav} />
+        <CollapsibleNavGroup label="Study" items={studyNav} defaultOpen />
+        <CollapsibleNavGroup label="Tests" items={testNav} />
+        <CollapsibleNavGroup label="SSB Prep" items={ssbNav} />
+        <CollapsibleNavGroup label="Community" items={communityNav} />
+        <CollapsibleNavGroup label="Fitness" items={fitnessNav} />
+        <CollapsibleNavGroup label="Resources" items={resourceNav} />
+        {isAdmin && <NavGroup label="Admin" items={adminNav} />}
       </SidebarContent>
 
       <SidebarFooter>
