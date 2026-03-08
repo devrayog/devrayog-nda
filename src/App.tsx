@@ -136,7 +136,7 @@ function AppRoutes() {
       <Route path="/ssb/sdt" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
       <Route path="/ssb/gd" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
       <Route path="/ssb/interview" element={<ProtectedRoute><SSBPractice /></ProtectedRoute>} />
-      <Route path="/ssb/personality" element={<ProtectedRoute><PlaceholderPage title="PERSONALITY TIPS" description="Body language, communication, and officer-like qualities." /></ProtectedRoute>} />
+      <Route path="/ssb/personality" element={<ProtectedRoute><PersonalityTips /></ProtectedRoute>} />
       <Route path="/ssb/screenout" element={<ProtectedRoute><ScreenoutAnalysis /></ProtectedRoute>} />
 
       {/* Protected — Community */}
