@@ -47,6 +47,12 @@ export default function Navbar() {
           {language === "en" ? "हिंदी" : "EN"}
         </Button>
 
+        <Link to="/premium">
+          <Button variant="ghost" size="sm" className="h-8 text-sm font-semibold text-primary">
+            <Crown className="h-3 w-3 mr-1" /> Premium
+          </Button>
+        </Link>
+
         {user ? (
           <>
             <Link to="/notifications">
