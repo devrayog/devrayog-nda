@@ -52,6 +52,7 @@ import DailyChallenge from "@/pages/tests/DailyChallenge";
 import SSBOverview from "@/pages/ssb/SSBOverview";
 import SSBPractice from "@/pages/ssb/SSBPractice";
 import ScreenoutAnalysis from "@/pages/ssb/ScreenoutAnalysis";
+import PersonalityTips from "@/pages/ssb/PersonalityTips";
 
 // Community
 import Community from "@/pages/community/Community";
