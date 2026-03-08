@@ -59,6 +59,7 @@ import Community from "@/pages/community/Community";
 import MentorConnect from "@/pages/community/MentorConnect";
 import StudyPartner from "@/pages/community/StudyPartner";
 import SuccessStories from "@/pages/community/SuccessStories";
+import RealtimeChat from "@/pages/community/RealtimeChat";
 
 // Fitness
 import FitnessPlan from "@/pages/fitness/FitnessPlan";
@@ -78,6 +79,10 @@ import AdminTopics from "@/pages/admin/AdminTopics";
 import AdminQuestions from "@/pages/admin/AdminQuestions";
 import AdminCurrentAffairs from "@/pages/admin/AdminCurrentAffairs";
 import AdminPYQ from "@/pages/admin/AdminPYQ";
+import AdminResources from "@/pages/admin/AdminResources";
+import AdminFAQ from "@/pages/admin/AdminFAQ";
+import AdminSSB from "@/pages/admin/AdminSSB";
+import AdminSuccessStories from "@/pages/admin/AdminSuccessStories";
 import QuestionBank from "@/pages/QuestionBank";
 
 const queryClient = new QueryClient();
@@ -150,6 +155,7 @@ function AppRoutes() {
 
       {/* Protected — Community */}
       <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+      <Route path="/community/chat" element={<ProtectedRoute><RealtimeChat /></ProtectedRoute>} />
       <Route path="/mentors" element={<ProtectedRoute><MentorConnect /></ProtectedRoute>} />
       <Route path="/study-partner" element={<ProtectedRoute><StudyPartner /></ProtectedRoute>} />
       <Route path="/success-stories" element={<ProtectedRoute><SuccessStories /></ProtectedRoute>} />
@@ -175,6 +181,10 @@ function AppRoutes() {
       <Route path="/admin/topics/:topicId/questions" element={<ProtectedRoute><AdminQuestions /></ProtectedRoute>} />
       <Route path="/admin/current-affairs" element={<ProtectedRoute><AdminCurrentAffairs /></ProtectedRoute>} />
       <Route path="/admin/pyq" element={<ProtectedRoute><AdminPYQ /></ProtectedRoute>} />
+      <Route path="/admin/resources" element={<ProtectedRoute><AdminResources /></ProtectedRoute>} />
+      <Route path="/admin/faq" element={<ProtectedRoute><AdminFAQ /></ProtectedRoute>} />
+      <Route path="/admin/ssb" element={<ProtectedRoute><AdminSSB /></ProtectedRoute>} />
+      <Route path="/admin/success-stories" element={<ProtectedRoute><AdminSuccessStories /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />

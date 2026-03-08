@@ -131,6 +131,30 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          channel: string
+          content: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          channel?: string
+          content: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          content?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       community_posts: {
         Row: {
           category: string | null
@@ -254,6 +278,36 @@ export type Database = {
           topic?: string | null
           user_answer?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      faqs: {
+        Row: {
+          answer: string
+          category: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          question: string
+          sort_order: number | null
+        }
+        Insert: {
+          answer: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          question: string
+          sort_order?: number | null
+        }
+        Update: {
+          answer?: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          question?: string
+          sort_order?: number | null
         }
         Relationships: []
       }
@@ -579,6 +633,48 @@ export type Database = {
         }
         Relationships: []
       }
+      resources: {
+        Row: {
+          body: string | null
+          category: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          link: string | null
+          sort_order: number | null
+          title: string
+          type: string
+        }
+        Insert: {
+          body?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link?: string | null
+          sort_order?: number | null
+          title: string
+          type?: string
+        }
+        Update: {
+          body?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link?: string | null
+          sort_order?: number | null
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       running_logs: {
         Row: {
           created_at: string
@@ -606,6 +702,68 @@ export type Database = {
           notes?: string | null
           time_minutes?: number
           user_id?: string
+        }
+        Relationships: []
+      }
+      ssb_set_items: {
+        Row: {
+          content_text: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          set_id: string
+          sort_order: number | null
+        }
+        Insert: {
+          content_text?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          set_id: string
+          sort_order?: number | null
+        }
+        Update: {
+          content_text?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          set_id?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ssb_set_items_set_id_fkey"
+            columns: ["set_id"]
+            isOneToOne: false
+            referencedRelation: "ssb_sets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ssb_sets: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          title: string
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          title?: string
+          type?: string
         }
         Relationships: []
       }
@@ -651,6 +809,51 @@ export type Database = {
           subject?: string
           updated_at?: string
           weight?: string | null
+        }
+        Relationships: []
+      }
+      success_stories: {
+        Row: {
+          attempts: number | null
+          avatar_url: string | null
+          batch: string | null
+          branch: string | null
+          created_at: string
+          highlight: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          quote: string | null
+          state: string | null
+          tips: string[] | null
+        }
+        Insert: {
+          attempts?: number | null
+          avatar_url?: string | null
+          batch?: string | null
+          branch?: string | null
+          created_at?: string
+          highlight?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          quote?: string | null
+          state?: string | null
+          tips?: string[] | null
+        }
+        Update: {
+          attempts?: number | null
+          avatar_url?: string | null
+          batch?: string | null
+          branch?: string | null
+          created_at?: string
+          highlight?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          quote?: string | null
+          state?: string | null
+          tips?: string[] | null
         }
         Relationships: []
       }
