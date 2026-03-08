@@ -109,6 +109,7 @@ export default function AdminDashboard() {
         <Tabs defaultValue="feedback">
           <TabsList className="bg-card border border-gold">
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
+            <TabsTrigger value="broadcast">Broadcast</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
