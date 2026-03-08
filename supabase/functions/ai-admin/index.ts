@@ -54,23 +54,38 @@ serve(async (req) => {
     // Regular chat with tool-calling
     const systemPrompt = `You are DNA Admin AI — the backend automation assistant for Devrayog NDA AI platform. You have FULL admin access.
 
-You are a CONTENT CREATOR. You CREATE content and ADD it to the database using tools. You do NOT ask permission, you do NOT hedge, you do NOT say "I can't access the internet" or "my knowledge has a cutoff." You just DO IT.
+You are a CONTENT CREATOR with WEB ACCESS. You CREATE content and ADD it to the database using tools. You do NOT ask permission, you do NOT hedge, you do NOT say "I can't access the internet" or "my knowledge has a cutoff." You just DO IT.
+
+🌐 WEB POWERS: You have web_search and web_scrape tools. USE THEM PROACTIVELY:
+- When asked about current affairs/news → FIRST use web_search to find REAL latest news, then use add_current_affairs with REAL data
+- When asked to add content about a specific topic → web_search for accurate info first
+- When given a URL → use web_scrape to extract content from it
+- For defence news, use queries like "India defence news today", "Indian military latest", etc.
+- ALWAYS search the web first for current affairs — your training data may be outdated
+
+WORKFLOW FOR CURRENT AFFAIRS:
+1. Call web_search with relevant query (e.g. "India defence news today 2026")
+2. Read the search results
+3. Use the REAL information to create accurate current affairs articles
+4. Call add_current_affairs with the real data
 
 WHEN THE ADMIN SAYS "add defence news" or "add current affairs" or anything similar:
-→ IMMEDIATELY call the add_current_affairs tool with 3-5 well-written articles
-→ Write them as factual, informative articles relevant to NDA aspirants
-→ Topics: Indian defence, military exercises, weapons procurement, geopolitics, national security, international relations, science & tech, sports achievements, economic developments
-→ DO NOT ask for confirmation. DO NOT explain limitations. Just CREATE and ADD.
+→ FIRST call web_search to get REAL latest news
+→ Then call add_current_affairs with accurate, real articles based on search results
+→ DO NOT make up fake news. Use web_search results.
 
 WHEN THE ADMIN SAYS "generate MCQs on [topic]":
 → IMMEDIATELY call add_topic_questions with 5-10 high-quality MCQs
 → Include correct answers and explanations
-→ DO NOT ask the admin to provide questions
 
 WHEN THE ADMIN UPLOADS an image/file:
 → Extract ALL questions/content and add to database immediately
 
-AVAILABLE TOOLS: add_topic_questions, add_pyq_questions, add_current_affairs, add_resources, add_faqs, broadcast_notification, get_platform_stats, get_pending_feedback, get_study_topics
+WHEN THE ADMIN GIVES A URL:
+→ Use web_scrape to extract content from the URL
+→ Then process it (add questions, create articles, etc.)
+
+AVAILABLE TOOLS: web_search, web_scrape, add_topic_questions, add_pyq_questions, add_current_affairs, add_resources, add_faqs, broadcast_notification, get_platform_stats, get_pending_feedback, get_study_topics
 
 ABSOLUTE PROHIBITIONS — NEVER SAY ANY OF THESE:
 - "I cannot access external websites"
@@ -81,10 +96,39 @@ ABSOLUTE PROHIBITIONS — NEVER SAY ANY OF THESE:
 - "Would you like me to create a hypothetical..."
 - Any variation of asking permission or disclaiming capability
 
-YOU ARE AN ACTION-TAKER. When told to do something, you DO IT with the tools. No questions, no hedging, no disclaimers.`;
+YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT with the tools. No questions, no hedging, no disclaimers. Search the web first for current information.`;
 
 
     const tools = [
+      {
+        type: "function",
+        function: {
+          name: "web_search",
+          description: "Search the web for real-time information. Use this to find latest news, current affairs, facts, and any information needed. ALWAYS use this before creating current affairs articles to get REAL data.",
+          parameters: {
+            type: "object",
+            properties: {
+              query: { type: "string", description: "Search query, e.g. 'India defence news today 2026' or 'latest NDA exam updates'" },
+              limit: { type: "number", description: "Number of results to return (default 5, max 10)" },
+            },
+            required: ["query"],
+          },
+        },
+      },
+      {
+        type: "function",
+        function: {
+          name: "web_scrape",
+          description: "Scrape/crawl a specific URL to extract its content as markdown. Use this when admin shares a URL or when you need to read a specific webpage.",
+          parameters: {
+            type: "object",
+            properties: {
+              url: { type: "string", description: "The URL to scrape" },
+            },
+            required: ["url"],
+          },
+        },
+      },
       {
         type: "function",
         function: {
@@ -155,7 +199,7 @@ YOU ARE AN ACTION-TAKER. When told to do something, you DO IT with the tools. No
         type: "function",
         function: {
           name: "add_current_affairs",
-          description: "Add current affairs articles to the platform.",
+          description: "Add current affairs articles to the platform. Use AFTER web_search to add REAL news.",
           parameters: {
             type: "object",
             properties: {
@@ -293,61 +337,13 @@ YOU ARE AN ACTION-TAKER. When told to do something, you DO IT with the tools. No
       }
     }
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: aiMessages,
-        tools,
-        tool_choice: "auto",
-      }),
-    });
+    // Support multiple rounds of tool calls (search → then add content)
+    let currentMessages = [...aiMessages];
+    let allToolsExecuted: string[] = [];
+    let maxRounds = 3;
 
-    if (!response.ok) {
-      const t = await response.text();
-      console.error("AI error:", response.status, t);
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limit. Try again shortly." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      throw new Error("AI service error");
-    }
-
-    const aiData = await response.json();
-    const choice = aiData.choices?.[0];
-    
-    if (!choice) throw new Error("No AI response");
-
-    // Check if AI wants to call tools
-    if (choice.finish_reason === "tool_calls" || choice.message?.tool_calls) {
-      const toolCalls = choice.message.tool_calls || [];
-      const toolResults: any[] = [];
-
-      for (const tc of toolCalls) {
-        const args = JSON.parse(tc.function.arguments);
-        try {
-          const result = await executeTool(adminClient, tc.function.name, args);
-          toolResults.push({
-            role: "tool",
-            tool_call_id: tc.id,
-            content: JSON.stringify(result),
-          });
-        } catch (e) {
-          toolResults.push({
-            role: "tool",
-            tool_call_id: tc.id,
-            content: JSON.stringify({ error: e.message }),
-          });
-        }
-      }
-
-      // Second AI call with tool results
-      const followUp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    for (let round = 0; round < maxRounds; round++) {
+      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${LOVABLE_API_KEY}`,
@@ -355,29 +351,87 @@ YOU ARE AN ACTION-TAKER. When told to do something, you DO IT with the tools. No
         },
         body: JSON.stringify({
           model: "google/gemini-2.5-flash",
-          messages: [
-            ...aiMessages,
-            choice.message,
-            ...toolResults,
-          ],
+          messages: currentMessages,
+          tools,
+          tool_choice: "auto",
         }),
       });
 
-      if (!followUp.ok) throw new Error("AI follow-up error");
-      const followData = await followUp.json();
-      const content = followData.choices?.[0]?.message?.content || "Done! Actions executed.";
-      
+      if (!response.ok) {
+        const t = await response.text();
+        console.error("AI error:", response.status, t);
+        if (response.status === 429) {
+          return new Response(JSON.stringify({ error: "Rate limit. Try again shortly." }), {
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        throw new Error("AI service error");
+      }
+
+      const aiData = await response.json();
+      const choice = aiData.choices?.[0];
+      if (!choice) throw new Error("No AI response");
+
+      // If AI wants to call tools
+      if (choice.finish_reason === "tool_calls" || choice.message?.tool_calls) {
+        const toolCalls = choice.message.tool_calls || [];
+        const toolResults: any[] = [];
+
+        for (const tc of toolCalls) {
+          const args = JSON.parse(tc.function.arguments);
+          try {
+            const result = await executeTool(adminClient, tc.function.name, args);
+            toolResults.push({
+              role: "tool",
+              tool_call_id: tc.id,
+              content: JSON.stringify(result),
+            });
+            allToolsExecuted.push(tc.function.name);
+          } catch (e) {
+            toolResults.push({
+              role: "tool",
+              tool_call_id: tc.id,
+              content: JSON.stringify({ error: e.message }),
+            });
+            allToolsExecuted.push(tc.function.name);
+          }
+        }
+
+        // Add assistant message + tool results for next round
+        currentMessages.push(choice.message);
+        currentMessages.push(...toolResults);
+        // Continue loop to let AI process tool results and potentially call more tools
+        continue;
+      }
+
+      // Regular text response (no more tool calls) — we're done
       return new Response(JSON.stringify({
-        content,
-        tools_executed: toolCalls.map((tc: any) => tc.function.name),
+        content: choice.message?.content || "Done! Actions executed.",
+        tools_executed: allToolsExecuted.length > 0 ? allToolsExecuted : undefined,
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Regular text response
+    // If we exhausted rounds, get final response
+    const finalResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: currentMessages,
+      }),
+    });
+
+    const finalData = await finalResponse.json();
+    const finalContent = finalData.choices?.[0]?.message?.content || "Done! All actions completed.";
+
     return new Response(JSON.stringify({
-      content: choice.message?.content || "I'm ready. Send me questions, images, or tell me what to do.",
+      content: finalContent,
+      tools_executed: allToolsExecuted.length > 0 ? allToolsExecuted : undefined,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -393,8 +447,82 @@ YOU ARE AN ACTION-TAKER. When told to do something, you DO IT with the tools. No
 
 async function executeTool(client: any, name: string, args: any): Promise<any> {
   switch (name) {
+    // ===== WEB TOOLS =====
+    case "web_search": {
+      const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
+      if (!apiKey) throw new Error("Firecrawl not configured — web search unavailable");
+
+      console.log("Web search:", args.query);
+      const response = await fetch("https://api.firecrawl.dev/v1/search", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: args.query,
+          limit: args.limit || 5,
+          scrapeOptions: { formats: ["markdown"] },
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        console.error("Firecrawl search error:", data);
+        throw new Error(data.error || `Search failed: ${response.status}`);
+      }
+
+      // Format results for AI consumption
+      const results = (data.data || []).map((r: any, i: number) => ({
+        index: i + 1,
+        title: r.title || "Untitled",
+        url: r.url || "",
+        description: r.description || "",
+        content: (r.markdown || "").slice(0, 3000), // Limit content size
+      }));
+
+      return { results, total: results.length, query: args.query };
+    }
+
+    case "web_scrape": {
+      const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
+      if (!apiKey) throw new Error("Firecrawl not configured — web scrape unavailable");
+
+      let url = args.url.trim();
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = `https://${url}`;
+      }
+
+      console.log("Web scrape:", url);
+      const response = await fetch("https://api.firecrawl.dev/v1/scrape", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url,
+          formats: ["markdown"],
+          onlyMainContent: true,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        console.error("Firecrawl scrape error:", data);
+        throw new Error(data.error || `Scrape failed: ${response.status}`);
+      }
+
+      const content = data.data?.markdown || data.markdown || "";
+      return {
+        url,
+        title: data.data?.metadata?.title || data.metadata?.title || "Untitled",
+        content: content.slice(0, 10000), // Limit to 10k chars
+      };
+    }
+
+    // ===== DB TOOLS =====
     case "add_topic_questions": {
-      // If no topic_id, find or create one
       let topicId = args.topic_id;
       if (!topicId && args.subject) {
         const { data: topics } = await client.from("study_topics").select("id").eq("subject", args.subject).limit(1);
@@ -493,7 +621,6 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
         read: false,
       }));
       
-      // Insert in batches of 100
       let total = 0;
       for (let i = 0; i < rows.length; i += 100) {
         const batch = rows.slice(i, i + 100);
