@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Suspense, lazy } from "react";
 import ExamCountdown from "@/components/ExamCountdown";
 import DailyMotivation from "@/components/DailyMotivation";
+import AchievementsSummary from "@/components/AchievementsSummary";
 
 const DNAHelix = lazy(() => import("@/components/3d/DNAHelix"));
 
