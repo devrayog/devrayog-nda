@@ -197,6 +197,7 @@ function AppRoutes() {
       <Route path="/admin/faq" element={<ProtectedRoute><AdminFAQ /></ProtectedRoute>} />
       <Route path="/admin/ssb" element={<ProtectedRoute><AdminSSB /></ProtectedRoute>} />
       <Route path="/admin/success-stories" element={<ProtectedRoute><AdminSuccessStories /></ProtectedRoute>} />
+      <Route path="/admin/ai" element={<ProtectedRoute><AdminAI /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />

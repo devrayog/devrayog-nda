@@ -77,6 +77,7 @@ export default function AdminDashboard() {
   }
 
   const adminLinks = [
+    { href: "/admin/ai", icon: Bot, title: "🤖 AI Assistant", desc: "Auto-add questions, content, analytics", color: "text-success" },
     { href: "/admin/topics", icon: BookOpen, title: "Topics & MCQs", desc: "Add/edit study topics & questions", color: "text-primary" },
     { href: "/admin/current-affairs", icon: Newspaper, title: "Current Affairs", desc: "Publish & manage news articles", color: "text-success" },
     { href: "/admin/pyq", icon: FolderOpen, title: "PYQ Management", desc: "Add previous year questions & PDFs", color: "text-warning" },
