@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Users, MessageSquare, BarChart3, Lock, Megaphone, BookOpen, HelpCircle, Newspaper, FolderOpen, FileText, Video, Download, Star } from "lucide-react";
+import { Shield, Users, MessageSquare, BarChart3, Lock, Megaphone, BookOpen, HelpCircle, Newspaper, FolderOpen, FileText, Video, Download, Star, Bot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import AdminBroadcast from "@/components/admin/AdminBroadcast";
@@ -77,6 +77,7 @@ export default function AdminDashboard() {
   }
 
   const adminLinks = [
+    { href: "/admin/ai", icon: Bot, title: "🤖 AI Assistant", desc: "Auto-add questions, content, analytics", color: "text-success" },
     { href: "/admin/topics", icon: BookOpen, title: "Topics & MCQs", desc: "Add/edit study topics & questions", color: "text-primary" },
     { href: "/admin/current-affairs", icon: Newspaper, title: "Current Affairs", desc: "Publish & manage news articles", color: "text-success" },
     { href: "/admin/pyq", icon: FolderOpen, title: "PYQ Management", desc: "Add previous year questions & PDFs", color: "text-warning" },

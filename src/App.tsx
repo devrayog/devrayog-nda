@@ -92,6 +92,7 @@ import AdminResources from "@/pages/admin/AdminResources";
 import AdminFAQ from "@/pages/admin/AdminFAQ";
 import AdminSSB from "@/pages/admin/AdminSSB";
 import AdminSuccessStories from "@/pages/admin/AdminSuccessStories";
+import AdminAI from "@/pages/admin/AdminAI";
 import QuestionBank from "@/pages/QuestionBank";
 import Premium from "@/pages/Premium";
 
@@ -196,6 +197,7 @@ function AppRoutes() {
       <Route path="/admin/faq" element={<ProtectedRoute><AdminFAQ /></ProtectedRoute>} />
       <Route path="/admin/ssb" element={<ProtectedRoute><AdminSSB /></ProtectedRoute>} />
       <Route path="/admin/success-stories" element={<ProtectedRoute><AdminSuccessStories /></ProtectedRoute>} />
+      <Route path="/admin/ai" element={<ProtectedRoute><AdminAI /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />
