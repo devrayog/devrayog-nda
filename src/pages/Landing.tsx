@@ -67,6 +67,10 @@ export default function Landing() {
             {t("landing.hero_sub")}
           </motion.p>
 
+          <Suspense fallback={null}>
+            <ShieldGlobe className="w-48 h-48 mx-auto mb-4 hidden md:block" />
+          </Suspense>
+
           <motion.div
             initial="hidden" animate="visible" variants={fadeUp} custom={4}
             className="flex flex-col sm:flex-row gap-4 justify-center"

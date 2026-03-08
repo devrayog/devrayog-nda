@@ -61,6 +61,10 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
+        <Suspense fallback={null}>
+          <DNAHelix className="h-48 w-full hidden md:block" />
+        </Suspense>
+
         {/* Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
