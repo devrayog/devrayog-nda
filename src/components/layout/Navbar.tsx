@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Sun, Moon, Globe, Menu, X, Bell, LogOut, User } from "lucide-react";
+import { Sun, Moon, Globe, Menu, X, Bell, LogOut, User, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -46,6 +46,12 @@ export default function Navbar() {
           <Globe className="h-3 w-3 mr-1" />
           {language === "en" ? "हिंदी" : "EN"}
         </Button>
+
+        <Link to="/premium">
+          <Button variant="ghost" size="sm" className="h-8 text-sm font-semibold text-primary">
+            <Crown className="h-3 w-3 mr-1" /> Premium
+          </Button>
+        </Link>
 
         {user ? (
           <>
@@ -103,6 +109,8 @@ export default function Navbar() {
             </Button>
           </div>
 
+          <Link to="/premium" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg bg-primary/10 border border-primary/20 text-center font-semibold text-primary">⭐ Premium</Link>
+
           {user ? (
             <>
               <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg bg-card border border-gold text-center font-semibold">{t("nav.dashboard")}</Link>
@@ -115,7 +123,8 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/login" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg border border-gold text-center font-bold text-primary tracking-wider">{t("nav.login")}</Link>
+            <Link to="/login" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg border border-gold text-center font-bold text-primary tracking-wider">{t("nav.login")}</Link>
+
               <Link to="/signup" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg bg-gradient-gold text-center font-bold text-primary-foreground tracking-wider">{t("nav.signup")}</Link>
             </>
           )}

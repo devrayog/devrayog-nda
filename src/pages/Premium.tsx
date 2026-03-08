@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Star, ArrowRight, Check, X, Crown, Zap, MessageCircle } from "lucide-react";
+import { Shield, Star, ArrowRight, Check, X, Crown, Zap, MessageCircle, Clock, Rocket, Lock, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
 const fadeUp = {
@@ -11,38 +11,13 @@ const fadeUp = {
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5 } }),
 };
 
-const FREE_FEATURES = [
-  "Basic study material — all subjects",
-  "2 full mock tests per month",
-  "Daily quiz — 10 questions",
-  "Current affairs — 5 news preview daily",
-  "Community forum access",
-  "Medical + Physical standards info",
-  "Last 3 years previous papers",
-  "Basic AI suggestions — 3/day",
-];
-const FREE_MISSING = [
-  "Full AI personalization",
-  "SSB complete preparation",
-  "Unlimited mock tests",
-  "Premium gold badge",
-];
-
-const PREMIUM_FEATURES = [
-  "Everything in Free",
-  "Full AI personalization — unlimited",
-  "Complete DNA Score + predictions",
-  "Unlimited mock tests",
-  "Full 15 years previous papers",
-  "Complete SSB preparation — all sections",
-  "12-week physical fitness plan",
-  "Full daily current affairs + archive + PDF",
-  "Accountability partner system",
-  "Video solutions — all subjects",
-  "Mentor connect — 1 on 1 sessions",
-  "Gold ⭐ PREMIUM badge on profile",
-  "Girls specific content section",
-  "Full analytics — all time history",
+const UPCOMING_FEATURES = [
+  { icon: Zap, title: "Full AI Personalization", desc: "Unlimited AI-powered study plans, adaptive difficulty, exam readiness prediction" },
+  { icon: Shield, title: "Complete SSB Prep", desc: "Full TAT, WAT, SRT, SDT, PPDT practice with AI mock interviews" },
+  { icon: Crown, title: "Unlimited Mock Tests", desc: "No limits on subject-wise or full-length mock tests" },
+  { icon: Star, title: "15 Years PYQ Bank", desc: "Complete previous year papers with detailed solutions" },
+  { icon: Rocket, title: "Mentor 1-on-1 Sessions", desc: "Direct connect with ex-NDA officers and defence mentors" },
+  { icon: Sparkles, title: "Gold Premium Badge", desc: "Stand out on leaderboard with exclusive premium badge" },
 ];
 
 const COMPARISON = [
@@ -73,30 +48,74 @@ const COMPARISON = [
 ];
 
 export default function Premium() {
-  const waLink = `https://wa.me/918233801406?text=${encodeURIComponent("Hi! I want to upgrade to DNA Premium (₹11/month). My registered email: ")}`;
+  const waLink = `https://wa.me/918233801406?text=${encodeURIComponent("Hi! I'm interested in DNA Premium plan. Please share details.")}`;
+  const customWaLink = `https://wa.me/918233801406?text=${encodeURIComponent("Hi! I want to discuss a custom plan/requirement for Devrayog NDA AI. Here's what I need: ")}`;
 
   return (
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative min-h-[50vh] flex items-center justify-center pt-20 overflow-hidden">
+      {/* Hero - Coming Soon */}
+      <section className="relative min-h-[60vh] flex items-center justify-center pt-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 to-background" />
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "linear-gradient(hsl(var(--gold) / 0.03) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--gold) / 0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+        
+        {/* Animated glow */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[150px] animate-pulse" />
+        
         <div className="relative z-10 text-center px-6">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
-            <p className="font-mono text-[10px] tracking-[4px] text-primary uppercase mb-5">Pricing</p>
+            <Badge className="bg-primary/10 text-primary border-primary/20 font-mono text-[10px] tracking-[3px] mb-6">
+              <Clock className="h-3 w-3 mr-1.5" /> LAUNCHING SOON
+            </Badge>
           </motion.div>
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={1} className="font-display text-5xl md:text-8xl text-gradient-gold leading-none mb-4">
-            FREE VS<br />PREMIUM
+            PREMIUM<br />IS COMING
           </motion.h1>
-          <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2} className="text-muted-foreground text-lg italic max-w-lg mx-auto">
-            Less than the cost of a chai. More than any coaching centre gives you.
+          <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2} className="text-muted-foreground text-lg italic max-w-lg mx-auto mb-3">
+            We're building something extraordinary for serious NDA aspirants.
+          </motion.p>
+          <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={3} className="text-muted-foreground/60 text-sm max-w-md mx-auto">
+            Premium features are under active development. When launched, you'll get unlimited AI, complete SSB prep, and everything you need — for less than the cost of a chai.
           </motion.p>
         </div>
       </section>
 
-      {/* Cards */}
+      {/* What's Coming */}
+      <section className="py-16 px-6">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0} className="text-center mb-12">
+          <p className="font-mono text-[10px] tracking-[4px] text-primary uppercase mb-3">WHAT TO EXPECT</p>
+          <h2 className="font-display text-4xl md:text-5xl text-gradient-gold mb-2">FEATURES IN DEVELOPMENT</h2>
+          <p className="text-muted-foreground text-sm">Once premium launches, these features unlock instantly</p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          {UPCOMING_FEATURES.map((f, i) => (
+            <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}
+              className="glass-card rounded-xl p-6 border border-border relative overflow-hidden group hover:border-primary/30 transition-colors">
+              <div className="absolute top-3 right-3">
+                <Lock className="h-3.5 w-3.5 text-muted-foreground/30" />
+              </div>
+              <f.icon className="h-8 w-8 text-primary mb-3" />
+              <h3 className="font-display text-lg mb-1.5">{f.title}</h3>
+              <p className="text-muted-foreground text-xs leading-relaxed">{f.desc}</p>
+              <div className="mt-3 flex items-center gap-1.5">
+                <div className="h-1.5 rounded-full bg-primary/20 flex-1 overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-gold rounded-full"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${60 + Math.random() * 35}%` }}
+                    transition={{ delay: 0.5 + i * 0.1, duration: 1 }}
+                  />
+                </div>
+                <span className="font-mono text-[9px] text-primary/50">IN DEV</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Pricing Preview */}
       <section className="py-16 px-6">
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Free */}
@@ -106,43 +125,30 @@ export default function Premium() {
             <p className="font-display text-6xl mb-1">₹0</p>
             <p className="font-mono text-xs text-muted-foreground tracking-widest mb-2">FOREVER FREE</p>
             <p className="text-sm text-muted-foreground mb-6 pb-6 border-b border-border">
-              Start your NDA journey without spending a rupee. Get access to core study material, daily quiz, and community.
+              Start your NDA journey without spending a rupee. Core study material, daily quiz, and community.
             </p>
             <Link to="/signup">
-              <Button variant="outline" className="w-full border-gold text-primary font-bold tracking-wider mb-6">Start Free →</Button>
+              <Button variant="outline" className="w-full border-gold text-primary font-bold tracking-wider">Start Free →</Button>
             </Link>
-            <div className="space-y-2.5">
-              {FREE_FEATURES.map((f, i) => (
-                <div key={i} className="flex items-start gap-2.5 text-sm"><Check className="h-4 w-4 text-success shrink-0 mt-0.5" /><span>{f}</span></div>
-              ))}
-              {FREE_MISSING.map((f, i) => (
-                <div key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground"><X className="h-4 w-4 text-destructive/50 shrink-0 mt-0.5" /><span>{f}</span></div>
-              ))}
-            </div>
           </motion.div>
 
-          {/* Premium */}
+          {/* Premium - Coming Soon */}
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
-            className="glass-card rounded-xl p-8 border border-primary relative overflow-hidden">
+            className="glass-card rounded-xl p-8 border border-primary/40 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-gold animate-shimmer" />
-            <Badge className="absolute top-4 right-4 bg-gradient-gold text-primary-foreground font-mono text-[9px] tracking-widest">⭐ RECOMMENDED</Badge>
+            <Badge className="absolute top-4 right-4 bg-primary/10 text-primary font-mono text-[9px] tracking-widest border border-primary/20">
+              <Clock className="h-3 w-3 mr-1" /> COMING SOON
+            </Badge>
             <p className="font-mono text-[10px] tracking-[4px] text-primary uppercase mb-4">Premium Plan</p>
             <p className="font-display text-6xl text-gradient-gold mb-1">₹11</p>
-            <p className="font-mono text-xs text-muted-foreground tracking-widest mb-2">PER MONTH</p>
+            <p className="font-mono text-xs text-muted-foreground tracking-widest mb-2">PER MONTH (PLANNED)</p>
             <Badge variant="outline" className="border-success/30 text-success font-mono text-[9px] tracking-widest mb-4">₹108/YEAR — SAVE ₹24</Badge>
             <p className="text-sm text-muted-foreground mb-6 pb-6 border-b border-border">
-              Everything in free, plus full AI, unlimited tests, complete SSB prep, fitness plan, and the gold premium badge.
+              Full AI, unlimited tests, complete SSB prep, fitness plan, and the gold premium badge. Launching soon — we'll notify you!
             </p>
-            <a href={waLink} target="_blank" rel="noopener noreferrer">
-              <Button className="w-full bg-[#25D366] hover:bg-[#1DAA54] text-white font-bold tracking-wider mb-6">
-                <MessageCircle className="h-4 w-4 mr-2" /> Get Premium via WhatsApp →
-              </Button>
-            </a>
-            <div className="space-y-2.5">
-              {PREMIUM_FEATURES.map((f, i) => (
-                <div key={i} className="flex items-start gap-2.5 text-sm"><Check className="h-4 w-4 text-success shrink-0 mt-0.5" /><span>{f}</span></div>
-              ))}
-            </div>
+            <Button disabled className="w-full bg-primary/20 text-primary font-bold tracking-wider cursor-not-allowed">
+              <Lock className="h-4 w-4 mr-2" /> Launching Soon
+            </Button>
           </motion.div>
         </div>
       </section>
@@ -151,7 +157,8 @@ export default function Premium() {
       <section className="py-16 px-6">
         <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
           className="font-display text-4xl md:text-5xl text-center text-gradient-gold mb-2">FULL COMPARISON</motion.h2>
-        <p className="text-center text-muted-foreground text-sm mb-10">Every single feature compared side by side. No hidden limits.</p>
+        <p className="text-center text-muted-foreground text-sm mb-2">Every feature compared — this is what premium will unlock</p>
+        <p className="text-center font-mono text-[10px] text-primary/50 tracking-widest mb-10">FEATURES MARKED ⭐ WILL BE AVAILABLE AFTER LAUNCH</p>
         <div className="max-w-4xl mx-auto overflow-x-auto">
           <table className="w-full border-collapse border border-border rounded-lg overflow-hidden">
             <thead>
@@ -190,38 +197,42 @@ export default function Premium() {
         </div>
       </section>
 
-      {/* WhatsApp CTA */}
+      {/* Custom Pricing / Contact */}
       <section className="py-16 px-6">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
-          className="glass-card rounded-2xl p-12 max-w-3xl mx-auto text-center border border-primary relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-gold" />
-          <p className="font-mono text-[10px] tracking-[4px] text-primary uppercase mb-3">⭐ Get Premium Now</p>
-          <h2 className="font-display text-4xl text-gradient-gold mb-2">3 SIMPLE STEPS</h2>
-          <p className="text-muted-foreground text-lg mb-8">Just <span className="font-display text-3xl text-gradient-gold">₹11/month</span> or ₹108/year</p>
+        <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-6">
+          {/* Notify Me */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+            className="glass-card rounded-2xl p-8 text-center border border-primary/20">
+            <Rocket className="h-10 w-10 text-primary mx-auto mb-4" />
+            <h3 className="font-display text-2xl text-gradient-gold mb-2">GET NOTIFIED</h3>
+            <p className="text-muted-foreground text-sm mb-6">Be the first to know when Premium launches. Message us on WhatsApp to join the waitlist.</p>
+            <a href={waLink} target="_blank" rel="noopener noreferrer">
+              <Button className="w-full bg-[#25D366] hover:bg-[#1DAA54] text-white font-bold tracking-wider">
+                <MessageCircle className="h-4 w-4 mr-2" /> Join Waitlist →
+              </Button>
+            </a>
+          </motion.div>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
-            {[
-              { num: "1", text: "Click WhatsApp button below" },
-              { num: "2", text: "Send your email + payment screenshot" },
-              { num: "3", text: "Premium activated within 10 minutes" },
-            ].map((step, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="glass-card rounded-lg p-4 text-center min-w-[160px]">
-                  <span className="font-display text-3xl text-gradient-gold block">{step.num}</span>
-                  <span className="text-xs text-muted-foreground">{step.text}</span>
-                </div>
-                {i < 2 && <span className="text-primary/30 hidden md:block text-xl">→</span>}
-              </div>
-            ))}
-          </div>
+          {/* Custom Plan */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
+            className="glass-card rounded-2xl p-8 text-center border border-border">
+            <Crown className="h-10 w-10 text-primary mx-auto mb-4" />
+            <h3 className="font-display text-2xl mb-2">CUSTOM PLAN</h3>
+            <p className="text-muted-foreground text-sm mb-6">Need something specific? Custom coaching, bulk pricing for institutes, or special requirements? Let's talk.</p>
+            <a href={customWaLink} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" className="w-full border-gold text-primary font-bold tracking-wider">
+                <MessageCircle className="h-4 w-4 mr-2" /> Discuss Custom Plan →
+              </Button>
+            </a>
+          </motion.div>
+        </div>
+      </section>
 
-          <a href={waLink} target="_blank" rel="noopener noreferrer">
-            <Button size="lg" className="bg-[#25D366] hover:bg-[#1DAA54] text-white font-bold tracking-wider text-lg px-10 py-6">
-              <MessageCircle className="h-5 w-5 mr-2" /> Message on WhatsApp →
-            </Button>
-          </a>
-          <p className="font-mono text-[10px] text-muted-foreground tracking-wider mt-4">
-            UPI / PAYTM / BANK TRANSFER ACCEPTED<br />INSTANT ACTIVATION • CANCEL ANYTIME
+      {/* Bottom note */}
+      <section className="pb-16 px-6 text-center">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}>
+          <p className="font-mono text-[9px] text-muted-foreground/50 tracking-[4px] uppercase">
+            ALL CURRENT FEATURES ARE 100% FREE • PREMIUM IS OPTIONAL • NO HIDDEN CHARGES
           </p>
         </motion.div>
       </section>
