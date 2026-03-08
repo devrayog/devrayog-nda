@@ -32,6 +32,7 @@ import Feedback from "@/pages/Feedback";
 import GirlsNDA from "@/pages/GirlsNDA";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import Achievements from "@/pages/Achievements";
+import DiagnosticTest from "@/pages/DiagnosticTest";
 
 // Study
 import MathsHub from "@/pages/study/MathsHub";
