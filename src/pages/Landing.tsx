@@ -3,9 +3,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Brain, Shield, Globe, BarChart3, ArrowRight, Swords, Target, Users } from "lucide-react";
+import { Brain, Shield, Globe, BarChart3, ArrowRight, Swords, Target, Users, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import { Suspense, lazy } from "react";
+import { AuroraFlow, TiltCard, FloatingParticles, GlassShimmer } from "@/components/ModernAnimations";
 const ShieldGlobe = lazy(() => import("@/components/3d/ShieldGlobe"));
 const MilitaryParticles = lazy(() => import("@/components/3d/MilitaryParticles"));
 const FloatingBadge = lazy(() => import("@/components/3d/FloatingBadge"));
@@ -37,6 +38,7 @@ export default function Landing() {
 
       {/* Hero with 3D particles background */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+        <AuroraFlow />
         <div className="absolute inset-0">
           <img src={HERO_BG} alt="NDA Campus" className="w-full h-full object-cover opacity-15" loading="eager" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
@@ -123,6 +125,7 @@ export default function Landing() {
 
       {/* Features with 3D badge */}
       <section className="py-20 relative">
+        <FloatingParticles count={20} />
         <div className="container mx-auto px-6">
           <motion.h2
             initial="hidden" whileInView="visible" viewport={{ once: true }}
@@ -138,16 +141,18 @@ export default function Landing() {
               <FloatingBadge className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 opacity-20 pointer-events-none hidden lg:block" />
             </Suspense>
             {features.map((f, i) => (
-              <motion.div
-                key={i}
-                initial="hidden" whileInView="visible" viewport={{ once: true }}
-                variants={fadeUp} custom={i}
-                className="glass-card rounded-xl p-8 hover:scale-[1.02] transition-transform"
-              >
-                <f.icon className={`h-10 w-10 ${f.color} mb-4`} />
-                <h3 className="font-display text-2xl mb-2">{f.title}</h3>
-                <p className="text-muted-foreground font-medium leading-relaxed">{f.desc}</p>
-              </motion.div>
+              <TiltCard key={i} className="cursor-default">
+                <motion.div
+                  initial="hidden" whileInView="visible" viewport={{ once: true }}
+                  variants={fadeUp} custom={i}
+                  className="glass-card rounded-xl p-8 hover:scale-[1.02] transition-transform relative overflow-hidden"
+                >
+                  <GlassShimmer />
+                  <f.icon className={`h-10 w-10 ${f.color} mb-4 relative z-10`} />
+                  <h3 className="font-display text-2xl mb-2 relative z-10">{f.title}</h3>
+                  <p className="text-muted-foreground font-medium leading-relaxed relative z-10">{f.desc}</p>
+                </motion.div>
+              </TiltCard>
             ))}
           </div>
         </div>

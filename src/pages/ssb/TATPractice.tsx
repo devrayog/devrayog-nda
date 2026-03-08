@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef, useCallback } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,13 +13,20 @@ interface SSBItem { id: string; image_url: string | null; content_text: string |
 type Phase = "list" | "rules" | "photo" | "writing" | "done";
 
 export default function TATPractice() {
-  const navigate = useNavigate();
   const [sets, setSets] = useState<SSBSet[]>([]);
   const [items, setItems] = useState<SSBItem[]>([]);
   const [phase, setPhase] = useState<Phase>("list");
   const [currentIdx, setCurrentIdx] = useState(0);
   const [timer, setTimer] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const phaseRef = useRef<Phase>("list");
+  const idxRef = useRef(0);
+  const itemsRef = useRef<SSBItem[]>([]);
+
+  // Keep refs in sync
+  useEffect(() => { phaseRef.current = phase; }, [phase]);
+  useEffect(() => { idxRef.current = currentIdx; }, [currentIdx]);
+  useEffect(() => { itemsRef.current = items; }, [items]);
 
   useEffect(() => {
     supabase.from("ssb_sets").select("id, title").eq("type", "tat").eq("is_active", true)
@@ -28,33 +34,60 @@ export default function TATPractice() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
 
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  const startWritingPhase = useCallback((idx: number) => {
+    clearTimer();
+    setPhase("writing");
+    setTimer(240);
+    timerRef.current = setInterval(() => {
+      setTimer(prev => {
+        if (prev <= 1) {
+          clearTimer();
+          // Move to next photo
+          const nextIdx = idx + 1;
+          if (nextIdx >= itemsRef.current.length) {
+            setPhase("done");
+          } else {
+            startPhotoPhase(nextIdx);
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, [clearTimer]);
+
+  const startPhotoPhase = useCallback((idx: number) => {
+    clearTimer();
+    setCurrentIdx(idx);
+    setPhase("photo");
+    setTimer(30);
+    timerRef.current = setInterval(() => {
+      setTimer(prev => {
+        if (prev <= 1) {
+          clearTimer();
+          // Transition to writing phase
+          setTimeout(() => startWritingPhase(idx), 100);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, [clearTimer, startWritingPhase]);
+
   const startSet = async (set: SSBSet) => {
     const { data } = await supabase.from("ssb_set_items").select("*").eq("set_id", set.id).order("sort_order");
     const sorted = (data as SSBItem[]) || [];
     setItems(sorted);
+    itemsRef.current = sorted;
     setCurrentIdx(0);
     setPhase("rules");
-  };
-
-  const startTimer = (seconds: number, onEnd: () => void) => {
-    setTimer(seconds);
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setTimer(t => {
-        if (t <= 1) { clearInterval(timerRef.current!); onEnd(); return 0; }
-        return t - 1;
-      });
-    }, 1000);
-  };
-
-  const showNextPhoto = (idx: number) => {
-    if (idx >= items.length) { setPhase("done"); return; }
-    setCurrentIdx(idx);
-    setPhase("photo");
-    startTimer(30, () => {
-      setPhase("writing");
-      startTimer(240, () => showNextPhoto(idx + 1));
-    });
   };
 
   const fmtTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -100,7 +133,7 @@ export default function TATPractice() {
               <p>5. No AI analysis — this simulates the real TAT experience.</p>
             </div>
             <DialogFooter>
-              <Button onClick={() => showNextPhoto(0)} className="bg-gradient-gold text-primary-foreground font-bold w-full">
+              <Button onClick={() => startPhotoPhase(0)} className="bg-gradient-gold text-primary-foreground font-bold w-full">
                 I Agree — Start TAT
               </Button>
             </DialogFooter>
@@ -162,7 +195,7 @@ export default function TATPractice() {
                 </div>
                 <h2 className="font-display text-2xl text-gradient-gold">TAT COMPLETE!</h2>
                 <p className="text-muted-foreground text-sm">You've completed all {items.length} TAT stories. Great practice!</p>
-                <Button onClick={() => { setPhase("list"); setItems([]); }} className="bg-gradient-gold text-primary-foreground font-bold">
+                <Button onClick={() => { clearTimer(); setPhase("list"); setItems([]); }} className="bg-gradient-gold text-primary-foreground font-bold">
                   Practice Another Set
                 </Button>
               </CardContent>

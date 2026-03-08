@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import SplashScreen from "@/components/SplashScreen";
+import { SpotlightGlow, NoiseOverlay } from "@/components/ModernAnimations";
 
 // Pages
 import Landing from "@/pages/Landing";
@@ -90,6 +93,7 @@ import AdminFAQ from "@/pages/admin/AdminFAQ";
 import AdminSSB from "@/pages/admin/AdminSSB";
 import AdminSuccessStories from "@/pages/admin/AdminSuccessStories";
 import QuestionBank from "@/pages/QuestionBank";
+import Premium from "@/pages/Premium";
 
 const queryClient = new QueryClient();
 
@@ -109,6 +113,7 @@ function AppRoutes() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/premium" element={<Premium />} />
 
       {/* Protected — Core */}
       <Route path="/diagnostic" element={<ProtectedRoute><DiagnosticTest /></ProtectedRoute>} />
@@ -198,6 +203,25 @@ function AppRoutes() {
   );
 }
 
+function AppWithSplash() {
+  const [splashDone, setSplashDone] = useState(false);
+  const hasSeenSplash = sessionStorage.getItem("splash_seen");
+
+  if (!hasSeenSplash && !splashDone) {
+    return <SplashScreen onComplete={() => { sessionStorage.setItem("splash_seen", "1"); setSplashDone(true); }} />;
+  }
+
+  return (
+    <>
+      <SpotlightGlow />
+      <NoiseOverlay />
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
@@ -206,9 +230,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
-              <AppRoutes />
-            </BrowserRouter>
+            <AppWithSplash />
           </TooltipProvider>
         </AuthProvider>
       </LanguageProvider>

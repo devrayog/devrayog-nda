@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://devrayog-nda.lovable.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/login</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/signup</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/premium</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/dashboard</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/study/maths</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/study/gat</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/study/english</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/tests</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/ssb</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/ssb/ppdt</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/ssb/tat</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/ssb/wat</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/ssb/srt</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/ssb/sdt</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/current-affairs</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/pyq</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/community</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/fitness</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/resources</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/faq</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/leaderboard</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/girls</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://devrayog-nda.lovable.app/success-stories</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+</urlset>
