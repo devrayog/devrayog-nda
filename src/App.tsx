@@ -56,12 +56,21 @@ import PersonalityTips from "@/pages/ssb/PersonalityTips";
 
 // Community
 import Community from "@/pages/community/Community";
+import MentorConnect from "@/pages/community/MentorConnect";
+import StudyPartner from "@/pages/community/StudyPartner";
+import SuccessStories from "@/pages/community/SuccessStories";
 
 // Fitness
 import FitnessPlan from "@/pages/fitness/FitnessPlan";
+import RunningTracker from "@/pages/fitness/RunningTracker";
+import MedicalStandards from "@/pages/fitness/MedicalStandards";
 
 // Resources
 import Resources from "@/pages/resources/Resources";
+import RecommendedBooks from "@/pages/resources/RecommendedBooks";
+import VideoLectures from "@/pages/resources/VideoLectures";
+import DownloadsPage from "@/pages/resources/Downloads";
+import FAQPage from "@/pages/resources/FAQ";
 
 // Admin
 import AdminDashboard from "@/pages/admin/AdminDashboard";
@@ -141,21 +150,21 @@ function AppRoutes() {
 
       {/* Protected — Community */}
       <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-      <Route path="/mentors" element={<ProtectedRoute><PlaceholderPage title="MENTOR CONNECT" description="Connect with NDA-cleared officers for guidance." /></ProtectedRoute>} />
-      <Route path="/study-partner" element={<ProtectedRoute><PlaceholderPage title="STUDY PARTNER" description="Find accountability partners by state and attempt." /></ProtectedRoute>} />
-      <Route path="/success-stories" element={<ProtectedRoute><PlaceholderPage title="SUCCESS STORIES" description="Real NDA selection stories and strategies that worked." /></ProtectedRoute>} />
+      <Route path="/mentors" element={<ProtectedRoute><MentorConnect /></ProtectedRoute>} />
+      <Route path="/study-partner" element={<ProtectedRoute><StudyPartner /></ProtectedRoute>} />
+      <Route path="/success-stories" element={<ProtectedRoute><SuccessStories /></ProtectedRoute>} />
 
       {/* Protected — Fitness */}
       <Route path="/fitness" element={<ProtectedRoute><FitnessPlan /></ProtectedRoute>} />
-      <Route path="/fitness/running" element={<ProtectedRoute><PlaceholderPage title="RUNNING TRACKER" description="Log your daily runs and track improvement." /></ProtectedRoute>} />
-      <Route path="/fitness/medical" element={<ProtectedRoute><PlaceholderPage title="MEDICAL STANDARDS" description="Height, weight, eyesight requirements for NDA." /></ProtectedRoute>} />
+      <Route path="/fitness/running" element={<ProtectedRoute><RunningTracker /></ProtectedRoute>} />
+      <Route path="/fitness/medical" element={<ProtectedRoute><MedicalStandards /></ProtectedRoute>} />
 
       {/* Protected — Resources */}
       <Route path="/resources" element={<ProtectedRoute><Resources /></ProtectedRoute>} />
-      <Route path="/resources/books" element={<ProtectedRoute><PlaceholderPage title="RECOMMENDED BOOKS" description="AI-curated reading list for NDA preparation." /></ProtectedRoute>} />
-      <Route path="/resources/videos" element={<ProtectedRoute><PlaceholderPage title="VIDEO LECTURES" description="Curated video content for each subject." /></ProtectedRoute>} />
-      <Route path="/resources/downloads" element={<ProtectedRoute><PlaceholderPage title="DOWNLOADS" description="PDFs, formula sheets, and quick references." /></ProtectedRoute>} />
-      <Route path="/faq" element={<ProtectedRoute><PlaceholderPage title="FAQ" description="Frequently asked questions about NDA exam." /></ProtectedRoute>} />
+      <Route path="/resources/books" element={<ProtectedRoute><RecommendedBooks /></ProtectedRoute>} />
+      <Route path="/resources/videos" element={<ProtectedRoute><VideoLectures /></ProtectedRoute>} />
+      <Route path="/resources/downloads" element={<ProtectedRoute><DownloadsPage /></ProtectedRoute>} />
+      <Route path="/faq" element={<ProtectedRoute><FAQPage /></ProtectedRoute>} />
 
       {/* Protected — Girls Section */}
       <Route path="/girls" element={<ProtectedRoute><GirlsNDA /></ProtectedRoute>} />
