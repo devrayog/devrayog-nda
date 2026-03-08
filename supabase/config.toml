@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.ai-motivation]
 verify_jwt = false
+
+[functions.ai-image-gen]
+verify_jwt = false
