@@ -67,6 +67,7 @@ const ssbNav: NavItem[] = [
 
 const communityNav: NavItem[] = [
   { titleKey: "Community", icon: Users, href: "/community" },
+  { titleKey: "Live Chat", icon: MessageSquare, href: "/community/chat" },
   { titleKey: "Leaderboard", icon: Trophy, href: "/leaderboard" },
   { titleKey: "Mentors", icon: UserCircle, href: "/mentors" },
   { titleKey: "Study Partners", icon: Users, href: "/study-partner" },
