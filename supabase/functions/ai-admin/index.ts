@@ -6,6 +6,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Tools that READ data (no confirmation needed)
+const READ_ONLY_TOOLS = new Set(["web_search", "web_scrape", "get_platform_stats", "get_pending_feedback", "get_study_topics"]);
+
+// Tools that WRITE data (need confirmation)
+const WRITE_TOOLS = new Set(["add_topic_questions", "add_pyq_questions", "add_current_affairs", "add_resources", "add_faqs", "broadcast_notification"]);
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -17,7 +23,6 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) throw new Error("Supabase config missing");
 
-    // Verify admin
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Unauthorized");
     
@@ -28,17 +33,16 @@ serve(async (req) => {
     const { data: { user }, error: authErr } = await userClient.auth.getUser();
     if (authErr || !user) throw new Error("Unauthorized");
     
-    // Check admin role
     const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const { data: roleData } = await adminClient.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin");
     if (!roleData || roleData.length === 0) throw new Error("Admin access required");
 
-    const { messages, action } = await req.json();
+    const { messages, action, tools: pendingTools } = await req.json();
 
-    // If action is "execute_tools" — AI already decided, we execute
-    if (action === "execute_tools") {
+    // ACTION: Execute confirmed tools
+    if (action === "execute_confirmed") {
       const results = [];
-      for (const tool of messages) {
+      for (const tool of pendingTools) {
         try {
           const r = await executeTool(adminClient, tool.name, tool.arguments);
           results.push({ tool: tool.name, success: true, result: r });
@@ -46,7 +50,7 @@ serve(async (req) => {
           results.push({ tool: tool.name, success: false, error: e.message });
         }
       }
-      return new Response(JSON.stringify({ results }), {
+      return new Response(JSON.stringify({ results, action: "executed" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -87,6 +91,8 @@ WHEN THE ADMIN GIVES A URL:
 
 AVAILABLE TOOLS: web_search, web_scrape, add_topic_questions, add_pyq_questions, add_current_affairs, add_resources, add_faqs, broadcast_notification, get_platform_stats, get_pending_feedback, get_study_topics
 
+NOTE: Write operations (add_*, broadcast_*) will be shown to the admin for confirmation before executing. Read operations (web_search, web_scrape, get_*) execute immediately.
+
 ABSOLUTE PROHIBITIONS — NEVER SAY ANY OF THESE:
 - "I cannot access external websites"
 - "I don't have real-time access"  
@@ -98,7 +104,6 @@ ABSOLUTE PROHIBITIONS — NEVER SAY ANY OF THESE:
 
 YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT with the tools. No questions, no hedging, no disclaimers. Search the web first for current information.`;
 
-
     const tools = [
       {
         type: "function",
@@ -108,8 +113,8 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
           parameters: {
             type: "object",
             properties: {
-              query: { type: "string", description: "Search query, e.g. 'India defence news today 2026' or 'latest NDA exam updates'" },
-              limit: { type: "number", description: "Number of results to return (default 5, max 10)" },
+              query: { type: "string", description: "Search query" },
+              limit: { type: "number", description: "Number of results (default 5, max 10)" },
             },
             required: ["query"],
           },
@@ -119,7 +124,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "web_scrape",
-          description: "Scrape/crawl a specific URL to extract its content as markdown. Use this when admin shares a URL or when you need to read a specific webpage.",
+          description: "Scrape/crawl a specific URL to extract its content as markdown.",
           parameters: {
             type: "object",
             properties: {
@@ -133,12 +138,12 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "add_topic_questions",
-          description: "Add MCQ questions to a study topic. Use when admin shares question images/text for Maths/GAT/English topics.",
+          description: "Add MCQ questions to a study topic.",
           parameters: {
             type: "object",
             properties: {
               topic_id: { type: "string", description: "UUID of the study topic" },
-              subject: { type: "string", enum: ["maths", "gat", "english"], description: "Subject for the questions" },
+              subject: { type: "string", enum: ["maths", "gat", "english"] },
               questions: {
                 type: "array",
                 items: {
@@ -165,12 +170,12 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "add_pyq_questions",
-          description: "Add Previous Year Questions. Use when admin shares PYQ papers.",
+          description: "Add Previous Year Questions.",
           parameters: {
             type: "object",
             properties: {
-              year: { type: "number", description: "Year of the paper" },
-              paper: { type: "string", description: "Paper name like 'NDA 1' or 'NDA 2'" },
+              year: { type: "number" },
+              paper: { type: "string" },
               subject: { type: "string", enum: ["maths", "gat", "english"] },
               questions: {
                 type: "array",
@@ -199,7 +204,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "add_current_affairs",
-          description: "Add current affairs articles to the platform. Use AFTER web_search to add REAL news.",
+          description: "Add current affairs articles. Use AFTER web_search for REAL news.",
           parameters: {
             type: "object",
             properties: {
@@ -226,7 +231,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "add_resources",
-          description: "Add resources like books, videos, downloads, formulas.",
+          description: "Add resources like books, videos, downloads.",
           parameters: {
             type: "object",
             properties: {
@@ -295,7 +300,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "get_platform_stats",
-          description: "Get current platform statistics — user count, tests, feedback, etc.",
+          description: "Get current platform statistics.",
           parameters: { type: "object", properties: {}, required: [] },
         },
       },
@@ -311,7 +316,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "get_study_topics",
-          description: "List all study topics with their IDs. Use before adding questions to find the right topic_id.",
+          description: "List all study topics with their IDs.",
           parameters: {
             type: "object",
             properties: { subject: { type: "string", enum: ["maths", "gat", "english"] } },
@@ -321,7 +326,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
       },
     ];
 
-    // First AI call
+    // Build AI messages
     const aiMessages: any[] = [{ role: "system", content: systemPrompt }];
     for (const msg of messages) {
       if (msg.imageUrl) {
@@ -337,9 +342,10 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
       }
     }
 
-    // Support multiple rounds of tool calls (search → then add content)
+    // Multi-round tool calling
     let currentMessages = [...aiMessages];
     let allToolsExecuted: string[] = [];
+    let pendingWriteTools: any[] = [];
     let maxRounds = 3;
 
     for (let round = 0; round < maxRounds; round++) {
@@ -372,48 +378,96 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
       const choice = aiData.choices?.[0];
       if (!choice) throw new Error("No AI response");
 
-      // If AI wants to call tools
       if (choice.finish_reason === "tool_calls" || choice.message?.tool_calls) {
         const toolCalls = choice.message.tool_calls || [];
         const toolResults: any[] = [];
+        let hasWriteTools = false;
 
         for (const tc of toolCalls) {
           const args = JSON.parse(tc.function.arguments);
-          try {
-            const result = await executeTool(adminClient, tc.function.name, args);
+          const toolName = tc.function.name;
+
+          if (READ_ONLY_TOOLS.has(toolName)) {
+            // Execute read tools immediately
+            try {
+              const result = await executeTool(adminClient, toolName, args);
+              toolResults.push({
+                role: "tool",
+                tool_call_id: tc.id,
+                content: JSON.stringify(result),
+              });
+              allToolsExecuted.push(toolName);
+            } catch (e) {
+              toolResults.push({
+                role: "tool",
+                tool_call_id: tc.id,
+                content: JSON.stringify({ error: e.message }),
+              });
+              allToolsExecuted.push(toolName);
+            }
+          } else if (WRITE_TOOLS.has(toolName)) {
+            // Queue write tools for confirmation
+            pendingWriteTools.push({
+              id: tc.id,
+              name: toolName,
+              arguments: args,
+            });
+            // Return a fake "pending" result so AI can continue
             toolResults.push({
               role: "tool",
               tool_call_id: tc.id,
-              content: JSON.stringify(result),
+              content: JSON.stringify({ status: "pending_confirmation", message: `${toolName} queued for admin confirmation` }),
             });
-            allToolsExecuted.push(tc.function.name);
-          } catch (e) {
-            toolResults.push({
-              role: "tool",
-              tool_call_id: tc.id,
-              content: JSON.stringify({ error: e.message }),
-            });
-            allToolsExecuted.push(tc.function.name);
+            hasWriteTools = true;
           }
         }
 
-        // Add assistant message + tool results for next round
         currentMessages.push(choice.message);
         currentMessages.push(...toolResults);
-        // Continue loop to let AI process tool results and potentially call more tools
+
+        // If we have write tools pending, break out to return them for confirmation
+        if (hasWriteTools) {
+          // Get AI's summary of what it wants to do
+          const summaryResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${LOVABLE_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "google/gemini-2.5-flash",
+              messages: [...currentMessages, {
+                role: "user",
+                content: "Summarize what changes you're about to make to the database. Be specific about counts and types of content. Keep it brief."
+              }],
+            }),
+          });
+          const summaryData = await summaryResponse.json();
+          const summary = summaryData.choices?.[0]?.message?.content || "Database changes pending.";
+
+          return new Response(JSON.stringify({
+            content: summary,
+            pending_tools: pendingWriteTools,
+            tools_executed: allToolsExecuted.length > 0 ? allToolsExecuted : undefined,
+            requires_confirmation: true,
+          }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
         continue;
       }
 
-      // Regular text response (no more tool calls) — we're done
+      // Regular text response
       return new Response(JSON.stringify({
-        content: choice.message?.content || "Done! Actions executed.",
+        content: choice.message?.content || "Done!",
         tools_executed: allToolsExecuted.length > 0 ? allToolsExecuted : undefined,
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // If we exhausted rounds, get final response
+    // Exhausted rounds
     const finalResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -427,11 +481,13 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
     });
 
     const finalData = await finalResponse.json();
-    const finalContent = finalData.choices?.[0]?.message?.content || "Done! All actions completed.";
+    const finalContent = finalData.choices?.[0]?.message?.content || "Done!";
 
     return new Response(JSON.stringify({
       content: finalContent,
       tools_executed: allToolsExecuted.length > 0 ? allToolsExecuted : undefined,
+      pending_tools: pendingWriteTools.length > 0 ? pendingWriteTools : undefined,
+      requires_confirmation: pendingWriteTools.length > 0,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -447,12 +503,10 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
 
 async function executeTool(client: any, name: string, args: any): Promise<any> {
   switch (name) {
-    // ===== WEB TOOLS =====
     case "web_search": {
       const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
-      if (!apiKey) throw new Error("Firecrawl not configured — web search unavailable");
+      if (!apiKey) throw new Error("Firecrawl not configured");
 
-      console.log("Web search:", args.query);
       const response = await fetch("https://api.firecrawl.dev/v1/search", {
         method: "POST",
         headers: {
@@ -467,18 +521,14 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
       });
 
       const data = await response.json();
-      if (!response.ok) {
-        console.error("Firecrawl search error:", data);
-        throw new Error(data.error || `Search failed: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(data.error || `Search failed: ${response.status}`);
 
-      // Format results for AI consumption
       const results = (data.data || []).map((r: any, i: number) => ({
         index: i + 1,
         title: r.title || "Untitled",
         url: r.url || "",
         description: r.description || "",
-        content: (r.markdown || "").slice(0, 3000), // Limit content size
+        content: (r.markdown || "").slice(0, 3000),
       }));
 
       return { results, total: results.length, query: args.query };
@@ -486,49 +536,38 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
 
     case "web_scrape": {
       const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
-      if (!apiKey) throw new Error("Firecrawl not configured — web scrape unavailable");
+      if (!apiKey) throw new Error("Firecrawl not configured");
 
       let url = args.url.trim();
-      if (!url.startsWith("http://") && !url.startsWith("https://")) {
-        url = `https://${url}`;
-      }
+      if (!url.startsWith("http://") && !url.startsWith("https://")) url = `https://${url}`;
 
-      console.log("Web scrape:", url);
       const response = await fetch("https://api.firecrawl.dev/v1/scrape", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          url,
-          formats: ["markdown"],
-          onlyMainContent: true,
-        }),
+        body: JSON.stringify({ url, formats: ["markdown"], onlyMainContent: true }),
       });
 
       const data = await response.json();
-      if (!response.ok) {
-        console.error("Firecrawl scrape error:", data);
-        throw new Error(data.error || `Scrape failed: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(data.error || `Scrape failed: ${response.status}`);
 
       const content = data.data?.markdown || data.markdown || "";
       return {
         url,
-        title: data.data?.metadata?.title || data.metadata?.title || "Untitled",
-        content: content.slice(0, 10000), // Limit to 10k chars
+        title: data.data?.metadata?.title || "Untitled",
+        content: content.slice(0, 10000),
       };
     }
 
-    // ===== DB TOOLS =====
     case "add_topic_questions": {
       let topicId = args.topic_id;
       if (!topicId && args.subject) {
         const { data: topics } = await client.from("study_topics").select("id").eq("subject", args.subject).limit(1);
         if (topics && topics.length > 0) topicId = topics[0].id;
       }
-      if (!topicId) return { error: "No topic found. Please specify a topic_id or create a topic first." };
+      if (!topicId) return { error: "No topic found." };
       
       const rows = args.questions.map((q: any) => ({
         topic_id: topicId,
@@ -544,23 +583,16 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
       }));
       const { data, error } = await client.from("topic_questions").insert(rows).select("id");
       if (error) throw new Error(error.message);
-      return { added: data?.length || 0, message: `Added ${data?.length} questions to topic` };
+      return { added: data?.length || 0, message: `Added ${data?.length} questions` };
     }
 
     case "add_pyq_questions": {
       const rows = args.questions.map((q: any) => ({
-        year: args.year,
-        paper: args.paper,
-        subject: args.subject,
-        question: q.question,
-        option_a: q.option_a,
-        option_b: q.option_b,
-        option_c: q.option_c,
-        option_d: q.option_d,
-        correct_option: q.correct_option || "a",
-        topic: q.topic || "",
-        difficulty: q.difficulty || "medium",
-        explanation: q.explanation || "",
+        year: args.year, paper: args.paper, subject: args.subject,
+        question: q.question, option_a: q.option_a, option_b: q.option_b,
+        option_c: q.option_c, option_d: q.option_d,
+        correct_option: q.correct_option || "a", topic: q.topic || "",
+        difficulty: q.difficulty || "medium", explanation: q.explanation || "",
         is_active: true,
       }));
       const { data, error } = await client.from("pyq_questions").insert(rows).select("id");
@@ -570,27 +602,19 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
 
     case "add_current_affairs": {
       const rows = args.articles.map((a: any) => ({
-        title: a.title,
-        body: a.body || "",
-        category: a.category || "national",
-        link: a.link || null,
-        is_featured: a.is_featured || false,
-        is_active: true,
+        title: a.title, body: a.body || "", category: a.category || "national",
+        link: a.link || null, is_featured: a.is_featured || false, is_active: true,
       }));
       const { data, error } = await client.from("current_affairs").insert(rows).select("id");
       if (error) throw new Error(error.message);
-      return { added: data?.length || 0, message: `Added ${data?.length} current affairs articles` };
+      return { added: data?.length || 0, message: `Added ${data?.length} articles` };
     }
 
     case "add_resources": {
       const rows = args.resources.map((r: any) => ({
-        title: r.title,
-        type: r.type || "book",
-        body: r.body || "",
-        category: r.category || "general",
-        link: r.link || "",
-        image_url: r.image_url || null,
-        is_active: true,
+        title: r.title, type: r.type || "book", body: r.body || "",
+        category: r.category || "general", link: r.link || "",
+        image_url: r.image_url || null, is_active: true,
       }));
       const { data, error } = await client.from("resources").insert(rows).select("id");
       if (error) throw new Error(error.message);
@@ -599,10 +623,7 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
 
     case "add_faqs": {
       const rows = args.faqs.map((f: any) => ({
-        question: f.question,
-        answer: f.answer,
-        category: f.category || "general",
-        is_active: true,
+        question: f.question, answer: f.answer, category: f.category || "general", is_active: true,
       }));
       const { data, error } = await client.from("faqs").insert(rows).select("id");
       if (error) throw new Error(error.message);
@@ -612,20 +633,14 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
     case "broadcast_notification": {
       const { data: profiles } = await client.from("profiles").select("user_id");
       if (!profiles || profiles.length === 0) return { sent: 0 };
-      
       const rows = profiles.map((p: any) => ({
-        user_id: p.user_id,
-        title: args.title,
-        message: args.message,
-        type: args.type || "announcement",
-        read: false,
+        user_id: p.user_id, title: args.title, message: args.message,
+        type: args.type || "announcement", read: false,
       }));
-      
       let total = 0;
       for (let i = 0; i < rows.length; i += 100) {
         const batch = rows.slice(i, i + 100);
-        const { data, error } = await client.from("notifications").insert(batch);
-        if (error) console.error("Notification batch error:", error);
+        await client.from("notifications").insert(batch);
         total += batch.length;
       }
       return { sent: total, message: `Broadcast sent to ${total} users` };
@@ -639,19 +654,15 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
         client.from("chat_history").select("id", { count: "exact", head: true }),
       ]);
       return {
-        total_users: users.count || 0,
-        total_tests: tests.count || 0,
-        pending_feedback: fb.count || 0,
-        ai_chats: chats.count || 0,
+        total_users: users.count || 0, total_tests: tests.count || 0,
+        pending_feedback: fb.count || 0, ai_chats: chats.count || 0,
       };
     }
 
     case "get_pending_feedback": {
       const { data, error } = await client.from("feedback")
-        .select("*")
-        .eq("status", "pending")
-        .order("created_at", { ascending: false })
-        .limit(args.limit || 10);
+        .select("*").eq("status", "pending")
+        .order("created_at", { ascending: false }).limit(args.limit || 10);
       if (error) throw new Error(error.message);
       return { feedback: data, count: data?.length || 0 };
     }
