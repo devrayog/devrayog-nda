@@ -37,7 +37,39 @@ serve(async (req) => {
     const { data: roleData } = await adminClient.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin");
     if (!roleData || roleData.length === 0) throw new Error("Admin access required");
 
-    const { messages, action, tools: pendingTools } = await req.json();
+    const { messages, action, tools: pendingTools, url } = await req.json();
+
+    // ACTION: Extract file content (PDF, etc.) via Firecrawl
+    if (action === "extract_file") {
+      const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
+      if (!apiKey) {
+        return new Response(JSON.stringify({ error: "Firecrawl not configured", content: null }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      try {
+        const response = await fetch("https://api.firecrawl.dev/v1/scrape", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ url, formats: ["markdown"], onlyMainContent: true }),
+        });
+
+        const data = await response.json();
+        const content = data.data?.markdown || data.markdown || "";
+
+        return new Response(JSON.stringify({ content: content.slice(0, 50000) }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ error: e.message, content: null }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
 
     // ACTION: Execute confirmed tools
     if (action === "execute_confirmed") {
