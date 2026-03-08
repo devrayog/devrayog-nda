@@ -346,7 +346,7 @@ export default function AdminAI() {
             </Button>
           </div>
           <p className="text-[9px] text-muted-foreground mt-1 font-mono text-center">
-            ADMIN-ONLY • AUTO-EXECUTES DB OPERATIONS • UPLOAD IMAGES/PDFS FOR AUTO-EXTRACTION
+            ADMIN-ONLY • WEB SEARCH & CRAWL • AUTO-EXECUTES DB OPERATIONS • UPLOAD FILES
           </p>
         </div>
       </div>
