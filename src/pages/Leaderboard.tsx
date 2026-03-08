@@ -141,7 +141,7 @@ export default function Leaderboard() {
                         <CardContent className="p-4">
                           <div className="mb-2">{getRankIcon(rank)}</div>
                           <div className={`w-12 h-12 mx-auto rounded-full flex items-center justify-center font-display text-lg text-primary-foreground ${
-                            isFirst ? "bg-gradient-to-br from-yellow-400 to-amber-500 w-14 h-14" : "bg-gradient-gold"
+                            isFirst ? "bg-gradient-gold w-14 h-14" : "bg-gradient-gold"
                           }`}>
                             {e.avatar_url ? <img src={e.avatar_url} className="w-full h-full rounded-full object-cover" /> : (e.full_name || "C")[0].toUpperCase()}
                           </div>
