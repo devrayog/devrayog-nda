@@ -141,16 +141,18 @@ export default function Landing() {
               <FloatingBadge className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 opacity-20 pointer-events-none hidden lg:block" />
             </Suspense>
             {features.map((f, i) => (
-              <motion.div
-                key={i}
-                initial="hidden" whileInView="visible" viewport={{ once: true }}
-                variants={fadeUp} custom={i}
-                className="glass-card rounded-xl p-8 hover:scale-[1.02] transition-transform"
-              >
-                <f.icon className={`h-10 w-10 ${f.color} mb-4`} />
-                <h3 className="font-display text-2xl mb-2">{f.title}</h3>
-                <p className="text-muted-foreground font-medium leading-relaxed">{f.desc}</p>
-              </motion.div>
+              <TiltCard key={i} className="cursor-default">
+                <motion.div
+                  initial="hidden" whileInView="visible" viewport={{ once: true }}
+                  variants={fadeUp} custom={i}
+                  className="glass-card rounded-xl p-8 hover:scale-[1.02] transition-transform relative overflow-hidden"
+                >
+                  <GlassShimmer />
+                  <f.icon className={`h-10 w-10 ${f.color} mb-4 relative z-10`} />
+                  <h3 className="font-display text-2xl mb-2 relative z-10">{f.title}</h3>
+                  <p className="text-muted-foreground font-medium leading-relaxed relative z-10">{f.desc}</p>
+                </motion.div>
+              </TiltCard>
             ))}
           </div>
         </div>
