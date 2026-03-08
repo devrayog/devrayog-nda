@@ -298,6 +298,7 @@ export default function Signup() {
                     Continue with Google
                   </Button>
                 </div>
+              </div>
             )}
 
             {/* Step 2 */}
