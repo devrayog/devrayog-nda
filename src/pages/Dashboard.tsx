@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Brain, FileText, Target, Shield, Swords, BarChart3, Flame, Clock } from "lucide-react";
 import { motion } from "framer-motion";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import ExamCountdown from "@/components/ExamCountdown";
 import DailyMotivation from "@/components/DailyMotivation";
 import AchievementsSummary from "@/components/AchievementsSummary";
 import { useDNAScore } from "@/hooks/useDNAScore";
 import { useActivityTracker } from "@/hooks/useActivityTracker";
+import { useAchievementTracker } from "@/hooks/useAchievementTracker";
+import AchievementCelebration from "@/components/AchievementCelebration";
 
 const DNAHelix = lazy(() => import("@/components/3d/DNAHelix"));
 const OrbitingStar = lazy(() => import("@/components/3d/OrbitingStar"));
@@ -26,6 +28,10 @@ export default function Dashboard() {
   const { t } = useLanguage();
   const { score, breakdown } = useDNAScore();
   useActivityTracker();
+  const { checkAchievements, celebration, clearCelebration } = useAchievementTracker();
+
+  // Check achievements on mount
+  useEffect(() => { checkAchievements(); }, [checkAchievements]);
 
   const name = user?.user_metadata?.full_name || "Cadet";
   const attempt = user?.user_metadata?.attempt || "1st";
@@ -183,6 +189,7 @@ export default function Dashboard() {
           </div>
         </motion.div>
       </div>
+      <AchievementCelebration achievement={celebration} onClose={clearCelebration} />
     </DashboardLayout>
   );
 }

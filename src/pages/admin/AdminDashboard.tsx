@@ -84,6 +84,10 @@ export default function AdminDashboard() {
     { href: "/admin/faq", icon: HelpCircle, title: "FAQ Management", desc: "Add frequently asked questions", color: "text-warning" },
     { href: "/admin/ssb", icon: Shield, title: "SSB Sets", desc: "Manage PPDT/TAT/WAT/SRT/SDT sets", color: "text-accent" },
     { href: "/admin/success-stories", icon: Star, title: "Success Stories", desc: "Add real NDA selection stories", color: "text-success" },
+    { href: "/ssb/personality", icon: Users, title: "Personality Tips", desc: "Edit OLQ & communication tips", color: "text-cyan" },
+    { href: "/mentors", icon: Users, title: "Mentors", desc: "Add & manage mentor profiles", color: "text-primary" },
+    { href: "/tests", icon: FileText, title: "Mock Tests", desc: "Add admin mock test sets", color: "text-accent" },
+    { href: "/formulas", icon: BookOpen, title: "Formulas", desc: "Add formulas with categories", color: "text-warning" },
   ];
 
   return (
