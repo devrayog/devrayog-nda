@@ -125,6 +125,7 @@ export default function Landing() {
 
       {/* Features with 3D badge */}
       <section className="py-20 relative">
+        <FloatingParticles count={20} />
         <div className="container mx-auto px-6">
           <motion.h2
             initial="hidden" whileInView="visible" viewport={{ once: true }}
