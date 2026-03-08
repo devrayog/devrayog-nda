@@ -120,7 +120,7 @@ function AppRoutes() {
       <Route path="/tests/take/:testId" element={<ProtectedRoute><MockTestEngine /></ProtectedRoute>} />
       <Route path="/daily-challenge" element={<ProtectedRoute><DailyChallenge /></ProtectedRoute>} />
       <Route path="/error-log" element={<ProtectedRoute><ErrorLog /></ProtectedRoute>} />
-      <Route path="/question-bank" element={<ProtectedRoute><PlaceholderPage title="QUESTION BANK" description="Browse all questions by topic and difficulty level." /></ProtectedRoute>} />
+      <Route path="/question-bank" element={<ProtectedRoute><QuestionBank /></ProtectedRoute>} />
 
       {/* Protected — SSB */}
       <Route path="/ssb" element={<ProtectedRoute><SSBOverview /></ProtectedRoute>} />
