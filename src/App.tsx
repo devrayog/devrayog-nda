@@ -93,6 +93,7 @@ import AdminFAQ from "@/pages/admin/AdminFAQ";
 import AdminSSB from "@/pages/admin/AdminSSB";
 import AdminSuccessStories from "@/pages/admin/AdminSuccessStories";
 import QuestionBank from "@/pages/QuestionBank";
+import Premium from "@/pages/Premium";
 
 const queryClient = new QueryClient();
 
