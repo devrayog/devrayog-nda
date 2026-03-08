@@ -209,6 +209,54 @@ export type Database = {
         }
         Relationships: []
       }
+      error_log: {
+        Row: {
+          correct_answer: string
+          created_at: string
+          explanation: string | null
+          id: string
+          mastered: boolean | null
+          next_review_at: string | null
+          question: string
+          review_count: number | null
+          source: string | null
+          subject: string | null
+          topic: string | null
+          user_answer: string
+          user_id: string
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          mastered?: boolean | null
+          next_review_at?: string | null
+          question: string
+          review_count?: number | null
+          source?: string | null
+          subject?: string | null
+          topic?: string | null
+          user_answer: string
+          user_id: string
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          mastered?: boolean | null
+          next_review_at?: string | null
+          question?: string
+          review_count?: number | null
+          source?: string | null
+          subject?: string | null
+          topic?: string | null
+          user_answer?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           created_at: string
@@ -474,6 +522,60 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      pyq_questions: {
+        Row: {
+          correct_option: string
+          created_at: string
+          difficulty: string | null
+          explanation: string | null
+          id: string
+          is_active: boolean | null
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          paper: string
+          question: string
+          subject: string
+          topic: string | null
+          year: number
+        }
+        Insert: {
+          correct_option?: string
+          created_at?: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          is_active?: boolean | null
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          paper?: string
+          question: string
+          subject?: string
+          topic?: string | null
+          year: number
+        }
+        Update: {
+          correct_option?: string
+          created_at?: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          is_active?: boolean | null
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          paper?: string
+          question?: string
+          subject?: string
+          topic?: string | null
+          year?: number
         }
         Relationships: []
       }
