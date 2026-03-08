@@ -1,29 +1,25 @@
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Brain, Calculator, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.06, duration: 0.4 } }),
 };
 
-const TOPICS = [
-  { id: "algebra", name: "Algebra", sub: "Quadratic Equations, Sequences & Series, Complex Numbers", weight: "High", emoji: "📐" },
-  { id: "trigonometry", name: "Trigonometry", sub: "Identities, Heights & Distances, Inverse Trig", weight: "High", emoji: "📏" },
-  { id: "calculus", name: "Differential Calculus", sub: "Limits, Derivatives, Applications", weight: "Medium", emoji: "∫" },
-  { id: "integral-calculus", name: "Integral Calculus", sub: "Definite & Indefinite Integrals, Area", weight: "Medium", emoji: "∑" },
-  { id: "coordinate-geometry", name: "Coordinate Geometry", sub: "Straight Lines, Circles, Conics", weight: "High", emoji: "📊" },
-  { id: "vectors", name: "Vectors & 3D Geometry", sub: "Dot Product, Cross Product, Lines & Planes", weight: "Medium", emoji: "🎯" },
-  { id: "matrices", name: "Matrices & Determinants", sub: "Operations, Inverse, Cramer's Rule", weight: "Medium", emoji: "🔢" },
-  { id: "probability", name: "Probability & Statistics", sub: "Conditional Probability, Distributions, Mean/Variance", weight: "High", emoji: "🎲" },
-  { id: "sets", name: "Sets & Relations", sub: "Venn Diagrams, Functions, Binary Operations", weight: "Low", emoji: "🔗" },
-  { id: "number-system", name: "Number System", sub: "HCF/LCM, Divisibility, Remainders", weight: "Low", emoji: "🔣" },
-];
-
 export default function MathsHub() {
+  const [topics, setTopics] = useState<any[]>([]);
+
+  useEffect(() => {
+    supabase.from("study_topics").select("*").eq("subject", "maths").eq("is_active", true).order("sort_order")
+      .then(({ data }) => { if (data) setTopics(data); });
+  }, []);
+
   return (
     <DashboardLayout>
       <div className="p-6 max-w-5xl mx-auto space-y-6">
@@ -45,9 +41,9 @@ export default function MathsHub() {
         </motion.div>
 
         <div className="grid gap-3">
-          {TOPICS.map((topic, i) => (
+          {topics.map((topic, i) => (
             <motion.div key={topic.id} initial="hidden" animate="visible" variants={fadeUp} custom={i + 2}>
-              <Link to={`/study/topic/${topic.id}`}>
+              <Link to={`/study/topic/${topic.slug}`}>
                 <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
                   <CardContent className="p-4 flex items-center gap-4">
                     <div className="text-3xl">{topic.emoji}</div>
@@ -60,7 +56,7 @@ export default function MathsHub() {
                           "bg-muted text-muted-foreground"
                         }`}>{topic.weight} Weightage</span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-0.5">{topic.sub}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{topic.description}</p>
                     </div>
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   </CardContent>
