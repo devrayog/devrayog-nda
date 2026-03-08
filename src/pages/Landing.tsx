@@ -38,6 +38,7 @@ export default function Landing() {
 
       {/* Hero with 3D particles background */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+        <AuroraFlow />
         <div className="absolute inset-0">
           <img src={HERO_BG} alt="NDA Campus" className="w-full h-full object-cover opacity-15" loading="eager" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
