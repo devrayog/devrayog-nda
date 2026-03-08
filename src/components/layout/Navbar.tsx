@@ -109,6 +109,8 @@ export default function Navbar() {
             </Button>
           </div>
 
+          <Link to="/premium" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg bg-primary/10 border border-primary/20 text-center font-semibold text-primary">⭐ Premium</Link>
+
           {user ? (
             <>
               <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="p-3 rounded-lg bg-card border border-gold text-center font-semibold">{t("nav.dashboard")}</Link>
