@@ -8,15 +8,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
   Shield, Send, Bot, User, ImagePlus, Loader2, Lock, Sparkles,
-  Wrench, Plus, History, Trash2, Check, X, AlertTriangle,
+  Wrench, Plus, History, Trash2, Check, X, AlertTriangle, Eye, Edit3, FileText,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import {
-  AlertDialog, AlertDialogContent, AlertDialogHeader,
-  AlertDialogTitle, AlertDialogDescription, AlertDialogFooter,
-  AlertDialogAction, AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Message {
   role: "user" | "assistant";
@@ -73,6 +73,90 @@ const toolSummary = (tool: PendingTool) => {
   }
 };
 
+// Render a pretty preview of tool arguments
+const renderToolPreview = (tool: PendingTool) => {
+  const a = tool.arguments;
+  switch (tool.name) {
+    case "add_topic_questions":
+    case "add_pyq_questions": {
+      const questions = a.questions || [];
+      return (
+        <div className="space-y-3">
+          {a.subject && <p className="text-xs text-muted-foreground">Subject: <strong>{a.subject}</strong></p>}
+          {a.year && <p className="text-xs text-muted-foreground">Paper: {a.paper} {a.year}</p>}
+          {questions.map((q: any, i: number) => (
+            <div key={i} className="p-3 rounded-lg bg-muted/30 border border-border/30 space-y-1">
+              <p className="text-sm font-medium">Q{i + 1}: {q.question}</p>
+              <div className="grid grid-cols-2 gap-1 text-xs">
+                {["a", "b", "c", "d"].map(opt => (
+                  <p key={opt} className={`px-2 py-1 rounded ${q.correct_option === opt ? "bg-green-500/20 text-green-700 dark:text-green-400 font-medium" : "text-muted-foreground"}`}>
+                    {opt.toUpperCase()}) {q[`option_${opt}`]}
+                  </p>
+                ))}
+              </div>
+              {q.explanation && <p className="text-[11px] text-muted-foreground italic">💡 {q.explanation}</p>}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    case "add_current_affairs": {
+      const articles = a.articles || [];
+      return (
+        <div className="space-y-3">
+          {articles.map((art: any, i: number) => (
+            <div key={i} className="p-3 rounded-lg bg-muted/30 border border-border/30 space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary uppercase font-mono">{art.category}</span>
+                {art.is_featured && <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-600">⭐ Featured</span>}
+              </div>
+              <p className="text-sm font-medium">{art.title}</p>
+              <p className="text-xs text-muted-foreground line-clamp-3">{art.body}</p>
+              {art.link && <p className="text-[10px] text-primary truncate">🔗 {art.link}</p>}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    case "add_resources": {
+      const resources = a.resources || [];
+      return (
+        <div className="space-y-2">
+          {resources.map((r: any, i: number) => (
+            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/30">
+              <p className="text-sm font-medium">{r.title}</p>
+              <p className="text-xs text-muted-foreground">{r.type} • {r.category}</p>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    case "add_faqs": {
+      const faqs = a.faqs || [];
+      return (
+        <div className="space-y-2">
+          {faqs.map((f: any, i: number) => (
+            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/30">
+              <p className="text-sm font-medium">Q: {f.question}</p>
+              <p className="text-xs text-muted-foreground">A: {f.answer}</p>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    case "broadcast_notification":
+      return (
+        <div className="p-3 rounded-lg bg-muted/30 border border-border/30">
+          <p className="text-sm font-medium">📢 {a.title}</p>
+          <p className="text-xs text-muted-foreground">{a.message}</p>
+          <p className="text-[10px] text-muted-foreground mt-1">Type: {a.type || "announcement"}</p>
+        </div>
+      );
+    default:
+      return <pre className="text-xs overflow-auto">{JSON.stringify(a, null, 2)}</pre>;
+  }
+};
+
 export default function AdminAI() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -84,6 +168,7 @@ export default function AdminAI() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [fileText, setFileText] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [isExtractingPdf, setIsExtractingPdf] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const chatEnd = useRef<HTMLDivElement>(null);
 
@@ -95,7 +180,10 @@ export default function AdminAI() {
   // Confirmation dialog
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingTools, setPendingTools] = useState<PendingTool[]>([]);
+  const [editableTools, setEditableTools] = useState<PendingTool[]>([]);
   const [confirmSummary, setConfirmSummary] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [editJson, setEditJson] = useState<Record<string, string>>({});
 
   // ─── Admin check ───
   useEffect(() => {
@@ -169,7 +257,7 @@ export default function AdminAI() {
     chatEnd.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // ─── File upload ───
+  // ─── File upload with PDF extraction ───
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -187,11 +275,50 @@ export default function AdminAI() {
     const { data: urlData } = supabase.storage.from("ai-uploads").getPublicUrl(path);
     const isImage = file.type.startsWith("image/");
     const isText = ["txt", "csv", "json", "xml", "md"].includes(ext);
+    const isPdf = ext === "pdf";
+    const isDoc = ["doc", "docx", "ppt", "pptx", "xls", "xlsx"].includes(ext);
+
     if (isText) {
       const text = await file.text();
       setFileText(text.slice(0, 50000));
       setFileName(file.name);
       setImagePreview(null);
+    } else if (isPdf || isDoc) {
+      // Extract text from PDF/Doc using Firecrawl scrape on the public URL
+      setFileName(file.name);
+      setImagePreview(null);
+      setIsExtractingPdf(true);
+      toast({ title: "Extracting content...", description: `Reading ${file.name} via AI...` });
+
+      try {
+        const { data: session } = await supabase.auth.getSession();
+        const token = session?.session?.access_token;
+        const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-admin`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
+          body: JSON.stringify({
+            action: "extract_file",
+            url: urlData.publicUrl,
+          }),
+        });
+        const result = await res.json();
+        if (result.content) {
+          setFileText(result.content.slice(0, 50000));
+          toast({ title: "Content extracted!", description: `${result.content.length} characters from ${file.name}` });
+        } else {
+          // Fallback: just send URL
+          setFileText(`[PDF File: ${file.name}]\nURL: ${urlData.publicUrl}\n\n(Content extraction failed - AI will try to read via URL)`);
+          toast({ title: "Extraction partial", description: "AI will try to read the file via URL", variant: "destructive" });
+        }
+      } catch (err) {
+        setFileText(`[PDF File: ${file.name}]\nURL: ${urlData.publicUrl}\n\n(Content extraction failed)`);
+      } finally {
+        setIsExtractingPdf(false);
+      }
     } else {
       setImagePreview(isImage ? urlData.publicUrl : urlData.publicUrl);
       setFileText(null);
@@ -222,7 +349,7 @@ export default function AdminAI() {
 
   // ─── Send message ───
   const sendMessage = async () => {
-    if (!input.trim() && !imagePreview) return;
+    if (!input.trim() && !imagePreview && !fileText) return;
     let msgContent = input.trim() || "Analyze this file";
     if (fileText) msgContent += `\n\n--- FILE: ${fileName} ---\n${fileText}`;
     else if (fileName && !imagePreview?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i))
@@ -231,7 +358,7 @@ export default function AdminAI() {
     const userMsg: Message = {
       role: "user",
       content: msgContent,
-      imageUrl: imagePreview?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) ? imagePreview : undefined,
+      imageUrl: imagePreview?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) ? imagePreview ?? undefined : undefined,
     };
 
     const newMessages = [...messages, userMsg];
@@ -252,11 +379,12 @@ export default function AdminAI() {
       });
 
       if (data.requires_confirmation && data.pending_tools?.length > 0) {
-        // Show confirmation dialog
         setPendingTools(data.pending_tools);
+        setEditableTools(JSON.parse(JSON.stringify(data.pending_tools)));
         setConfirmSummary(data.content);
+        setEditMode(false);
+        setEditJson({});
         setConfirmOpen(true);
-        // Add assistant message showing what it wants to do
         const assistantMsg: Message = {
           role: "assistant",
           content: data.content + "\n\n⏳ **Awaiting your confirmation...**",
@@ -287,6 +415,31 @@ export default function AdminAI() {
     }
   };
 
+  // ─── Switch to edit mode ───
+  const enterEditMode = () => {
+    const jsonMap: Record<string, string> = {};
+    editableTools.forEach((tool, i) => {
+      jsonMap[`${i}`] = JSON.stringify(tool.arguments, null, 2);
+    });
+    setEditJson(jsonMap);
+    setEditMode(true);
+  };
+
+  // ─── Apply edits ───
+  const applyEdits = () => {
+    try {
+      const updated = editableTools.map((tool, i) => ({
+        ...tool,
+        arguments: JSON.parse(editJson[`${i}`] || JSON.stringify(tool.arguments)),
+      }));
+      setEditableTools(updated);
+      setEditMode(false);
+      toast({ title: "Edits applied", description: "Preview updated with your changes" });
+    } catch (err) {
+      toast({ title: "Invalid JSON", description: "Please fix the JSON syntax and try again", variant: "destructive" });
+    }
+  };
+
   // ─── Confirm execution ───
   const handleConfirm = async () => {
     setConfirmOpen(false);
@@ -294,7 +447,7 @@ export default function AdminAI() {
     try {
       const data = await callAdminAI({
         action: "execute_confirmed",
-        tools: pendingTools,
+        tools: editableTools,
         messages: [],
       });
 
@@ -305,12 +458,13 @@ export default function AdminAI() {
       const confirmMsg: Message = {
         role: "assistant",
         content: `### ✅ Changes Applied\n\n${resultText}`,
-        toolsExecuted: pendingTools.map(t => t.name),
+        toolsExecuted: editableTools.map(t => t.name),
       };
       const updatedMsgs = [...messages, confirmMsg];
       setMessages(updatedMsgs);
       await saveSession(updatedMsgs, currentSessionId || undefined);
       setPendingTools([]);
+      setEditableTools([]);
     } catch (e: any) {
       toast({ title: "Execution failed", description: e.message, variant: "destructive" });
       const errMsgs = [...messages, { role: "assistant" as const, content: `❌ Execution failed: ${e.message}` }];
@@ -324,6 +478,7 @@ export default function AdminAI() {
   const handleReject = () => {
     setConfirmOpen(false);
     setPendingTools([]);
+    setEditableTools([]);
     const rejectMsg: Message = {
       role: "assistant",
       content: "🚫 **Changes rejected.** No modifications were made to the database.",
@@ -392,7 +547,7 @@ export default function AdminAI() {
             <div>
               <h1 className="font-display text-xl text-gradient-gold">DNA ADMIN AI</h1>
               <p className="text-[10px] text-muted-foreground font-mono tracking-widest">
-                CONFIRMATION-GATED • WEB SEARCH • AUTO-PILOT
+                CONFIRMATION-GATED • WEB SEARCH • PDF READER • AUTO-PILOT
               </p>
             </div>
           </div>
@@ -456,14 +611,14 @@ export default function AdminAI() {
               <div>
                 <h2 className="font-display text-2xl text-gradient-gold mb-2">YOUR AI ADMIN ASSISTANT</h2>
                 <p className="text-muted-foreground text-sm max-w-md mx-auto">
-                  Web search, URL scraping, content creation — all with confirmation before any DB changes.
+                  Web search, URL scraping, PDF reading, content creation — all with confirmation & edit before any DB changes.
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
                 {[
-                  { icon: "🌐", label: "Add today's defence news", desc: "Web search → confirm → add" },
-                  { icon: "📝", label: "Generate 10 MCQs on Indian History", desc: "AI creates → you approve" },
-                  { icon: "🔗", label: "Scrape this URL for content", desc: "Crawl & extract data" },
+                  { icon: "🌐", label: "Add today's defence news", desc: "Web search → preview → approve" },
+                  { icon: "📝", label: "Generate 10 MCQs on Indian History", desc: "AI creates → edit → approve" },
+                  { icon: "📄", label: "Upload PDF & extract questions", desc: "Reads PDF content directly" },
                   { icon: "📊", label: "Show platform stats", desc: "Users, tests, feedback" },
                 ].map((hint, i) => (
                   <button
@@ -550,8 +705,15 @@ export default function AdminAI() {
                 <img src={imagePreview} alt="Preview" className="h-20 rounded-lg border border-border" />
               ) : (
                 <div className="h-20 px-4 rounded-lg border border-border bg-card flex items-center gap-2">
-                  <ImagePlus className="h-5 w-5 text-primary" />
-                  <span className="text-xs font-mono text-muted-foreground max-w-[200px] truncate">{fileName}</span>
+                  {isExtractingPdf ? (
+                    <Loader2 className="h-5 w-5 text-primary animate-spin" />
+                  ) : (
+                    <FileText className="h-5 w-5 text-primary" />
+                  )}
+                  <div>
+                    <span className="text-xs font-mono text-muted-foreground max-w-[200px] truncate block">{fileName}</span>
+                    {fileText && <span className="text-[10px] text-green-600">✓ Content extracted ({fileText.length} chars)</span>}
+                  </div>
                 </div>
               )}
               <button
@@ -572,65 +734,111 @@ export default function AdminAI() {
               accept="image/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls,.ppt,.pptx,.json,.xml,.md"
               className="hidden"
             />
-            <Button variant="outline" size="icon" onClick={() => fileRef.current?.click()} className="shrink-0" disabled={isLoading}>
+            <Button variant="outline" size="icon" onClick={() => fileRef.current?.click()} className="shrink-0" disabled={isLoading || isExtractingPdf}>
               <ImagePlus className="h-4 w-4" />
             </Button>
             <Textarea
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
-              placeholder="Ask anything... changes require your approval"
+              placeholder="Ask anything... upload PDFs, images — changes require your approval"
               className="min-h-[44px] max-h-32 resize-none"
               disabled={isLoading}
             />
-            <Button onClick={sendMessage} disabled={isLoading || (!input.trim() && !imagePreview && !fileText && !fileName)} className="shrink-0">
+            <Button onClick={sendMessage} disabled={isLoading || isExtractingPdf || (!input.trim() && !imagePreview && !fileText && !fileName)} className="shrink-0">
               <Send className="h-4 w-4" />
             </Button>
           </div>
           <p className="text-[9px] text-muted-foreground mt-1 font-mono text-center">
-            🔒 ALL DB WRITES REQUIRE CONFIRMATION • WEB SEARCH • CHAT HISTORY SAVED
+            🔒 ALL DB WRITES REQUIRE CONFIRMATION • 📄 PDF READER • 🌐 WEB SEARCH • CHAT HISTORY
           </p>
         </div>
       </div>
 
-      {/* Confirmation Dialog */}
-      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent className="max-w-lg">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
+      {/* Confirmation Dialog with Preview & Edit */}
+      <Dialog open={confirmOpen} onOpenChange={(open) => { if (!open) handleReject(); }}>
+        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-yellow-500" />
-              Confirm Database Changes
-            </AlertDialogTitle>
-            <AlertDialogDescription asChild>
-              <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">The AI wants to execute the following operations:</p>
-                <div className="space-y-2">
-                  {pendingTools.map((tool, i) => (
-                    <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-muted/50 border border-border/50">
-                      <Wrench className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-sm font-medium">{toolLabel(tool.name)}</p>
-                        <p className="text-xs text-muted-foreground">{toolSummary(tool)}</p>
+              Review & Confirm Changes
+            </DialogTitle>
+          </DialogHeader>
+
+          <Tabs defaultValue="preview" className="flex-1 min-h-0 flex flex-col">
+            <TabsList className="w-full">
+              <TabsTrigger value="preview" className="flex-1">
+                <Eye className="h-4 w-4 mr-1" /> Preview
+              </TabsTrigger>
+              <TabsTrigger value="edit" className="flex-1" onClick={() => { if (!editMode) enterEditMode(); }}>
+                <Edit3 className="h-4 w-4 mr-1" /> Edit JSON
+              </TabsTrigger>
+              <TabsTrigger value="summary" className="flex-1">
+                <FileText className="h-4 w-4 mr-1" /> Summary
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="preview" className="flex-1 min-h-0">
+              <ScrollArea className="h-[50vh]">
+                <div className="space-y-4 p-1">
+                  {editableTools.map((tool, i) => (
+                    <div key={i} className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Wrench className="h-4 w-4 text-primary shrink-0" />
+                        <p className="text-sm font-semibold">{toolLabel(tool.name)}</p>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+                          {toolSummary(tool)}
+                        </span>
                       </div>
+                      {renderToolPreview(tool)}
                     </div>
                   ))}
                 </div>
-                <div className="p-3 rounded-lg bg-card border border-border/50 text-sm">
+              </ScrollArea>
+            </TabsContent>
+
+            <TabsContent value="edit" className="flex-1 min-h-0">
+              <ScrollArea className="h-[50vh]">
+                <div className="space-y-4 p-1">
+                  {editableTools.map((tool, i) => (
+                    <div key={i} className="space-y-2">
+                      <p className="text-sm font-semibold flex items-center gap-2">
+                        <Wrench className="h-4 w-4 text-primary" />
+                        {toolLabel(tool.name)}
+                      </p>
+                      <Textarea
+                        value={editJson[`${i}`] || JSON.stringify(tool.arguments, null, 2)}
+                        onChange={e => setEditJson(prev => ({ ...prev, [`${i}`]: e.target.value }))}
+                        className="font-mono text-xs min-h-[200px] bg-muted/30"
+                      />
+                    </div>
+                  ))}
+                  <Button size="sm" onClick={applyEdits} className="w-full">
+                    <Check className="h-4 w-4 mr-1" /> Apply Edits & Update Preview
+                  </Button>
+                </div>
+              </ScrollArea>
+            </TabsContent>
+
+            <TabsContent value="summary" className="flex-1 min-h-0">
+              <ScrollArea className="h-[50vh]">
+                <div className="p-3 text-sm prose prose-sm dark:prose-invert max-w-none">
                   <ReactMarkdown>{confirmSummary}</ReactMarkdown>
                 </div>
-              </div>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleReject}>
+              </ScrollArea>
+            </TabsContent>
+          </Tabs>
+
+          <DialogFooter className="flex gap-2 pt-2 border-t border-border/50">
+            <Button variant="outline" onClick={handleReject} className="flex-1">
               <X className="h-4 w-4 mr-1" /> Reject
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirm} className="bg-green-600 hover:bg-green-700">
+            </Button>
+            <Button onClick={handleConfirm} className="flex-1 bg-green-600 hover:bg-green-700 text-white">
               <Check className="h-4 w-4 mr-1" /> Approve & Execute
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }
