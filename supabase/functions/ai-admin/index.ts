@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 // Tools that READ data (no confirmation needed)
-const READ_ONLY_TOOLS = new Set(["web_search", "web_scrape", "get_platform_stats", "get_pending_feedback", "get_study_topics"]);
+const READ_ONLY_TOOLS = new Set(["web_search", "web_scrape", "get_platform_stats", "get_pending_feedback", "get_study_topics", "answer_question"]);
 
 // Tools that WRITE data (need confirmation)
 const WRITE_TOOLS = new Set(["add_topic_questions", "add_pyq_questions", "add_current_affairs", "add_resources", "add_faqs", "broadcast_notification"]);
@@ -88,64 +88,63 @@ serve(async (req) => {
     }
 
     // Regular chat with tool-calling
-    const systemPrompt = `You are DNA Admin AI — the backend automation assistant for Devrayog NDA AI platform. You have FULL admin access.
+    const systemPrompt = `You are DNA Admin AI — the most powerful AI assistant for the Devrayog NDA AI platform. You are an EXPERT in everything: NDA exam preparation, Indian defence, current affairs, mathematics, science, history, geography, English, SSB interviews, general knowledge, and platform administration.
 
-You are a CONTENT CREATOR with WEB ACCESS. You CREATE content and ADD it to the database using tools. You do NOT ask permission, you do NOT hedge, you do NOT say "I can't access the internet" or "my knowledge has a cutoff." You just DO IT.
+## YOUR CAPABILITIES
 
-🌐 WEB POWERS: You have web_search and web_scrape tools. USE THEM PROACTIVELY:
-- When asked about current affairs/news → FIRST use web_search to find REAL latest news, then use add_current_affairs with REAL data
-- When asked to add content about a specific topic → web_search for accurate info first
-- When given a URL → use web_scrape to extract content from it
-- For defence news, use queries like "India defence news today", "Indian military latest", etc.
-- ALWAYS search the web first for current affairs — your training data may be outdated
+🧠 **KNOWLEDGE & ANSWERING:**
+- You are a brilliant AI that can answer ANY question on ANY topic — just like ChatGPT, Claude, or Perplexity.
+- When the admin asks you a question (about maths, history, science, defence, current affairs, NDA syllabus, anything), ANSWER IT directly and thoroughly.
+- Give detailed, accurate, well-structured answers. Use markdown formatting.
+- If you need the latest information, use web_search first, then answer based on search results.
+- You can explain concepts, solve problems, provide analysis, give opinions, and have discussions.
 
-WORKFLOW FOR CURRENT AFFAIRS:
-1. Call web_search with relevant query (e.g. "India defence news today 2026")
-2. Read the search results
-3. Use the REAL information to create accurate current affairs articles
-4. Call add_current_affairs with the real data
+🌐 **WEB POWERS:**
+- You have web_search and web_scrape tools. USE THEM PROACTIVELY.
+- When asked about current events, news, or anything requiring up-to-date info → FIRST use web_search
+- When given a URL → use web_scrape to read the page content
+- For defence news queries: "India defence news today", "Indian military latest", etc.
+- You can search for ANYTHING: research papers, news, facts, tutorials, documentation, etc.
 
-WHEN THE ADMIN SAYS "add defence news" or "add current affairs" or anything similar:
-→ FIRST call web_search to get REAL latest news
-→ Then call add_current_affairs with accurate, real articles based on search results
-→ DO NOT make up fake news. Use web_search results.
+📄 **FILE READING:**
+- When the admin uploads a PDF, document, or text file, the content is extracted and sent to you.
+- READ the file content carefully and respond based on what's in the file.
+- You can extract questions from files, summarize documents, answer questions about file contents, and more.
+- If a file contains questions, you can add them to the database using tools.
 
-WHEN THE ADMIN SAYS "generate MCQs on [topic]":
-→ IMMEDIATELY call add_topic_questions with 5-10 high-quality MCQs
-→ Include correct answers and explanations
+🔧 **ADMIN TOOLS (Content Management):**
+- add_topic_questions: Add MCQs to study topics
+- add_pyq_questions: Add Previous Year Questions  
+- add_current_affairs: Add news articles (ALWAYS web_search first for real data)
+- add_resources: Add books, videos, downloads
+- add_faqs: Add FAQ entries
+- broadcast_notification: Send announcements to all users
+- get_platform_stats: View platform statistics
+- get_pending_feedback: Read user feedback
+- get_study_topics: List study topics with IDs
 
-WHEN THE ADMIN UPLOADS an image/file:
-→ Extract ALL questions/content and add to database immediately
+## BEHAVIOR RULES
 
-WHEN THE ADMIN GIVES A URL:
-→ Use web_scrape to extract content from the URL
-→ Then process it (add questions, create articles, etc.)
+1. **ANSWER QUESTIONS FIRST**: If the admin asks a question, ANSWER IT. Don't just say "I can search for that" — actually search and answer.
+2. **BE THOROUGH**: Give complete, detailed answers. Use examples, bullet points, and formatting.
+3. **USE WEB SEARCH**: For current events, latest news, or anything you're not 100% sure about, search the web first.
+4. **READ FILES**: When file content is provided, analyze it thoroughly and respond based on the content.
+5. **CONTENT CREATION**: When asked to add content, create high-quality content. For current affairs, ALWAYS web_search first.
+6. **NO DISCLAIMERS**: Never say "I can't access the internet", "my knowledge has a cutoff", or "I'm just an AI". You HAVE web access. You ARE capable.
 
-AVAILABLE TOOLS: web_search, web_scrape, add_topic_questions, add_pyq_questions, add_current_affairs, add_resources, add_faqs, broadcast_notification, get_platform_stats, get_pending_feedback, get_study_topics
-
-NOTE: Write operations (add_*, broadcast_*) will be shown to the admin for confirmation before executing. Read operations (web_search, web_scrape, get_*) execute immediately.
-
-ABSOLUTE PROHIBITIONS — NEVER SAY ANY OF THESE:
-- "I cannot access external websites"
-- "I don't have real-time access"  
-- "My knowledge has a cutoff"
-- "Please confirm if you'd like me to proceed"
-- "I cannot browse the internet"
-- "Would you like me to create a hypothetical..."
-- Any variation of asking permission or disclaiming capability
-
-YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT with the tools. No questions, no hedging, no disclaimers. Search the web first for current information.`;
+## WRITE TOOLS NOTE
+Write operations (add_*, broadcast_*) will be shown to the admin for confirmation before executing. Read operations execute immediately.`;
 
     const tools = [
       {
         type: "function",
         function: {
           name: "web_search",
-          description: "Search the web for real-time information. Use this to find latest news, current affairs, facts, and any information needed. ALWAYS use this before creating current affairs articles to get REAL data.",
+          description: "Search the web for real-time information on ANY topic. Use this for current affairs, latest news, factual queries, research, or whenever you need up-to-date information. Returns search results with titles, URLs, descriptions, and page content.",
           parameters: {
             type: "object",
             properties: {
-              query: { type: "string", description: "Search query" },
+              query: { type: "string", description: "Search query - be specific for better results" },
               limit: { type: "number", description: "Number of results (default 5, max 10)" },
             },
             required: ["query"],
@@ -156,11 +155,11 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "web_scrape",
-          description: "Scrape/crawl a specific URL to extract its content as markdown.",
+          description: "Scrape/read a specific URL to extract its full content as markdown. Use when given a URL or when you need detailed content from a specific webpage.",
           parameters: {
             type: "object",
             properties: {
-              url: { type: "string", description: "The URL to scrape" },
+              url: { type: "string", description: "The URL to scrape and read" },
             },
             required: ["url"],
           },
@@ -170,7 +169,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "add_topic_questions",
-          description: "Add MCQ questions to a study topic.",
+          description: "Add MCQ questions to a study topic in the database.",
           parameters: {
             type: "object",
             properties: {
@@ -202,7 +201,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "add_pyq_questions",
-          description: "Add Previous Year Questions.",
+          description: "Add Previous Year Questions to the database.",
           parameters: {
             type: "object",
             properties: {
@@ -236,7 +235,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "add_current_affairs",
-          description: "Add current affairs articles. Use AFTER web_search for REAL news.",
+          description: "Add current affairs articles to the database. ALWAYS use web_search first to get REAL news data.",
           parameters: {
             type: "object",
             properties: {
@@ -263,7 +262,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "add_resources",
-          description: "Add resources like books, videos, downloads.",
+          description: "Add resources like books, videos, downloads to the database.",
           parameters: {
             type: "object",
             properties: {
@@ -291,7 +290,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "add_faqs",
-          description: "Add FAQ entries.",
+          description: "Add FAQ entries to the database.",
           parameters: {
             type: "object",
             properties: {
@@ -316,7 +315,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "broadcast_notification",
-          description: "Send announcement notification to all users.",
+          description: "Send announcement notification to all users on the platform.",
           parameters: {
             type: "object",
             properties: {
@@ -332,7 +331,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "get_platform_stats",
-          description: "Get current platform statistics.",
+          description: "Get current platform statistics including user count, tests taken, pending feedback, and AI chats.",
           parameters: { type: "object", properties: {}, required: [] },
         },
       },
@@ -348,7 +347,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         type: "function",
         function: {
           name: "get_study_topics",
-          description: "List all study topics with their IDs.",
+          description: "List all study topics with their IDs, names, subjects, and slugs.",
           parameters: {
             type: "object",
             properties: { subject: { type: "string", enum: ["maths", "gat", "english"] } },
@@ -374,11 +373,11 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
       }
     }
 
-    // Multi-round tool calling
+    // Multi-round tool calling (up to 5 rounds for complex queries)
     let currentMessages = [...aiMessages];
     let allToolsExecuted: string[] = [];
     let pendingWriteTools: any[] = [];
-    let maxRounds = 3;
+    let maxRounds = 5;
 
     for (let round = 0; round < maxRounds; round++) {
       const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -399,8 +398,13 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         const t = await response.text();
         console.error("AI error:", response.status, t);
         if (response.status === 429) {
-          return new Response(JSON.stringify({ error: "Rate limit. Try again shortly." }), {
+          return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }), {
             status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        if (response.status === 402) {
+          return new Response(JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }), {
+            status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
         throw new Error("AI service error");
@@ -420,7 +424,6 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
           const toolName = tc.function.name;
 
           if (READ_ONLY_TOOLS.has(toolName)) {
-            // Execute read tools immediately
             try {
               const result = await executeTool(adminClient, toolName, args);
               toolResults.push({
@@ -438,13 +441,11 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
               allToolsExecuted.push(toolName);
             }
           } else if (WRITE_TOOLS.has(toolName)) {
-            // Queue write tools for confirmation
             pendingWriteTools.push({
               id: tc.id,
               name: toolName,
               arguments: args,
             });
-            // Return a fake "pending" result so AI can continue
             toolResults.push({
               role: "tool",
               tool_call_id: tc.id,
@@ -457,9 +458,8 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         currentMessages.push(choice.message);
         currentMessages.push(...toolResults);
 
-        // If we have write tools pending, break out to return them for confirmation
         if (hasWriteTools) {
-          // Get AI's summary of what it wants to do
+          // Get AI's summary
           const summaryResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -490,7 +490,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
         continue;
       }
 
-      // Regular text response
+      // Regular text response — return it
       return new Response(JSON.stringify({
         content: choice.message?.content || "Done!",
         tools_executed: allToolsExecuted.length > 0 ? allToolsExecuted : undefined,
@@ -499,7 +499,7 @@ YOU ARE AN ACTION-TAKER WITH WEB ACCESS. When told to do something, you DO IT wi
       });
     }
 
-    // Exhausted rounds
+    // Exhausted rounds — final response
     const finalResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -537,7 +537,7 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
   switch (name) {
     case "web_search": {
       const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
-      if (!apiKey) throw new Error("Firecrawl not configured");
+      if (!apiKey) throw new Error("Firecrawl not configured — web search unavailable");
 
       const response = await fetch("https://api.firecrawl.dev/v1/search", {
         method: "POST",
@@ -560,7 +560,7 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
         title: r.title || "Untitled",
         url: r.url || "",
         description: r.description || "",
-        content: (r.markdown || "").slice(0, 3000),
+        content: (r.markdown || "").slice(0, 5000),
       }));
 
       return { results, total: results.length, query: args.query };
@@ -568,7 +568,7 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
 
     case "web_scrape": {
       const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
-      if (!apiKey) throw new Error("Firecrawl not configured");
+      if (!apiKey) throw new Error("Firecrawl not configured — web scraping unavailable");
 
       let url = args.url.trim();
       if (!url.startsWith("http://") && !url.startsWith("https://")) url = `https://${url}`;
@@ -589,7 +589,7 @@ async function executeTool(client: any, name: string, args: any): Promise<any> {
       return {
         url,
         title: data.data?.metadata?.title || "Untitled",
-        content: content.slice(0, 10000),
+        content: content.slice(0, 15000),
       };
     }
 
