@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Suspense, lazy } from "react";
 import ExamCountdown from "@/components/ExamCountdown";
 import DailyMotivation from "@/components/DailyMotivation";
+import AchievementsSummary from "@/components/AchievementsSummary";
 
 const DNAHelix = lazy(() => import("@/components/3d/DNAHelix"));
 
@@ -131,8 +132,13 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
-        {/* Quick actions */}
+        {/* Achievements Summary */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={7}>
+          <AchievementsSummary />
+        </motion.div>
+
+        {/* Quick actions */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={8}>
           <h2 className="font-display text-xl text-gradient-gold mb-4">{t("dashboard.quick_actions")}</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {quickActions.map((action, i) => (

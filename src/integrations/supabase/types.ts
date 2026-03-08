@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          category: string
+          created_at: string
+          criteria_json: Json
+          description: string
+          hidden: boolean
+          icon: string
+          id: string
+          key: string
+          title: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          criteria_json?: Json
+          description: string
+          hidden?: boolean
+          icon?: string
+          id?: string
+          key: string
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          criteria_json?: Json
+          description?: string
+          hidden?: boolean
+          icon?: string
+          id?: string
+          key?: string
+          title?: string
+        }
+        Relationships: []
+      }
       admin_settings: {
         Row: {
           id: string
@@ -346,6 +382,35 @@ export type Database = {
           wrong_answers?: number | null
         }
         Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_activity: {
         Row: {
