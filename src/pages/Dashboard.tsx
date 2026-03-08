@@ -28,6 +28,10 @@ export default function Dashboard() {
   const { t } = useLanguage();
   const { score, breakdown } = useDNAScore();
   useActivityTracker();
+  const { checkAchievements, celebration, clearCelebration } = useAchievementTracker();
+
+  // Check achievements on mount
+  useEffect(() => { checkAchievements(); }, [checkAchievements]);
 
   const name = user?.user_metadata?.full_name || "Cadet";
   const attempt = user?.user_metadata?.attempt || "1st";
