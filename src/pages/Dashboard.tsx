@@ -12,6 +12,8 @@ import DailyMotivation from "@/components/DailyMotivation";
 import AchievementsSummary from "@/components/AchievementsSummary";
 import { useDNAScore } from "@/hooks/useDNAScore";
 import { useActivityTracker } from "@/hooks/useActivityTracker";
+import { useAchievementTracker } from "@/hooks/useAchievementTracker";
+import AchievementCelebration from "@/components/AchievementCelebration";
 
 const DNAHelix = lazy(() => import("@/components/3d/DNAHelix"));
 const OrbitingStar = lazy(() => import("@/components/3d/OrbitingStar"));
