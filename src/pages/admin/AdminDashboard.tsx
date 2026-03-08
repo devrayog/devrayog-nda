@@ -134,6 +134,10 @@ export default function AdminDashboard() {
             ))}
           </TabsContent>
 
+          <TabsContent value="broadcast" className="mt-4">
+            <AdminBroadcast />
+          </TabsContent>
+
           <TabsContent value="settings" className="space-y-4 mt-4">
             <h2 className="font-display text-xl text-gradient-gold">ADMIN SETTINGS</h2>
             <Card className="glass-card border-gold">
