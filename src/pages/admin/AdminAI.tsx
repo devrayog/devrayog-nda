@@ -276,7 +276,7 @@ export default function AdminAI() {
               type="file"
               ref={fileRef}
               onChange={handleFileUpload}
-              accept="image/*,.pdf,.doc,.docx,.txt,.csv"
+              accept="image/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls,.ppt,.pptx,.json,.xml,.md"
               className="hidden"
             />
             <Button
