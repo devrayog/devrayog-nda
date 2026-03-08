@@ -39,6 +39,9 @@ import MathsHub from "@/pages/study/MathsHub";
 import GATHub from "@/pages/study/GATHub";
 import EnglishHub from "@/pages/study/EnglishHub";
 import TopicDetail from "@/pages/study/TopicDetail";
+import VocabularyBuilder from "@/pages/study/VocabularyBuilder";
+import FormulaSheet from "@/pages/study/FormulaSheet";
+import RevisionPlanner from "@/pages/study/RevisionPlanner";
 
 // Tests
 import MockTestList from "@/pages/tests/MockTestList";
@@ -111,9 +114,9 @@ function AppRoutes() {
       <Route path="/pyq" element={<ProtectedRoute><PYQ /></ProtectedRoute>} />
       <Route path="/notes" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
       <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
-      <Route path="/revision" element={<ProtectedRoute><PlaceholderPage title="REVISION PLANNER" description="Spaced repetition schedule — AI brings back topics you're forgetting." /></ProtectedRoute>} />
-      <Route path="/formulas" element={<ProtectedRoute><PlaceholderPage title="FORMULA SHEET" description="Quick reference for all important Maths formulas." /></ProtectedRoute>} />
-      <Route path="/vocabulary" element={<ProtectedRoute><PlaceholderPage title="VOCABULARY BUILDER" description="Daily word lists to improve your English score." /></ProtectedRoute>} />
+      <Route path="/revision" element={<ProtectedRoute><RevisionPlanner /></ProtectedRoute>} />
+      <Route path="/formulas" element={<ProtectedRoute><FormulaSheet /></ProtectedRoute>} />
+      <Route path="/vocabulary" element={<ProtectedRoute><VocabularyBuilder /></ProtectedRoute>} />
 
       {/* Protected — Tests */}
       <Route path="/tests" element={<ProtectedRoute><MockTestList /></ProtectedRoute>} />
