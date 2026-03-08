@@ -7,8 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Users, MessageSquare, BarChart3, Settings, Lock } from "lucide-react";
+import { Shield, Users, MessageSquare, BarChart3, Settings, Lock, Megaphone } from "lucide-react";
 import { motion } from "framer-motion";
+import AdminBroadcast from "@/components/admin/AdminBroadcast";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -108,6 +109,7 @@ export default function AdminDashboard() {
         <Tabs defaultValue="feedback">
           <TabsList className="bg-card border border-gold">
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
+            <TabsTrigger value="broadcast">Broadcast</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -130,6 +132,10 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
             ))}
+          </TabsContent>
+
+          <TabsContent value="broadcast" className="mt-4">
+            <AdminBroadcast />
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-4 mt-4">

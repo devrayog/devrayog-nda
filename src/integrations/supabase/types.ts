@@ -155,6 +155,51 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          community_replies: boolean
+          created_at: string
+          current_affairs_update: boolean
+          daily_study_reminder: boolean
+          exam_countdown_alerts: boolean
+          id: string
+          mock_test_reminder: boolean
+          news_time: string
+          streak_reminder: boolean
+          study_reminder_time: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          community_replies?: boolean
+          created_at?: string
+          current_affairs_update?: boolean
+          daily_study_reminder?: boolean
+          exam_countdown_alerts?: boolean
+          id?: string
+          mock_test_reminder?: boolean
+          news_time?: string
+          streak_reminder?: boolean
+          study_reminder_time?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          community_replies?: boolean
+          created_at?: string
+          current_affairs_update?: boolean
+          daily_study_reminder?: boolean
+          exam_countdown_alerts?: boolean
+          id?: string
+          mock_test_reminder?: boolean
+          news_time?: string
+          streak_reminder?: boolean
+          study_reminder_time?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
