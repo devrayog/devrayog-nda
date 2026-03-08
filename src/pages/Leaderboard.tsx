@@ -72,8 +72,8 @@ export default function Leaderboard() {
       <div className="p-6 max-w-4xl mx-auto space-y-6">
         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
           <div className="flex items-center gap-3 mb-1">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-yellow-500/20 to-amber-500/20">
-              <Trophy className="h-7 w-7 text-yellow-500" />
+          <div className="p-2 rounded-xl bg-gradient-to-br from-warning/20 to-accent/20">
+              <Trophy className="h-7 w-7 text-warning" />
             </div>
             <div>
               <h1 className="font-display text-3xl md:text-4xl text-gradient-gold">LEADERBOARD</h1>
