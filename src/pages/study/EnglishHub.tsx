@@ -3,7 +3,8 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Brain, FileText, ChevronRight } from "lucide-react";
+import { Brain, FileText, ChevronRight, Sparkles } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -31,24 +32,62 @@ export default function EnglishHub() {
           <p className="text-muted-foreground text-sm">Grammar, Vocabulary, Comprehension — improve your English score.</p>
         </motion.div>
 
-        <div className="grid gap-3">
-          {topics.map((topic, i) => (
-            <motion.div key={topic.id} initial="hidden" animate="visible" variants={fadeUp} custom={i + 1}>
-              <Link to={`/study/topic/${topic.slug}`}>
-                <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <div className="text-3xl">{topic.emoji}</div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-sm">{topic.name}</h3>
-                      <p className="text-xs text-muted-foreground">{topic.description}</p>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                  </CardContent>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+        <Tabs defaultValue="topics" className="space-y-4">
+          <TabsList className="bg-card border border-border">
+            <TabsTrigger value="topics">📚 Topics</TabsTrigger>
+            <TabsTrigger value="ai-test">🤖 AI Generated Test</TabsTrigger>
+            <TabsTrigger value="mock-test">📝 Mock Tests (Admin)</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="topics" className="space-y-3">
+            {topics.map((topic, i) => (
+              <motion.div key={topic.id} initial="hidden" animate="visible" variants={fadeUp} custom={i + 1}>
+                <Link to={`/study/topic/${topic.slug}`}>
+                  <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <div className="text-3xl">{topic.emoji}</div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-sm">{topic.name}</h3>
+                        <p className="text-xs text-muted-foreground">{topic.description}</p>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            ))}
+          </TabsContent>
+
+          <TabsContent value="ai-test" className="space-y-4">
+            <Card className="glass-card border-gold">
+              <CardContent className="p-6 text-center space-y-3">
+                <Sparkles className="h-10 w-10 text-accent mx-auto" />
+                <h3 className="font-display text-xl text-gradient-gold">AI Generated English Test</h3>
+                <p className="text-sm text-muted-foreground">AI generates grammar, vocab & comprehension questions.</p>
+                <Link to="/tests/take/quick-english?subject=english&questions=20&time=20">
+                  <Button className="bg-gradient-gold text-primary-foreground font-bold tracking-wider">
+                    <Brain className="h-4 w-4 mr-2" /> Start AI Test
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="mock-test" className="space-y-4">
+            <Card className="glass-card border-gold">
+              <CardContent className="p-6 text-center space-y-3">
+                <FileText className="h-10 w-10 text-primary mx-auto" />
+                <h3 className="font-display text-xl text-gradient-gold">Admin Mock Tests</h3>
+                <p className="text-sm text-muted-foreground">Curated English mock tests with NDA-standard questions.</p>
+                <Link to="/tests?tab=admin&subject=english">
+                  <Button className="bg-gradient-gold text-primary-foreground font-bold tracking-wider">
+                    <FileText className="h-4 w-4 mr-2" /> View Mock Tests
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
 
         <div className="flex gap-3">
           <Link to="/ai-tutor" className="flex-1">
@@ -57,9 +96,7 @@ export default function EnglishHub() {
             </Button>
           </Link>
           <Link to="/vocabulary" className="flex-1">
-            <Button variant="outline" className="w-full border-gold font-bold tracking-wider">
-              Vocabulary Builder
-            </Button>
+            <Button variant="outline" className="w-full border-gold font-bold tracking-wider">Vocabulary Builder</Button>
           </Link>
         </div>
       </div>
