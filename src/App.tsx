@@ -84,7 +84,7 @@ function AppRoutes() {
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-      <Route path="/achievements" element={<ProtectedRoute><PlaceholderPage title="ACHIEVEMENTS" description="Earn badges as you progress in your NDA preparation." /></ProtectedRoute>} />
+      <Route path="/achievements" element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
       <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
       <Route path="/activity" element={<ProtectedRoute><ActivityLog /></ProtectedRoute>} />
       <Route path="/dna-score" element={<ProtectedRoute><DNAScoreDetails /></ProtectedRoute>} />
