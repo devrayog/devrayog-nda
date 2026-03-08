@@ -10,6 +10,8 @@ import { Suspense, lazy } from "react";
 import ExamCountdown from "@/components/ExamCountdown";
 import DailyMotivation from "@/components/DailyMotivation";
 import AchievementsSummary from "@/components/AchievementsSummary";
+import { useDNAScore } from "@/hooks/useDNAScore";
+import { useActivityTracker } from "@/hooks/useActivityTracker";
 
 const DNAHelix = lazy(() => import("@/components/3d/DNAHelix"));
 
@@ -21,6 +23,8 @@ const fadeUp = {
 export default function Dashboard() {
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { score, breakdown } = useDNAScore();
+  useActivityTracker();
 
   const name = user?.user_metadata?.full_name || "Cadet";
   const attempt = user?.user_metadata?.attempt || "1st";
@@ -63,7 +67,7 @@ export default function Dashboard() {
 
         {/* Exam Countdown */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}>
-          <Card className="glass-card border-gold">
+          <Card className="glass-card border-border">
             <CardContent className="p-6">
               <div className="text-center space-y-4">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -89,28 +93,30 @@ export default function Dashboard() {
           <DNAHelix className="h-48 w-full hidden md:block" />
         </Suspense>
 
-        {/* Stats row */}
+        {/* Live Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {[
-            { icon: BarChart3, label: t("dashboard.dna_score"), value: "42%", color: "text-primary" },
-            { icon: Flame, label: t("dashboard.streak"), value: "0", color: "text-destructive" },
-            { icon: Target, label: "Accuracy", value: "--", color: "text-success" },
+            { icon: BarChart3, label: t("dashboard.dna_score"), value: `${score}%`, color: "text-primary", href: "/dna-score" },
+            { icon: Flame, label: t("dashboard.streak"), value: `${breakdown.streak > 0 ? Math.round(breakdown.streak * 0.3) : 0}`, color: "text-destructive", href: "/activity" },
+            { icon: Target, label: "Accuracy", value: `${breakdown.accuracyTrend}%`, color: "text-success", href: "/dna-score" },
           ].map((stat, i) => (
             <motion.div key={i} initial="hidden" animate="visible" variants={fadeUp} custom={i + 3}>
-              <Card className="glass-card border-gold">
-                <CardContent className="p-4 text-center">
-                  <stat.icon className={`h-6 w-6 ${stat.color} mx-auto mb-2`} />
-                  <p className="font-display text-3xl">{stat.value}</p>
-                  <p className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase">{stat.label}</p>
-                </CardContent>
-              </Card>
+              <Link to={stat.href}>
+                <Card className="glass-card border-border hover:scale-[1.02] transition-transform cursor-pointer">
+                  <CardContent className="p-4 text-center">
+                    <stat.icon className={`h-6 w-6 ${stat.color} mx-auto mb-2`} />
+                    <p className="font-display text-3xl">{stat.value}</p>
+                    <p className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase">{stat.label}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             </motion.div>
           ))}
         </div>
 
         {/* AI Plan placeholder */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={6}>
-          <Card className="glass-card border-gold">
+          <Card className="glass-card border-border">
             <CardHeader>
               <CardTitle className="font-display text-xl text-gradient-gold flex items-center gap-2">
                 <Brain className="h-5 w-5 text-primary" /> {t("dashboard.today_plan")}
@@ -125,7 +131,7 @@ export default function Dashboard() {
                   <Button size="sm" className="bg-gradient-gold text-primary-foreground font-bold tracking-wider">Ask AI Tutor</Button>
                 </Link>
                 <Link to="/tests">
-                  <Button size="sm" variant="outline" className="border-gold">Take First Test</Button>
+                  <Button size="sm" variant="outline">Take First Test</Button>
                 </Link>
               </div>
             </CardContent>
@@ -143,7 +149,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {quickActions.map((action, i) => (
               <Link key={i} to={action.href}>
-                <Card className="glass-card border-gold hover:scale-[1.02] transition-transform cursor-pointer">
+                <Card className="glass-card border-border hover:scale-[1.02] transition-transform cursor-pointer">
                   <CardContent className="p-6 text-center">
                     <action.icon className={`h-8 w-8 ${action.color} mx-auto mb-3`} />
                     <p className="font-semibold text-sm">{action.title}</p>

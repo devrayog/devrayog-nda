@@ -162,9 +162,9 @@ export default function Signup() {
               <p className="text-xs text-muted-foreground mt-2">AI will update this as you study</p>
             </div>
             <div>
-              <Link to="/dashboard">
+              <Link to="/diagnostic">
                 <Button size="lg" className="bg-gradient-gold text-primary-foreground font-bold tracking-widest px-8 py-6">
-                  {t("signup.go_dashboard")}
+                  Take DNA Diagnostic Test 🧬
                 </Button>
               </Link>
             </div>

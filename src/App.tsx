@@ -32,6 +32,7 @@ import Feedback from "@/pages/Feedback";
 import GirlsNDA from "@/pages/GirlsNDA";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import Achievements from "@/pages/Achievements";
+import DiagnosticTest from "@/pages/DiagnosticTest";
 
 // Study
 import MathsHub from "@/pages/study/MathsHub";
@@ -81,6 +82,7 @@ function AppRoutes() {
       <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* Protected — Core */}
+      <Route path="/diagnostic" element={<ProtectedRoute><DiagnosticTest /></ProtectedRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
