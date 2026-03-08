@@ -7,7 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Users, MessageSquare, BarChart3, Settings, Lock, Megaphone } from "lucide-react";
+import { Shield, Users, MessageSquare, BarChart3, Settings, Lock, Megaphone, BookOpen, HelpCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import AdminBroadcast from "@/components/admin/AdminBroadcast";
 
@@ -104,6 +105,32 @@ export default function AdminDashboard() {
               </Card>
             </motion.div>
           ))}
+        </div>
+
+        {/* Quick Links */}
+        <div className="grid grid-cols-2 gap-4">
+          <Link to="/admin/topics">
+            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
+              <CardContent className="p-4 flex items-center gap-3">
+                <BookOpen className="h-6 w-6 text-primary" />
+                <div>
+                  <p className="font-bold text-sm">Topic Management</p>
+                  <p className="text-[10px] text-muted-foreground">Add/edit study topics & MCQs</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/admin/topics">
+            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
+              <CardContent className="p-4 flex items-center gap-3">
+                <HelpCircle className="h-6 w-6 text-accent" />
+                <div>
+                  <p className="font-bold text-sm">Question Bank</p>
+                  <p className="text-[10px] text-muted-foreground">Manage MCQ questions per topic</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         <Tabs defaultValue="feedback">

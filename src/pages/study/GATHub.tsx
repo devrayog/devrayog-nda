@@ -1,51 +1,34 @@
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Brain, BookOpen, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.06, duration: 0.4 } }),
 };
 
-const SECTIONS = [
-  {
-    category: "History",
-    topics: [
-      { id: "indian-history", name: "Indian History", sub: "Ancient, Medieval, Modern India", emoji: "🏛️" },
-      { id: "freedom-struggle", name: "Freedom Struggle", sub: "1857 to Independence, Leaders & Movements", emoji: "🇮🇳" },
-      { id: "world-history", name: "World History", sub: "World Wars, Renaissance, Cold War", emoji: "🌍" },
-    ]
-  },
-  {
-    category: "Geography",
-    topics: [
-      { id: "indian-geography", name: "Indian Geography", sub: "Rivers, Mountains, Climate, States", emoji: "🗺️" },
-      { id: "world-geography", name: "World Geography", sub: "Continents, Oceans, International Boundaries", emoji: "🌏" },
-      { id: "physical-geography", name: "Physical Geography", sub: "Atmosphere, Lithosphere, Hydrosphere", emoji: "⛰️" },
-    ]
-  },
-  {
-    category: "Science",
-    topics: [
-      { id: "physics-gat", name: "Physics (GAT)", sub: "Mechanics, Light, Sound, Electricity basics", emoji: "⚡" },
-      { id: "chemistry-gat", name: "Chemistry (GAT)", sub: "Elements, Compounds, Everyday Chemistry", emoji: "🧪" },
-      { id: "biology-gat", name: "Biology", sub: "Human Body, Diseases, Plants", emoji: "🧬" },
-    ]
-  },
-  {
-    category: "Polity & Economy",
-    topics: [
-      { id: "polity", name: "Indian Polity", sub: "Constitution, Parliament, Amendments", emoji: "⚖️" },
-      { id: "economy", name: "Indian Economy", sub: "Budget, GDP, Banking, Policies", emoji: "💰" },
-      { id: "defence", name: "Defence & Current Affairs", sub: "Exercises, Weapons, Defence News", emoji: "🎖️" },
-    ]
-  },
-];
-
 export default function GATHub() {
+  const [topics, setTopics] = useState<any[]>([]);
+
+  useEffect(() => {
+    supabase.from("study_topics").select("*").eq("subject", "gat").eq("is_active", true).order("sort_order")
+      .then(({ data }) => { if (data) setTopics(data); });
+  }, []);
+
+  // Group by category
+  const sections: { category: string; topics: any[] }[] = [];
+  topics.forEach(t => {
+    const cat = t.category || "General";
+    const existing = sections.find(s => s.category === cat);
+    if (existing) existing.topics.push(t);
+    else sections.push({ category: cat, topics: [t] });
+  });
+
   return (
     <DashboardLayout>
       <div className="p-6 max-w-5xl mx-auto space-y-6">
@@ -57,18 +40,18 @@ export default function GATHub() {
           <p className="text-muted-foreground text-sm">History, Geography, Science, Polity — organized by NDA weightage.</p>
         </motion.div>
 
-        {SECTIONS.map((section, si) => (
+        {sections.map((section, si) => (
           <motion.div key={section.category} initial="hidden" animate="visible" variants={fadeUp} custom={si + 1}>
             <h2 className="font-display text-xl text-primary mb-3">{section.category.toUpperCase()}</h2>
             <div className="grid gap-3 mb-6">
               {section.topics.map((topic) => (
-                <Link key={topic.id} to={`/study/topic/${topic.id}`}>
+                <Link key={topic.id} to={`/study/topic/${topic.slug}`}>
                   <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
                     <CardContent className="p-4 flex items-center gap-4">
                       <div className="text-3xl">{topic.emoji}</div>
                       <div className="flex-1">
                         <h3 className="font-bold text-sm">{topic.name}</h3>
-                        <p className="text-xs text-muted-foreground">{topic.sub}</p>
+                        <p className="text-xs text-muted-foreground">{topic.description}</p>
                       </div>
                       <ChevronRight className="h-4 w-4 text-muted-foreground" />
                     </CardContent>

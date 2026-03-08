@@ -61,6 +61,8 @@ import Resources from "@/pages/resources/Resources";
 
 // Admin
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminTopics from "@/pages/admin/AdminTopics";
+import AdminQuestions from "@/pages/admin/AdminQuestions";
 
 const queryClient = new QueryClient();
 
@@ -153,6 +155,8 @@ function AppRoutes() {
 
       {/* Protected — Admin */}
       <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+      <Route path="/admin/topics" element={<ProtectedRoute><AdminTopics /></ProtectedRoute>} />
+      <Route path="/admin/topics/:topicId/questions" element={<ProtectedRoute><AdminQuestions /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />
