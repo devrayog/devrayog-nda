@@ -7,8 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Users, MessageSquare, BarChart3, Settings, Lock } from "lucide-react";
+import { Shield, Users, MessageSquare, BarChart3, Settings, Lock, Megaphone } from "lucide-react";
 import { motion } from "framer-motion";
+import AdminBroadcast from "@/components/admin/AdminBroadcast";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
