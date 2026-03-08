@@ -207,10 +207,10 @@ export default function AdminAI() {
               </div>
               <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
                 {[
+                  { icon: "🌐", label: "Add today's defence news", desc: "I'll search web & add real news" },
                   { icon: "📝", label: "Send question paper image", desc: "I'll extract & add MCQs" },
-                  { icon: "📰", label: "\"Add today's defence news\"", desc: "I'll create current affairs" },
-                  { icon: "📊", label: "\"Show platform stats\"", desc: "Users, tests, feedback" },
-                  { icon: "📢", label: "\"Announce mock test tomorrow\"", desc: "Broadcast to all users" },
+                  { icon: "🔗", label: "Scrape this URL for content", desc: "I'll crawl & extract data" },
+                  { icon: "📊", label: "Show platform stats", desc: "Users, tests, feedback" },
                 ].map((hint, i) => (
                   <button
                     key={i}
@@ -346,7 +346,7 @@ export default function AdminAI() {
             </Button>
           </div>
           <p className="text-[9px] text-muted-foreground mt-1 font-mono text-center">
-            ADMIN-ONLY • AUTO-EXECUTES DB OPERATIONS • UPLOAD IMAGES/PDFS FOR AUTO-EXTRACTION
+            ADMIN-ONLY • WEB SEARCH & CRAWL • AUTO-EXECUTES DB OPERATIONS • UPLOAD FILES
           </p>
         </div>
       </div>
