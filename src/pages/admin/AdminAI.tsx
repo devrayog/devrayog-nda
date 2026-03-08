@@ -289,12 +289,19 @@ export default function AdminAI() {
         </div>
 
         {/* Image Preview */}
-        {imagePreview && (
+        {(imagePreview || fileText || fileName) && (
           <div className="px-4 pb-2">
             <div className="relative inline-block">
-              <img src={imagePreview} alt="Preview" className="h-20 rounded-lg border border-border" />
+              {imagePreview?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) ? (
+                <img src={imagePreview} alt="Preview" className="h-20 rounded-lg border border-border" />
+              ) : (
+                <div className="h-20 px-4 rounded-lg border border-border bg-card flex items-center gap-2">
+                  <ImagePlus className="h-5 w-5 text-primary" />
+                  <span className="text-xs font-mono text-muted-foreground max-w-[200px] truncate">{fileName}</span>
+                </div>
+              )}
               <button
-                onClick={() => setImagePreview(null)}
+                onClick={() => { setImagePreview(null); setFileText(null); setFileName(null); }}
                 className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center"
               >×</button>
             </div>
