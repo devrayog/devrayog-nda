@@ -7,6 +7,9 @@ import { Link } from "react-router-dom";
 import { Brain, FileText, Target, Shield, Swords, BarChart3, Flame, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { Suspense, lazy } from "react";
+import ExamCountdown from "@/components/ExamCountdown";
+import DailyMotivation from "@/components/DailyMotivation";
+
 const DNAHelix = lazy(() => import("@/components/3d/DNAHelix"));
 
 const fadeUp = {
@@ -22,10 +25,6 @@ export default function Dashboard() {
   const attempt = user?.user_metadata?.attempt || "1st";
   const targetExam = user?.user_metadata?.target_exam || "NDA 1 2026";
   const service = user?.user_metadata?.service || "army";
-
-  // Calculate days to exam
-  const examDate = targetExam.includes("April") ? new Date("2026-04-19") : new Date("2026-09-06");
-  const daysLeft = Math.max(0, Math.ceil((examDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
 
   const quickActions = [
     { icon: Brain, title: t("nav.ai_tutor"), href: "/ai-tutor", color: "text-primary" },
@@ -61,19 +60,42 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
+        {/* Exam Countdown */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}>
+          <Card className="glass-card border-gold">
+            <CardContent className="p-6">
+              <div className="text-center space-y-4">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Clock className="h-5 w-5 text-primary" />
+                  <p className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">
+                    NDA 1 2026 — April 12 • Maths 10:00 AM • GAT 2:00 PM
+                  </p>
+                </div>
+                <div className="flex justify-center">
+                  <ExamCountdown />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Daily AI Motivation */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
+          <DailyMotivation />
+        </motion.div>
+
         <Suspense fallback={null}>
           <DNAHelix className="h-48 w-full hidden md:block" />
         </Suspense>
 
         {/* Stats row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {[
             { icon: BarChart3, label: t("dashboard.dna_score"), value: "42%", color: "text-primary" },
             { icon: Flame, label: t("dashboard.streak"), value: "0", color: "text-destructive" },
-            { icon: Clock, label: t("dashboard.exam_countdown"), value: `${daysLeft}`, color: "text-accent" },
             { icon: Target, label: "Accuracy", value: "--", color: "text-success" },
           ].map((stat, i) => (
-            <motion.div key={i} initial="hidden" animate="visible" variants={fadeUp} custom={i + 1}>
+            <motion.div key={i} initial="hidden" animate="visible" variants={fadeUp} custom={i + 3}>
               <Card className="glass-card border-gold">
                 <CardContent className="p-4 text-center">
                   <stat.icon className={`h-6 w-6 ${stat.color} mx-auto mb-2`} />
@@ -86,7 +108,7 @@ export default function Dashboard() {
         </div>
 
         {/* AI Plan placeholder */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={5}>
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={6}>
           <Card className="glass-card border-gold">
             <CardHeader>
               <CardTitle className="font-display text-xl text-gradient-gold flex items-center gap-2">
@@ -110,7 +132,7 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Quick actions */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={6}>
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={7}>
           <h2 className="font-display text-xl text-gradient-gold mb-4">{t("dashboard.quick_actions")}</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {quickActions.map((action, i) => (

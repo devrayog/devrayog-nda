@@ -189,6 +189,7 @@ export type Database = {
         Row: {
           accuracy: number | null
           attempt: string | null
+          avatar_url: string | null
           challenge: string | null
           cleared_written: string | null
           created_at: string
@@ -211,6 +212,7 @@ export type Database = {
         Insert: {
           accuracy?: number | null
           attempt?: string | null
+          avatar_url?: string | null
           challenge?: string | null
           cleared_written?: string | null
           created_at?: string
@@ -233,6 +235,7 @@ export type Database = {
         Update: {
           accuracy?: number | null
           attempt?: string | null
+          avatar_url?: string | null
           challenge?: string | null
           cleared_written?: string | null
           created_at?: string
