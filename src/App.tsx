@@ -203,6 +203,25 @@ function AppRoutes() {
   );
 }
 
+function AppWithSplash() {
+  const [splashDone, setSplashDone] = useState(false);
+  const hasSeenSplash = sessionStorage.getItem("splash_seen");
+
+  if (!hasSeenSplash && !splashDone) {
+    return <SplashScreen onComplete={() => { sessionStorage.setItem("splash_seen", "1"); setSplashDone(true); }} />;
+  }
+
+  return (
+    <>
+      <SpotlightGlow />
+      <NoiseOverlay />
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
@@ -211,9 +230,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
-              <AppRoutes />
-            </BrowserRouter>
+            <AppWithSplash />
           </TooltipProvider>
         </AuthProvider>
       </LanguageProvider>
