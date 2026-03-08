@@ -142,6 +142,17 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </Link>
+          <Link to="/admin/pyq">
+            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
+              <CardContent className="p-4 flex items-center gap-3">
+                <FolderOpen className="h-6 w-6 text-warning" />
+                <div>
+                  <p className="font-bold text-sm">PYQ Management</p>
+                  <p className="text-[10px] text-muted-foreground">Add previous year questions</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         <Tabs defaultValue="feedback">
