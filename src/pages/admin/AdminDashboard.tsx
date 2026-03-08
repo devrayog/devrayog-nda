@@ -107,6 +107,32 @@ export default function AdminDashboard() {
           ))}
         </div>
 
+        {/* Quick Links */}
+        <div className="grid grid-cols-2 gap-4">
+          <Link to="/admin/topics">
+            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
+              <CardContent className="p-4 flex items-center gap-3">
+                <BookOpen className="h-6 w-6 text-primary" />
+                <div>
+                  <p className="font-bold text-sm">Topic Management</p>
+                  <p className="text-[10px] text-muted-foreground">Add/edit study topics & MCQs</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/admin/topics">
+            <Card className="glass-card border-gold hover:scale-[1.01] transition-transform cursor-pointer">
+              <CardContent className="p-4 flex items-center gap-3">
+                <HelpCircle className="h-6 w-6 text-accent" />
+                <div>
+                  <p className="font-bold text-sm">Question Bank</p>
+                  <p className="text-[10px] text-muted-foreground">Manage MCQ questions per topic</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+
         <Tabs defaultValue="feedback">
           <TabsList className="bg-card border border-gold">
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
