@@ -3,10 +3,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Brain, Shield, Globe, BarChart3, ArrowRight } from "lucide-react";
+import { Brain, Shield, Globe, BarChart3, ArrowRight, Swords, Target, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { Suspense, lazy } from "react";
 const ShieldGlobe = lazy(() => import("@/components/3d/ShieldGlobe"));
+const MilitaryParticles = lazy(() => import("@/components/3d/MilitaryParticles"));
+const FloatingBadge = lazy(() => import("@/components/3d/FloatingBadge"));
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -16,6 +18,8 @@ const fadeUp = {
 const HERO_BG = "https://images.unsplash.com/photo-1579912009826-c0570be40a1f?w=1920&q=80";
 const CADET_IMG = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&q=80";
 const NDA_CAMPUS = "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=600&q=80";
+const PARADE_IMG = "https://images.unsplash.com/photo-1580910051074-3eb694886f3b?w=600&q=80";
+const JET_IMG = "https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=600&q=80";
 
 export default function Landing() {
   const { t } = useLanguage();
@@ -31,13 +35,17 @@ export default function Landing() {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero */}
+      {/* Hero with 3D particles background */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-        {/* Background */}
         <div className="absolute inset-0">
-          <img src={HERO_BG} alt="NDA Campus" className="w-full h-full object-cover opacity-20" loading="eager" />
+          <img src={HERO_BG} alt="NDA Campus" className="w-full h-full object-cover opacity-15" loading="eager" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
         </div>
+
+        {/* 3D Particles overlay */}
+        <Suspense fallback={null}>
+          <MilitaryParticles className="absolute inset-0 opacity-40 pointer-events-none" />
+        </Suspense>
 
         <div className="relative z-10 container mx-auto px-6 text-center py-20">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
@@ -113,8 +121,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-20">
+      {/* Features with 3D badge */}
+      <section className="py-20 relative">
         <div className="container mx-auto px-6">
           <motion.h2
             initial="hidden" whileInView="visible" viewport={{ once: true }}
@@ -124,7 +132,11 @@ export default function Landing() {
             {t("landing.features_title")}
           </motion.h2>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 relative">
+            {/* 3D Badge in the center */}
+            <Suspense fallback={null}>
+              <FloatingBadge className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 opacity-20 pointer-events-none hidden lg:block" />
+            </Suspense>
             {features.map((f, i) => (
               <motion.div
                 key={i}
@@ -141,7 +153,52 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Military imagery section */}
+      {/* Defence forces gallery */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-6">
+          <motion.h2
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            variants={fadeUp} custom={0}
+            className="font-display text-3xl md:text-5xl text-center text-gradient-gold mb-6"
+          >
+            SERVE YOUR NATION
+          </motion.h2>
+          <motion.p
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            variants={fadeUp} custom={1}
+            className="text-center text-muted-foreground max-w-xl mx-auto mb-12"
+          >
+            Join the elite ranks of Indian Armed Forces. Army, Navy, Air Force — your journey to the uniform starts here.
+          </motion.p>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { img: CADET_IMG, label: "Army Cadets", icon: Shield },
+              { img: NDA_CAMPUS, label: "NDA Khadakwasla", icon: Target },
+              { img: PARADE_IMG, label: "Passing Out Parade", icon: Users },
+              { img: JET_IMG, label: "Air Force", icon: Swords },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial="hidden" whileInView="visible" viewport={{ once: true }}
+                variants={fadeUp} custom={i + 2}
+                className="relative group overflow-hidden rounded-xl border border-gold"
+              >
+                <img src={item.img} alt={item.label} className="w-full h-48 md:h-56 object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+                <div className="absolute bottom-3 left-3 right-3">
+                  <div className="flex items-center gap-2">
+                    <item.icon className="h-4 w-4 text-primary" />
+                    <span className="font-display text-sm text-gradient-gold">{item.label}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Built by aspirant */}
       <section className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -164,18 +221,25 @@ export default function Landing() {
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true }}
               variants={fadeUp} custom={1}
-              className="grid grid-cols-2 gap-4"
             >
-              <img src={CADET_IMG} alt="Military training" className="rounded-xl w-full h-48 object-cover border border-gold" loading="lazy" />
-              <img src={NDA_CAMPUS} alt="Defence academy" className="rounded-xl w-full h-48 object-cover border border-gold mt-8" loading="lazy" />
+              <Suspense fallback={null}>
+                <FloatingBadge className="w-full h-72 hidden md:block" />
+              </Suspense>
+              <div className="grid grid-cols-2 gap-4 md:hidden">
+                <img src={CADET_IMG} alt="Military training" className="rounded-xl w-full h-48 object-cover border border-gold" loading="lazy" />
+                <img src={NDA_CAMPUS} alt="Defence academy" className="rounded-xl w-full h-48 object-cover border border-gold mt-8" loading="lazy" />
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20">
-        <div className="container mx-auto px-6 text-center">
+      <section className="py-20 relative">
+        <Suspense fallback={null}>
+          <MilitaryParticles className="absolute inset-0 opacity-20 pointer-events-none" />
+        </Suspense>
+        <div className="container mx-auto px-6 text-center relative z-10">
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true }}
             variants={fadeUp} custom={0}

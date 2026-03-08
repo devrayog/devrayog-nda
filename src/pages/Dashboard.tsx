@@ -14,6 +14,7 @@ import { useDNAScore } from "@/hooks/useDNAScore";
 import { useActivityTracker } from "@/hooks/useActivityTracker";
 
 const DNAHelix = lazy(() => import("@/components/3d/DNAHelix"));
+const OrbitingStar = lazy(() => import("@/components/3d/OrbitingStar"));
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -43,7 +44,7 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="p-6 max-w-7xl mx-auto space-y-6">
-        {/* Greeting */}
+        {/* Greeting with 3D */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
           <div className="glass-card rounded-2xl p-8 relative overflow-hidden">
             <img
@@ -51,16 +52,21 @@ export default function Dashboard() {
               alt="NDA"
               className="absolute inset-0 w-full h-full object-cover opacity-10"
             />
-            <div className="relative z-10">
-              <p className="font-mono text-xs text-primary tracking-widest mb-1">
-                {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-              </p>
-              <h1 className="font-display text-3xl md:text-4xl text-gradient-gold mb-2">
-                {t("dashboard.welcome")}, {name}! 🎖️
-              </h1>
-              <p className="text-muted-foreground">
-                {attempt} attempt • {targetExam} • {service.charAt(0).toUpperCase() + service.slice(1)}
-              </p>
+            <div className="relative z-10 flex items-center justify-between">
+              <div>
+                <p className="font-mono text-xs text-primary tracking-widest mb-1">
+                  {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                </p>
+                <h1 className="font-display text-3xl md:text-4xl text-gradient-gold mb-2">
+                  {t("dashboard.welcome")}, {name}! 🎖️
+                </h1>
+                <p className="text-muted-foreground">
+                  {attempt} attempt • {targetExam} • {service.charAt(0).toUpperCase() + service.slice(1)}
+                </p>
+              </div>
+              <Suspense fallback={null}>
+                <OrbitingStar className="w-32 h-32 hidden lg:block" />
+              </Suspense>
             </div>
           </div>
         </motion.div>
@@ -89,33 +95,50 @@ export default function Dashboard() {
           <DailyMotivation />
         </motion.div>
 
-        <Suspense fallback={null}>
-          <DNAHelix className="h-48 w-full hidden md:block" />
-        </Suspense>
-
-        {/* Live Stats row */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[
-            { icon: BarChart3, label: t("dashboard.dna_score"), value: `${score}%`, color: "text-primary", href: "/dna-score" },
-            { icon: Flame, label: t("dashboard.streak"), value: `${breakdown.streak > 0 ? Math.round(breakdown.streak * 0.3) : 0}`, color: "text-destructive", href: "/activity" },
-            { icon: Target, label: "Accuracy", value: `${breakdown.accuracyTrend}%`, color: "text-success", href: "/dna-score" },
-          ].map((stat, i) => (
-            <motion.div key={i} initial="hidden" animate="visible" variants={fadeUp} custom={i + 3}>
-              <Link to={stat.href}>
-                <Card className="glass-card border-border hover:scale-[1.02] transition-transform cursor-pointer">
-                  <CardContent className="p-4 text-center">
-                    <stat.icon className={`h-6 w-6 ${stat.color} mx-auto mb-2`} />
-                    <p className="font-display text-3xl">{stat.value}</p>
-                    <p className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase">{stat.label}</p>
-                  </CardContent>
-                </Card>
-              </Link>
+        {/* DNA Helix + Stats */}
+        <div className="grid md:grid-cols-2 gap-6">
+          <Suspense fallback={null}>
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3}>
+              <Card className="glass-card border-border overflow-hidden">
+                <CardContent className="p-0">
+                  <DNAHelix className="h-48 w-full" />
+                  <div className="p-4 text-center">
+                    <p className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase">Your DNA Score</p>
+                    <p className="font-display text-5xl text-gradient-gold">{score}%</p>
+                    <Link to="/dna-score">
+                      <Button size="sm" variant="ghost" className="text-primary mt-2 text-xs">View Breakdown →</Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
-          ))}
+          </Suspense>
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 gap-4 content-start">
+            {[
+              { icon: BarChart3, label: t("dashboard.dna_score"), value: `${score}%`, color: "text-primary", href: "/dna-score" },
+              { icon: Flame, label: t("dashboard.streak"), value: `${breakdown.streak > 0 ? Math.round(breakdown.streak * 0.3) : 0}`, color: "text-destructive", href: "/activity" },
+              { icon: Target, label: "Accuracy", value: `${breakdown.accuracyTrend}%`, color: "text-success", href: "/dna-score" },
+              { icon: Brain, label: "Consistency", value: `${breakdown.consistency}%`, color: "text-accent", href: "/activity" },
+            ].map((stat, i) => (
+              <motion.div key={i} initial="hidden" animate="visible" variants={fadeUp} custom={i + 4}>
+                <Link to={stat.href}>
+                  <Card className="glass-card border-border hover:scale-[1.03] transition-transform cursor-pointer">
+                    <CardContent className="p-4 text-center">
+                      <stat.icon className={`h-5 w-5 ${stat.color} mx-auto mb-1.5`} />
+                      <p className="font-display text-2xl">{stat.value}</p>
+                      <p className="font-mono text-[8px] text-muted-foreground tracking-widest uppercase">{stat.label}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
-        {/* AI Plan placeholder */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={6}>
+        {/* AI Plan */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={8}>
           <Card className="glass-card border-border">
             <CardHeader>
               <CardTitle className="font-display text-xl text-gradient-gold flex items-center gap-2">
@@ -139,19 +162,19 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Achievements Summary */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={7}>
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={9}>
           <AchievementsSummary />
         </motion.div>
 
         {/* Quick actions */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={8}>
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={10}>
           <h2 className="font-display text-xl text-gradient-gold mb-4">{t("dashboard.quick_actions")}</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {quickActions.map((action, i) => (
               <Link key={i} to={action.href}>
-                <Card className="glass-card border-border hover:scale-[1.02] transition-transform cursor-pointer">
+                <Card className="glass-card border-border hover:scale-[1.03] transition-transform cursor-pointer group">
                   <CardContent className="p-6 text-center">
-                    <action.icon className={`h-8 w-8 ${action.color} mx-auto mb-3`} />
+                    <action.icon className={`h-8 w-8 ${action.color} mx-auto mb-3 group-hover:scale-110 transition-transform`} />
                     <p className="font-semibold text-sm">{action.title}</p>
                   </CardContent>
                 </Card>
