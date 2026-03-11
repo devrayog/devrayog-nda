@@ -9,6 +9,7 @@ import {
   Trophy, Zap, Calendar, FileText, Star, HelpCircle, ArrowRight, Sparkles, Lightbulb,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { supabase } from "@/integrations/supabase/client";
 
 const sections = [
   {
