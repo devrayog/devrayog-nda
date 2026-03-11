@@ -314,6 +314,22 @@ If you marked "I am a girl candidate" during signup, you'll see additional perso
 ];
 
 export default function Guide() {
+  const [dbSections, setDbSections] = useState<{ title: string; icon: any; content: string }[] | null>(null);
+
+  useEffect(() => {
+    supabase.from("guide_sections").select("*").eq("is_active", true).order("sort_order")
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setDbSections(data.map((s: any) => ({
+            title: s.title,
+            icon: BookOpen, // fallback icon
+            content: s.content,
+          })));
+        }
+      });
+  }, []);
+
+  const activeSections = dbSections && dbSections.length > 0 ? dbSections : sections;
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
