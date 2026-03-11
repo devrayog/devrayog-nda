@@ -235,10 +235,33 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
             return (
               <Card key={i} className={`glass-card ${userAns === undefined ? "border-gold" : isCorrect ? "border-success/50" : "border-destructive/50"}`}>
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <p className="font-bold text-sm">Q{i + 1}. {q.question}</p>
-                    <BookmarkButton itemId={`mock-${q.id}`} itemType="mock_question" title={q.question} />
-                  </div>
+                    <div className="flex items-start justify-between mb-2">
+                      <p className="font-bold text-sm">Q{i + 1}. {q.question}</p>
+                      <div className="flex items-center gap-1">
+                        <QuestionReportButton
+                          questionText={q.question}
+                          options={{ a: q.options[0], b: q.options[1], c: q.options[2], d: q.options[3] }}
+                          correctAnswer={String.fromCharCode(97 + q.correct)}
+                          userAnswer={userAns !== undefined ? String.fromCharCode(97 + userAns) : ""}
+                          explanation={q.explanation}
+                          source="mock_test"
+                        />
+                        <BookmarkButton itemId={`mock-${q.id}`} itemType="mock_question" title={q.question} />
+                        {userAns !== undefined && userAns !== q.correct && user && (
+                          <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" title="Add to Error Log"
+                            onClick={async () => {
+                              await supabase.from("error_log").insert({
+                                user_id: user.id, question: q.question,
+                                user_answer: q.options[userAns], correct_answer: q.options[q.correct],
+                                explanation: q.explanation, subject, topic: q.topic, source: "mock_test_manual",
+                              });
+                              toast({ title: "Added to Error Log" });
+                            }}>
+                            <BookmarkPlus className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   <div className="grid grid-cols-1 gap-1 mb-2">
                     {q.options.map((opt, oi) => (
                       <div key={oi} className={`text-xs p-2 rounded ${
