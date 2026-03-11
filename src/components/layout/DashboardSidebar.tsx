@@ -97,6 +97,8 @@ const adminNav: NavItem[] = [
   { titleKey: "FAQ", icon: HelpCircle, href: "/admin/faq" },
   { titleKey: "SSB Sets", icon: Shield, href: "/admin/ssb" },
   { titleKey: "Success Stories", icon: Star, href: "/admin/success-stories" },
+  { titleKey: "Guide Editor", icon: BookOpen, href: "/admin/guide" },
+  { titleKey: "Reports", icon: HelpCircle, href: "/admin/reports" },
 ];
 
 const bottomNav: NavItem[] = [

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -8,6 +9,7 @@ import {
   Trophy, Zap, Calendar, FileText, Star, HelpCircle, ArrowRight, Sparkles, Lightbulb,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { supabase } from "@/integrations/supabase/client";
 
 const sections = [
   {
@@ -312,6 +314,22 @@ If you marked "I am a girl candidate" during signup, you'll see additional perso
 ];
 
 export default function Guide() {
+  const [dbSections, setDbSections] = useState<{ title: string; icon: any; content: string }[] | null>(null);
+
+  useEffect(() => {
+    supabase.from("guide_sections").select("*").eq("is_active", true).order("sort_order")
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setDbSections(data.map((s: any) => ({
+            title: s.title,
+            icon: BookOpen, // fallback icon
+            content: s.content,
+          })));
+        }
+      });
+  }, []);
+
+  const activeSections = dbSections && dbSections.length > 0 ? dbSections : sections;
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -349,7 +367,7 @@ export default function Guide() {
 
           {/* All Sections */}
           <Accordion type="multiple" className="space-y-3">
-            {sections.map((section, i) => (
+            {activeSections.map((section, i) => (
               <AccordionItem key={i} value={`section-${i}`} className="border border-border/50 rounded-xl px-1 data-[state=open]:border-primary/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline">
                   <div className="flex items-center gap-3 text-left">

@@ -5,9 +5,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Clock, ChevronLeft, ChevronRight, Flag, Brain, CheckCircle, XCircle, Bookmark, Eye } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight, Flag, Brain, CheckCircle, XCircle, Bookmark, Eye, AlertTriangle, BookmarkPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import BookmarkButton from "@/components/BookmarkButton";
+import QuestionReportButton from "@/components/QuestionReportButton";
 import { motion } from "framer-motion";
 
 interface Question {
@@ -234,10 +235,33 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
             return (
               <Card key={i} className={`glass-card ${userAns === undefined ? "border-gold" : isCorrect ? "border-success/50" : "border-destructive/50"}`}>
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <p className="font-bold text-sm">Q{i + 1}. {q.question}</p>
-                    <BookmarkButton itemId={`mock-${q.id}`} itemType="mock_question" title={q.question} />
-                  </div>
+                    <div className="flex items-start justify-between mb-2">
+                      <p className="font-bold text-sm">Q{i + 1}. {q.question}</p>
+                      <div className="flex items-center gap-1">
+                        <QuestionReportButton
+                          questionText={q.question}
+                          options={{ a: q.options[0], b: q.options[1], c: q.options[2], d: q.options[3] }}
+                          correctAnswer={String.fromCharCode(97 + q.correct)}
+                          userAnswer={userAns !== undefined ? String.fromCharCode(97 + userAns) : ""}
+                          explanation={q.explanation}
+                          source="mock_test"
+                        />
+                        <BookmarkButton itemId={`mock-${q.id}`} itemType="mock_question" title={q.question} />
+                        {userAns !== undefined && userAns !== q.correct && user && (
+                          <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" title="Add to Error Log"
+                            onClick={async () => {
+                              await supabase.from("error_log").insert({
+                                user_id: user.id, question: q.question,
+                                user_answer: q.options[userAns], correct_answer: q.options[q.correct],
+                                explanation: q.explanation, subject, topic: q.topic, source: "mock_test_manual",
+                              });
+                              toast({ title: "Added to Error Log" });
+                            }}>
+                            <BookmarkPlus className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   <div className="grid grid-cols-1 gap-1 mb-2">
                     {q.options.map((opt, oi) => (
                       <div key={oi} className={`text-xs p-2 rounded ${
@@ -320,6 +344,13 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
                 >
                   <Eye className={`h-4 w-4 ${markedForReview.has(q.id) ? "text-warning" : "text-muted-foreground"}`} />
                 </Button>
+                <QuestionReportButton
+                  questionText={q.question}
+                  options={{ a: q.options[0], b: q.options[1], c: q.options[2], d: q.options[3] }}
+                  correctAnswer={String.fromCharCode(97 + q.correct)}
+                  explanation={q.explanation}
+                  source="mock_test"
+                />
                 <BookmarkButton itemId={`mock-${q.id}`} itemType="mock_question" title={q.question} size="icon" />
               </div>
             </div>
