@@ -168,12 +168,7 @@ export default function AdminDashboard() {
 
           <TabsContent value="settings" className="space-y-4 mt-4">
             <h2 className="font-display text-xl text-gradient-gold">ADMIN SETTINGS</h2>
-            <Card className="glass-card border-gold">
-              <CardHeader><CardTitle className="text-sm">Platform Configuration</CardTitle></CardHeader>
-              <CardContent>
-                <p className="text-xs text-muted-foreground">All AI features are powered by Lovable AI Gateway. No additional configuration needed.</p>
-              </CardContent>
-            </Card>
+            <AdminAPIKeySettings />
           </TabsContent>
         </Tabs>
       </div>
