@@ -338,6 +338,95 @@ export type Database = {
         }
         Relationships: []
       }
+      guide_sections: {
+        Row: {
+          content: string
+          created_at: string
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          sort_order: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mock_test_questions: {
+        Row: {
+          correct_option: string
+          created_at: string
+          difficulty: string | null
+          explanation: string | null
+          id: string
+          is_active: boolean | null
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question: string
+          sort_order: number | null
+          test_id: string
+        }
+        Insert: {
+          correct_option?: string
+          created_at?: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          is_active?: boolean | null
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question: string
+          sort_order?: number | null
+          test_id: string
+        }
+        Update: {
+          correct_option?: string
+          created_at?: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          is_active?: boolean | null
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question?: string
+          sort_order?: number | null
+          test_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mock_test_questions_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notes: {
         Row: {
           content: string | null
@@ -630,6 +719,54 @@ export type Database = {
           subject?: string
           topic?: string | null
           year?: number
+        }
+        Relationships: []
+      }
+      question_reports: {
+        Row: {
+          admin_notes: string | null
+          correct_answer: string | null
+          created_at: string
+          explanation: string | null
+          id: string
+          issue_description: string | null
+          issue_type: string
+          options: Json | null
+          question_text: string
+          source: string | null
+          status: string | null
+          user_answer: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          correct_answer?: string | null
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          issue_description?: string | null
+          issue_type?: string
+          options?: Json | null
+          question_text: string
+          source?: string | null
+          status?: string | null
+          user_answer?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          correct_answer?: string | null
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          issue_description?: string | null
+          issue_type?: string
+          options?: Json | null
+          question_text?: string
+          source?: string | null
+          status?: string | null
+          user_answer?: string | null
+          user_id?: string
         }
         Relationships: []
       }
