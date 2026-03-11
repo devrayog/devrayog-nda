@@ -367,7 +367,7 @@ export default function Guide() {
 
           {/* All Sections */}
           <Accordion type="multiple" className="space-y-3">
-            {sections.map((section, i) => (
+            {activeSections.map((section, i) => (
               <AccordionItem key={i} value={`section-${i}`} className="border border-border/50 rounded-xl px-1 data-[state=open]:border-primary/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline">
                   <div className="flex items-center gap-3 text-left">
