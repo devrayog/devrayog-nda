@@ -45,10 +45,19 @@ export default function DailyMotivation() {
         },
       },
     }).then(({ data, error }) => {
-      const text = data?.motivation || "Keep pushing, cadet. Your dream is waiting. 🎖️";
-      if (error) console.error("Motivation error:", error);
+      const fallback = "Keep pushing, cadet. Your dream is waiting. Every hour you invest today brings you closer to wearing that uniform. 🎖️";
+      if (error) {
+        console.warn("Motivation API unavailable:", error);
+        setMotivation(fallback);
+        setLoading(false);
+        return;
+      }
+      const text = data?.motivation || fallback;
       setMotivation(text);
       localStorage.setItem("dna_motivation", JSON.stringify({ text, ts: Date.now() }));
+      setLoading(false);
+    }).catch(() => {
+      setMotivation("Stay focused, cadet. Discipline today, victory tomorrow. 🎖️");
       setLoading(false);
     });
   }, [user]);
