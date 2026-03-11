@@ -156,6 +156,8 @@ export default function AdminDashboard() {
     { href: "/mentors", icon: Users, title: "Mentors", desc: "Add & manage mentor profiles", color: "text-primary" },
     { href: "/tests", icon: FileText, title: "Mock Tests", desc: "Add admin mock test sets", color: "text-accent" },
     { href: "/formulas", icon: BookOpen, title: "Formulas", desc: "Add formulas with categories", color: "text-warning" },
+    { href: "/admin/guide", icon: BookOpen, title: "Guide Editor", desc: "Edit the platform guide page", color: "text-success" },
+    { href: "/admin/reports", icon: MessageSquare, title: "Question Reports", desc: "View user-reported issues", color: "text-destructive" },
   ];
 
   return (
