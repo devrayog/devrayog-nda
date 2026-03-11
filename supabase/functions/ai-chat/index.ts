@@ -1,17 +1,44 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+async function getAIConfig() {
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  
+  // Check for custom admin API key
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const sb = createClient(supabaseUrl, supabaseKey);
+    const { data } = await sb.from("admin_settings").select("value").eq("key", "custom_ai_api_key").single();
+    if (data?.value && data.value.trim()) {
+      // Detect provider from key format
+      if (data.value.startsWith("sk-")) {
+        return { apiKey: data.value, url: "https://api.openai.com/v1/chat/completions", model: "gpt-4o-mini" };
+      } else if (data.value.startsWith("AIza")) {
+        return { apiKey: data.value, url: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", model: "gemini-2.0-flash" };
+      }
+      // Default: treat as OpenAI-compatible
+      return { apiKey: data.value, url: "https://api.openai.com/v1/chat/completions", model: "gpt-4o-mini" };
+    }
+  } catch (e) {
+    console.log("No custom key, using default:", e);
+  }
+  
+  if (!LOVABLE_API_KEY) throw new Error("No AI API key configured");
+  return { apiKey: LOVABLE_API_KEY, url: "https://ai.gateway.lovable.dev/v1/chat/completions", model: "google/gemini-3-flash-preview" };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { messages, userContext, imageUrl } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const aiConfig = await getAIConfig();
 
     const ctx = userContext || {};
     const lang = ctx.language === "hi" ? "Hinglish (mix of Hindi and English)" : "English";
