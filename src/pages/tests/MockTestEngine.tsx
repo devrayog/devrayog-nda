@@ -344,6 +344,13 @@ Make questions NDA exam difficulty level. Mix easy, medium, and hard. No markdow
                 >
                   <Eye className={`h-4 w-4 ${markedForReview.has(q.id) ? "text-warning" : "text-muted-foreground"}`} />
                 </Button>
+                <QuestionReportButton
+                  questionText={q.question}
+                  options={{ a: q.options[0], b: q.options[1], c: q.options[2], d: q.options[3] }}
+                  correctAnswer={String.fromCharCode(97 + q.correct)}
+                  explanation={q.explanation}
+                  source="mock_test"
+                />
                 <BookmarkButton itemId={`mock-${q.id}`} itemType="mock_question" title={q.question} size="icon" />
               </div>
             </div>
