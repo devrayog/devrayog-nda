@@ -12,6 +12,73 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import AdminBroadcast from "@/components/admin/AdminBroadcast";
 
+function AdminAPIKeySettings() {
+  const { toast } = useToast();
+  const [apiKey, setApiKey] = useState("");
+  const [savedKey, setSavedKey] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    supabase.from("admin_settings").select("value").eq("key", "custom_ai_api_key").single()
+      .then(({ data }) => { if (data?.value) { setSavedKey(data.value); setApiKey(data.value); } });
+  }, []);
+
+  const saveKey = async () => {
+    setSaving(true);
+    const { data: existing } = await supabase.from("admin_settings").select("id").eq("key", "custom_ai_api_key").single();
+    if (existing) {
+      await supabase.from("admin_settings").update({ value: apiKey }).eq("key", "custom_ai_api_key");
+    } else {
+      await supabase.from("admin_settings").insert({ key: "custom_ai_api_key", value: apiKey });
+    }
+    setSavedKey(apiKey);
+    setSaving(false);
+    toast({ title: apiKey ? "AI API key saved! Platform will use your custom key." : "Custom key removed. Using default." });
+  };
+
+  const removeKey = async () => {
+    setSaving(true);
+    await supabase.from("admin_settings").update({ value: "" }).eq("key", "custom_ai_api_key");
+    setApiKey("");
+    setSavedKey("");
+    setSaving(false);
+    toast({ title: "Custom API key removed. Using default AI." });
+  };
+
+  return (
+    <Card className="glass-card border-gold">
+      <CardHeader><CardTitle className="text-sm">🔑 Custom AI API Key</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-xs text-muted-foreground">
+          By default, the platform uses the built-in AI. If you add your own API key (OpenAI, Gemini, etc.), 
+          all AI features across the platform will use YOUR key instead.
+        </p>
+        <div className="flex gap-2">
+          <Input 
+            type="password" 
+            value={apiKey} 
+            onChange={e => setApiKey(e.target.value)} 
+            placeholder="sk-... or AIza..." 
+            className="font-mono text-xs"
+          />
+          <Button onClick={saveKey} disabled={saving} className="bg-gradient-gold text-primary-foreground font-bold shrink-0">
+            {saving ? "..." : "Save"}
+          </Button>
+        </div>
+        {savedKey && (
+          <div className="flex items-center justify-between bg-success/10 p-2 rounded text-xs">
+            <span className="text-success font-bold">✓ Custom key active: {savedKey.slice(0, 8)}...</span>
+            <Button size="sm" variant="ghost" className="text-destructive text-xs h-6" onClick={removeKey}>Remove</Button>
+          </div>
+        )}
+        <p className="text-[10px] text-muted-foreground">
+          Supported: OpenAI (sk-...), Google Gemini (AIza...). The key is stored securely in admin settings.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
