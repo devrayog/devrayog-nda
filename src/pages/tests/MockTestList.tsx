@@ -137,9 +137,18 @@ export default function MockTestList() {
                       <p className="text-xs text-muted-foreground">{test.body}</p>
                       <Badge variant="outline" className="text-[9px] mt-1">{test.category}</Badge>
                     </div>
-                    <Link to={`/tests/take/admin-${test.id}?subject=${test.category}&questions=50&time=60`}>
-                      <Button size="sm" className="bg-gradient-gold text-primary-foreground font-bold">Start</Button>
-                    </Link>
+                    <div className="flex flex-col gap-1">
+                      <Link to={`/tests/take/admin-${test.id}?subject=${test.category}&questions=50&time=60`}>
+                        <Button size="sm" className="bg-gradient-gold text-primary-foreground font-bold w-full">Start</Button>
+                      </Link>
+                      {isAdmin && (
+                        <Link to={`/admin/mock-questions/${test.id}`}>
+                          <Button size="sm" variant="outline" className="border-gold text-xs w-full">
+                            <Plus className="h-3 w-3 mr-1" /> Questions
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>

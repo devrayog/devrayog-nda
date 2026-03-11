@@ -5,9 +5,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Clock, ChevronLeft, ChevronRight, Flag, Brain, CheckCircle, XCircle, Bookmark, Eye } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight, Flag, Brain, CheckCircle, XCircle, Bookmark, Eye, AlertTriangle, BookmarkPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import BookmarkButton from "@/components/BookmarkButton";
+import QuestionReportButton from "@/components/QuestionReportButton";
 import { motion } from "framer-motion";
 
 interface Question {
