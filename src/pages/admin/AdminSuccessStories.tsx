@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Trophy, Plus, Trash2, Save, Lock } from "lucide-react";
+import ImageUploadButton from "@/components/ImageUploadButton";
 import { motion } from "framer-motion";
 
 export default function AdminSuccessStories() {
