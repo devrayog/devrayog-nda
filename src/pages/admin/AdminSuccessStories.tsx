@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Trophy, Plus, Trash2, Save, Lock } from "lucide-react";
+import ImageUploadButton from "@/components/ImageUploadButton";
 import { motion } from "framer-motion";
 
 export default function AdminSuccessStories() {
@@ -16,7 +17,7 @@ export default function AdminSuccessStories() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [checking, setChecking] = useState(true);
   const [stories, setStories] = useState<any[]>([]);
-  const [form, setForm] = useState({ name: "", branch: "", batch: "", state: "", quote: "", tips: "", attempts: "1", highlight: "" });
+  const [form, setForm] = useState({ name: "", branch: "", batch: "", state: "", quote: "", tips: "", attempts: "1", highlight: "", avatar_url: "" });
 
   useEffect(() => {
     const check = async () => {
@@ -40,8 +41,9 @@ export default function AdminSuccessStories() {
     await supabase.from("success_stories").insert({
       name: form.name.trim(), branch: form.branch, batch: form.batch, state: form.state,
       quote: form.quote, tips: form.tips.split("\n").filter(Boolean), attempts: parseInt(form.attempts) || 1, highlight: form.highlight,
+      avatar_url: form.avatar_url || null,
     } as any);
-    setForm({ name: "", branch: "", batch: "", state: "", quote: "", tips: "", attempts: "1", highlight: "" });
+    setForm({ name: "", branch: "", batch: "", state: "", quote: "", tips: "", attempts: "1", highlight: "", avatar_url: "" });
     toast({ title: "Story added!" });
     load();
   };
@@ -76,6 +78,13 @@ export default function AdminSuccessStories() {
             </div>
             <Textarea placeholder="Quote" value={form.quote} onChange={e => setForm(f => ({ ...f, quote: e.target.value }))} className="bg-card border-border" rows={2} />
             <Textarea placeholder="Tips (one per line)" value={form.tips} onChange={e => setForm(f => ({ ...f, tips: e.target.value }))} className="bg-card border-border" rows={3} />
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Photo (upload or paste URL)</p>
+              <div className="flex gap-2 items-start">
+                <ImageUploadButton value={form.avatar_url || null} onChange={url => setForm(f => ({ ...f, avatar_url: url || "" }))} folder="success-stories" />
+                <Input placeholder="Or paste image URL" value={form.avatar_url} onChange={e => setForm(f => ({ ...f, avatar_url: e.target.value }))} className="bg-card border-border text-xs" />
+              </div>
+            </div>
             <Button onClick={handleAdd} className="bg-gradient-gold text-primary-foreground font-bold">
               <Save className="h-4 w-4 mr-1" /> Add Story
             </Button>
@@ -86,6 +95,7 @@ export default function AdminSuccessStories() {
           <motion.div key={s.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
             <Card className="glass-card border-gold">
               <CardContent className="p-4 flex items-start gap-3">
+                {s.avatar_url && <img src={s.avatar_url} alt="" className="h-12 w-12 rounded-full object-cover shrink-0" />}
                 <div className="flex-1">
                   <h3 className="font-bold text-sm">{s.name} — {s.branch}</h3>
                   <p className="text-xs text-muted-foreground">{s.quote}</p>

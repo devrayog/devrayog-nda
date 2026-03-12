@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle, Flag } from "lucide-react";
+import ImageUploadButton from "@/components/ImageUploadButton";
 
 interface Props {
   questionText: string;
@@ -27,6 +28,7 @@ export default function QuestionReportButton({
   const [open, setOpen] = useState(false);
   const [issueType, setIssueType] = useState("wrong_answer");
   const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const submit = async () => {
@@ -42,11 +44,13 @@ export default function QuestionReportButton({
       source,
       issue_type: issueType,
       issue_description: description,
+      image_url: imageUrl,
     } as any);
     if (error) toast({ title: "Error submitting report", variant: "destructive" });
     else toast({ title: "Report submitted! Admin will review it." });
     setOpen(false);
     setDescription("");
+    setImageUrl(null);
     setSubmitting(false);
   };
 
@@ -88,6 +92,12 @@ export default function QuestionReportButton({
             <div>
               <label className="text-xs text-muted-foreground">Describe the issue</label>
               <Textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="What's wrong with this question? What should be the correct answer?" rows={3} />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">Screenshot (optional)</label>
+              <div className="mt-1">
+                <ImageUploadButton value={imageUrl} onChange={setImageUrl} folder="reports" />
+              </div>
             </div>
             <Button onClick={submit} disabled={submitting || !description} className="w-full bg-gradient-gold text-primary-foreground font-bold">
               {submitting ? "Submitting..." : "Submit Report"}

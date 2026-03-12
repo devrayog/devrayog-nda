@@ -1,25 +1,29 @@
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Heart, Shield, Trophy, Brain, Users, Star, Sparkles, Target, BookOpen, Dumbbell } from "lucide-react";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.06, duration: 0.4 } }),
 };
 
-const SECTIONS = [
-  { icon: Shield, title: "Preparation Guide", desc: "Same exam, tips specific to girl candidates including physical standards", color: "text-pink-400", href: "/study-plan" },
-  { icon: Users, title: "Girls Community", desc: "Connect with other girl NDA aspirants in a safe space", color: "text-pink-300", href: "/community" },
-  { icon: Trophy, title: "Success Stories", desc: "Women who made it through NDA — be inspired", color: "text-pink-500", href: "/success-stories" },
-  { icon: Dumbbell, title: "Fitness Standards", desc: "Physical requirements specific to female candidates", color: "text-pink-400", href: "/fitness/medical" },
-  { icon: BookOpen, title: "Study Resources", desc: "Curated resources for NDA preparation", color: "text-pink-300", href: "/resources" },
-  { icon: Target, title: "SSB Preparation", desc: "SSB tips and practice for girl candidates", color: "text-pink-500", href: "/ssb" },
+const ICON_MAP: Record<string, any> = { Heart, Shield, Trophy, Brain, Users, Star, Sparkles, Target, BookOpen, Dumbbell };
+
+const DEFAULT_SECTIONS = [
+  { icon: "Shield", title: "Preparation Guide", desc: "Same exam, tips specific to girl candidates including physical standards", link: "/study-plan" },
+  { icon: "Users", title: "Girls Community", desc: "Connect with other girl NDA aspirants in a safe space", link: "/community" },
+  { icon: "Trophy", title: "Success Stories", desc: "Women who made it through NDA — be inspired", link: "/success-stories" },
+  { icon: "Dumbbell", title: "Fitness Standards", desc: "Physical requirements specific to female candidates", link: "/fitness/medical" },
+  { icon: "BookOpen", title: "Study Resources", desc: "Curated resources for NDA preparation", link: "/resources" },
+  { icon: "Target", title: "SSB Preparation", desc: "SSB tips and practice for girl candidates", link: "/ssb" },
 ];
 
-const FACTS = [
+const DEFAULT_FACTS = [
   "Since 2022, girls can join NDA — you're making history!",
   "The written exam is exactly the same for boys and girls",
   "Physical standards are adjusted — but you still need to be fit",
@@ -27,11 +31,34 @@ const FACTS = [
   "Women cadets train at the same NDA campus in Khadakwasla, Pune",
 ];
 
+interface DynamicContent {
+  id: string; type: string; title: string; body: string; image_url: string | null;
+  link: string; icon: string; sort_order: number;
+}
+
 export default function GirlsNDA() {
+  const [dynamicContent, setDynamicContent] = useState<DynamicContent[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    supabase.from("girls_nda_content").select("*").eq("is_active", true).order("sort_order")
+      .then(({ data }) => { setDynamicContent((data as any) || []); setLoaded(true); });
+  }, []);
+
+  const heroes = dynamicContent.filter(c => c.type === "hero");
+  const cards = dynamicContent.filter(c => c.type === "card");
+  const facts = dynamicContent.filter(c => c.type === "fact");
+  const quotes = dynamicContent.filter(c => c.type === "quote");
+  const sections = dynamicContent.filter(c => c.type === "section");
+
+  // Use dynamic content if available, else defaults
+  const displayCards = cards.length > 0 ? cards : DEFAULT_SECTIONS.map((s, i) => ({ id: `default-${i}`, type: "card", title: s.title, body: s.desc, image_url: null, link: s.link, icon: s.icon, sort_order: i }));
+  const displayFacts = facts.length > 0 ? facts.map(f => f.title) : DEFAULT_FACTS;
+
   return (
     <DashboardLayout>
       <div className="p-6 max-w-4xl mx-auto space-y-6">
-        {/* Header with pink theme */}
+        {/* Header */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 rounded-xl bg-gradient-to-br from-pink-500/20 to-pink-300/20">
@@ -44,20 +71,33 @@ export default function GirlsNDA() {
           </div>
         </motion.div>
 
-        {/* Hero Card */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}>
-          <Card className="overflow-hidden border-pink-500/30 bg-gradient-to-br from-pink-500/10 via-background to-rose-500/10">
-            <CardContent className="p-6 relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <Sparkles className="h-8 w-8 text-pink-400 mb-3" />
-              <h2 className="font-display text-2xl bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent mb-3">GIRLS IN NDA — MAKING HISTORY</h2>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                Since 2022, girls can join NDA. You're part of a historic batch of women who will serve the nation as officers.
-                The preparation is the same — Maths, GAT, English, SSB. But the journey has its unique challenges and this section is for YOU.
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
+        {/* Hero Cards (dynamic) */}
+        {heroes.length > 0 ? heroes.map((hero, i) => (
+          <motion.div key={hero.id} initial="hidden" animate="visible" variants={fadeUp} custom={i + 1}>
+            <Card className="overflow-hidden border-pink-500/30 bg-gradient-to-br from-pink-500/10 via-background to-rose-500/10">
+              <CardContent className="p-6 relative">
+                {hero.image_url && <img src={hero.image_url} alt="" className="w-full h-40 object-cover rounded-lg mb-4" />}
+                <Sparkles className="h-8 w-8 text-pink-400 mb-3" />
+                <h2 className="font-display text-2xl bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent mb-3">{hero.title}</h2>
+                <p className="text-sm leading-relaxed text-muted-foreground">{hero.body}</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )) : (
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}>
+            <Card className="overflow-hidden border-pink-500/30 bg-gradient-to-br from-pink-500/10 via-background to-rose-500/10">
+              <CardContent className="p-6 relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                <Sparkles className="h-8 w-8 text-pink-400 mb-3" />
+                <h2 className="font-display text-2xl bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent mb-3">GIRLS IN NDA — MAKING HISTORY</h2>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  Since 2022, girls can join NDA. You're part of a historic batch of women who will serve the nation as officers.
+                  The preparation is the same — Maths, GAT, English, SSB. But the journey has its unique challenges and this section is for YOU.
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
 
         {/* Key Facts */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
@@ -65,11 +105,11 @@ export default function GirlsNDA() {
             <CardContent className="p-5">
               <h3 className="font-display text-lg text-pink-400 mb-3">KEY FACTS FOR GIRL CANDIDATES</h3>
               <div className="space-y-2">
-                {FACTS.map((fact, i) => (
+                {displayFacts.map((fact, i) => (
                   <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }}
                     className="flex items-start gap-2">
                     <Star className="h-3 w-3 text-pink-400 mt-1 shrink-0 fill-pink-400" />
-                    <p className="text-xs">{fact}</p>
+                    <p className="text-xs">{typeof fact === "string" ? fact : (fact as any).title}</p>
                   </motion.div>
                 ))}
               </div>
@@ -77,46 +117,76 @@ export default function GirlsNDA() {
           </Card>
         </motion.div>
 
+        {/* Dynamic Sections */}
+        {sections.map((section, i) => (
+          <motion.div key={section.id} initial="hidden" animate="visible" variants={fadeUp} custom={i + 3}>
+            <Card className="border-pink-500/20 bg-gradient-to-br from-pink-500/5 to-transparent">
+              <CardContent className="p-5">
+                {section.image_url && <img src={section.image_url} alt="" className="w-full h-40 object-cover rounded-lg mb-4" />}
+                <h3 className="font-display text-lg text-pink-400 mb-2">{section.title}</h3>
+                <p className="text-sm text-muted-foreground whitespace-pre-line">{section.body}</p>
+                {section.link && <Link to={section.link}><Button size="sm" className="mt-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold">Learn More</Button></Link>}
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+
         {/* Navigation Cards */}
         <div className="grid gap-3 md:grid-cols-2">
-          {SECTIONS.map((item, i) => (
-            <motion.div key={i} initial="hidden" animate="visible" variants={fadeUp} custom={i + 3}>
-              <Link to={item.href}>
-                <Card className="border-pink-500/20 hover:border-pink-400/50 transition-all hover:scale-[1.01] cursor-pointer bg-gradient-to-br from-pink-500/5 to-transparent">
-                  <CardContent className="p-5 flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-pink-500/10">
-                      <item.icon className={`h-5 w-5 ${item.color}`} />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm">{item.title}</h3>
-                      <p className="text-xs text-muted-foreground">{item.desc}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
+          {displayCards.map((item, i) => {
+            const IconComp = ICON_MAP[item.icon] || Heart;
+            return (
+              <motion.div key={item.id} initial="hidden" animate="visible" variants={fadeUp} custom={i + 3}>
+                <Link to={item.link || "#"}>
+                  <Card className="border-pink-500/20 hover:border-pink-400/50 transition-all hover:scale-[1.01] cursor-pointer bg-gradient-to-br from-pink-500/5 to-transparent">
+                    <CardContent className="p-5 flex items-center gap-4">
+                      {item.image_url ? (
+                        <img src={item.image_url} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                      ) : (
+                        <div className="p-2 rounded-lg bg-pink-500/10">
+                          <IconComp className="h-5 w-5 text-pink-400" />
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="font-bold text-sm">{item.title}</h3>
+                        <p className="text-xs text-muted-foreground">{item.body}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
 
+        {/* Dynamic Quotes */}
+        {quotes.length > 0 ? quotes.map((q, i) => (
+          <motion.div key={q.id} initial="hidden" animate="visible" variants={fadeUp} custom={10 + i}>
+            <Card className="border-pink-500/20 bg-pink-500/5">
+              <CardContent className="p-6 text-center">
+                <p className="text-sm italic text-pink-300/80">"{q.title}"</p>
+                {q.body && <p className="text-xs text-muted-foreground mt-2">— {q.body}</p>}
+              </CardContent>
+            </Card>
+          </motion.div>
+        )) : (
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={11}>
+            <Card className="border-pink-500/20 bg-pink-500/5">
+              <CardContent className="p-6 text-center">
+                <p className="text-sm italic text-pink-300/80">"A woman is like a tea bag — you never know how strong she is until she gets in hot water."</p>
+                <p className="text-xs text-muted-foreground mt-2">— Eleanor Roosevelt</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         {/* CTA */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={10}>
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={12}>
           <Link to="/ai-tutor">
             <Button className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold tracking-wider shadow-lg hover:shadow-xl transition-shadow">
               <Brain className="h-4 w-4 mr-2" /> Ask AI Tutor — Girl-Specific Queries
             </Button>
           </Link>
-        </motion.div>
-
-        {/* Motivational Quote */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={11}>
-          <Card className="border-pink-500/20 bg-pink-500/5">
-            <CardContent className="p-6 text-center">
-              <p className="text-sm italic text-pink-300/80">
-                "A woman is like a tea bag — you never know how strong she is until she gets in hot water."
-              </p>
-              <p className="text-xs text-muted-foreground mt-2">— Eleanor Roosevelt</p>
-            </CardContent>
-          </Card>
         </motion.div>
       </div>
     </DashboardLayout>

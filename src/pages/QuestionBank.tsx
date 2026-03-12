@@ -3,7 +3,8 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BookOpen, CheckCircle, XCircle, Brain, RotateCcw, Trophy, ChevronRight } from "lucide-react";
+import { BookOpen, CheckCircle, XCircle, Brain, RotateCcw, Trophy, ChevronRight, BookmarkPlus } from "lucide-react";
+import QuestionReportButton from "@/components/QuestionReportButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -176,11 +177,38 @@ export default function QuestionBank() {
                     <motion.div key={currentQ.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                       <Card className={`glass-card border-gold ${revealed.has(currentQ.id) ? (answers[currentQ.id] === currentQ.correct_option ? "ring-1 ring-success/30" : "ring-1 ring-destructive/30") : ""}`}>
                         <CardContent className="p-5">
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="text-xs font-mono text-muted-foreground">Q{currentIdx + 1}/{questions.length}</span>
-                            <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${
-                              currentQ.difficulty === "easy" ? "bg-success/20 text-success" : currentQ.difficulty === "hard" ? "bg-destructive/20 text-destructive" : "bg-accent/20 text-accent"
-                            }`}>{currentQ.difficulty}</span>
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-mono text-muted-foreground">Q{currentIdx + 1}/{questions.length}</span>
+                              <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${
+                                currentQ.difficulty === "easy" ? "bg-success/20 text-success" : currentQ.difficulty === "hard" ? "bg-destructive/20 text-destructive" : "bg-accent/20 text-accent"
+                              }`}>{currentQ.difficulty}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <QuestionReportButton
+                                questionText={currentQ.question}
+                                options={{ a: currentQ.option_a, b: currentQ.option_b, c: currentQ.option_c, d: currentQ.option_d }}
+                                correctAnswer={currentQ.correct_option}
+                                userAnswer={answers[currentQ.id]}
+                                explanation={currentQ.explanation}
+                                source="question_bank"
+                              />
+                              {revealed.has(currentQ.id) && answers[currentQ.id] !== currentQ.correct_option && user && (
+                                <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" title="Add to Error Log"
+                                  onClick={async () => {
+                                    const topic = topics.find(t => t.id === currentQ.topic_id);
+                                    await supabase.from("error_log").insert({
+                                      user_id: user.id, question: currentQ.question,
+                                      user_answer: currentQ[`option_${answers[currentQ.id]}` as keyof Question] as string,
+                                      correct_answer: currentQ[`option_${currentQ.correct_option}` as keyof Question] as string,
+                                      explanation: currentQ.explanation || "", subject: topic?.subject || "", topic: topic?.name || "", source: "question_bank_manual",
+                                    } as any);
+                                    toast({ title: "Added to Error Log ✓" });
+                                  }}>
+                                  <BookmarkPlus className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
                           </div>
                           <p className="text-sm font-medium mb-4">{currentQ.question}</p>
                           <div className="space-y-2">
