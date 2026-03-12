@@ -32,6 +32,8 @@ interface MockQ {
 const emptyQ = {
   question: "", option_a: "", option_b: "", option_c: "", option_d: "",
   correct_option: "a", explanation: "", difficulty: "medium", is_active: true, sort_order: 0,
+  question_image_url: null as string | null, option_a_image_url: null as string | null, option_b_image_url: null as string | null,
+  option_c_image_url: null as string | null, option_d_image_url: null as string | null, explanation_image_url: null as string | null,
 };
 
 export default function AdminMockQuestions() {
