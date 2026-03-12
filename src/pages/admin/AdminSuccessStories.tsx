@@ -41,8 +41,9 @@ export default function AdminSuccessStories() {
     await supabase.from("success_stories").insert({
       name: form.name.trim(), branch: form.branch, batch: form.batch, state: form.state,
       quote: form.quote, tips: form.tips.split("\n").filter(Boolean), attempts: parseInt(form.attempts) || 1, highlight: form.highlight,
+      avatar_url: form.avatar_url || null,
     } as any);
-    setForm({ name: "", branch: "", batch: "", state: "", quote: "", tips: "", attempts: "1", highlight: "" });
+    setForm({ name: "", branch: "", batch: "", state: "", quote: "", tips: "", attempts: "1", highlight: "", avatar_url: "" });
     toast({ title: "Story added!" });
     load();
   };
