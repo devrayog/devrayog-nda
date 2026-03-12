@@ -99,6 +99,7 @@ import AdminAI from "@/pages/admin/AdminAI";
 import AdminMockQuestions from "@/pages/admin/AdminMockQuestions";
 import AdminGuide from "@/pages/admin/AdminGuide";
 import AdminReports from "@/pages/admin/AdminReports";
+import AdminGirlsNDA from "@/pages/admin/AdminGirlsNDA";
 import QuestionBank from "@/pages/QuestionBank";
 import Premium from "@/pages/Premium";
 
