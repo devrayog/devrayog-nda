@@ -17,7 +17,7 @@ export default function AdminSuccessStories() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [checking, setChecking] = useState(true);
   const [stories, setStories] = useState<any[]>([]);
-  const [form, setForm] = useState({ name: "", branch: "", batch: "", state: "", quote: "", tips: "", attempts: "1", highlight: "" });
+  const [form, setForm] = useState({ name: "", branch: "", batch: "", state: "", quote: "", tips: "", attempts: "1", highlight: "", avatar_url: "" });
 
   useEffect(() => {
     const check = async () => {
