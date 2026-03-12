@@ -95,6 +95,7 @@ export default function AdminSuccessStories() {
           <motion.div key={s.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
             <Card className="glass-card border-gold">
               <CardContent className="p-4 flex items-start gap-3">
+                {s.avatar_url && <img src={s.avatar_url} alt="" className="h-12 w-12 rounded-full object-cover shrink-0" />}
                 <div className="flex-1">
                   <h3 className="font-bold text-sm">{s.name} — {s.branch}</h3>
                   <p className="text-xs text-muted-foreground">{s.quote}</p>

@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import ImageUploadButton from "@/components/ImageUploadButton";
 
 export default function Feedback() {
   const { user } = useAuth();
@@ -17,6 +18,7 @@ export default function Feedback() {
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const submit = async () => {
@@ -26,10 +28,12 @@ export default function Feedback() {
       user_id: user.id,
       type,
       message: `[Rating: ${rating}/5] ${message}`,
-    });
+      image_url: imageUrl,
+    } as any);
     toast({ title: "Feedback submitted! Thank you. ⭐" });
     setMessage("");
     setRating(0);
+    setImageUrl(null);
     setLoading(false);
   };
 
@@ -90,6 +94,13 @@ export default function Feedback() {
               placeholder="Tell us what's on your mind..."
               className="bg-card border-gold min-h-[120px]"
             />
+
+            {/* Photo Upload */}
+            <div>
+              <p className="text-xs text-muted-foreground mb-2">Attach a screenshot (optional)</p>
+              <ImageUploadButton value={imageUrl} onChange={setImageUrl} folder="feedback" />
+            </div>
+
             <Button
               onClick={submit}
               disabled={!message.trim() || loading || rating === 0}
