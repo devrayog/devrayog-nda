@@ -237,7 +237,17 @@ export default function PYQ() {
                             <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{q.year} {q.paper}</span>
                             <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-primary/20 text-primary">{q.subject}</span>
                             {q.topic && <span className="text-[9px] text-muted-foreground">{q.topic}</span>}
-                            <BookmarkButton itemId={q.id} itemType="pyq_question" title={q.question} />
+                            <div className="ml-auto flex items-center gap-1">
+                              <QuestionReportButton
+                                questionText={q.question}
+                                options={{ a: q.option_a, b: q.option_b, c: q.option_c, d: q.option_d }}
+                                correctAnswer={q.correct_option}
+                                userAnswer={answers[q.id]}
+                                explanation={q.explanation}
+                                source="pyq"
+                              />
+                              <BookmarkButton itemId={q.id} itemType="pyq_question" title={q.question} />
+                            </div>
                           </div>
                           <p className="text-sm font-medium mb-3">Q{i + 1}. {q.question}</p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
