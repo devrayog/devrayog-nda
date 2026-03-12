@@ -78,6 +78,13 @@ export default function AdminSuccessStories() {
             </div>
             <Textarea placeholder="Quote" value={form.quote} onChange={e => setForm(f => ({ ...f, quote: e.target.value }))} className="bg-card border-border" rows={2} />
             <Textarea placeholder="Tips (one per line)" value={form.tips} onChange={e => setForm(f => ({ ...f, tips: e.target.value }))} className="bg-card border-border" rows={3} />
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Photo (upload or paste URL)</p>
+              <div className="flex gap-2 items-start">
+                <ImageUploadButton value={form.avatar_url || null} onChange={url => setForm(f => ({ ...f, avatar_url: url || "" }))} folder="success-stories" />
+                <Input placeholder="Or paste image URL" value={form.avatar_url} onChange={e => setForm(f => ({ ...f, avatar_url: e.target.value }))} className="bg-card border-border text-xs" />
+              </div>
+            </div>
             <Button onClick={handleAdd} className="bg-gradient-gold text-primary-foreground font-bold">
               <Save className="h-4 w-4 mr-1" /> Add Story
             </Button>
