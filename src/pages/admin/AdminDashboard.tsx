@@ -92,6 +92,7 @@ export default function AdminDashboard() {
     { href: "/formulas", icon: BookOpen, title: "Formulas", desc: "Add formulas with categories", color: "text-warning" },
     { href: "/admin/guide", icon: BookOpen, title: "Guide Editor", desc: "Edit the platform guide page", color: "text-success" },
     { href: "/admin/reports", icon: MessageSquare, title: "Question Reports", desc: "View user-reported issues", color: "text-destructive" },
+    { href: "/admin/girls-nda", icon: Heart, title: "Girls NDA", desc: "Edit Girls NDA section content", color: "text-pink-400" },
   ];
 
   return (
