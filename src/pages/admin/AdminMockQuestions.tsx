@@ -121,12 +121,16 @@ export default function AdminMockQuestions() {
                 <div>
                   <label className="text-xs text-muted-foreground">Question</label>
                   <Textarea value={editing?.question || ""} onChange={e => setEditing(ed => ({ ...ed!, question: e.target.value }))} placeholder="Enter question text" rows={3} />
+                  <div className="mt-1"><ImageUploadButton value={(editing as any)?.question_image_url} onChange={url => setEditing(e => ({ ...e!, question_image_url: url }))} folder="mock-questions" /></div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div><label className="text-xs text-muted-foreground">Option A</label><Input value={editing?.option_a || ""} onChange={e => setEditing(ed => ({ ...ed!, option_a: e.target.value }))} /></div>
-                  <div><label className="text-xs text-muted-foreground">Option B</label><Input value={editing?.option_b || ""} onChange={e => setEditing(ed => ({ ...ed!, option_b: e.target.value }))} /></div>
-                  <div><label className="text-xs text-muted-foreground">Option C</label><Input value={editing?.option_c || ""} onChange={e => setEditing(ed => ({ ...ed!, option_c: e.target.value }))} /></div>
-                  <div><label className="text-xs text-muted-foreground">Option D</label><Input value={editing?.option_d || ""} onChange={e => setEditing(ed => ({ ...ed!, option_d: e.target.value }))} /></div>
+                  {["a", "b", "c", "d"].map(opt => (
+                    <div key={opt}>
+                      <label className="text-xs text-muted-foreground">Option {opt.toUpperCase()}</label>
+                      <Input value={(editing as any)?.[`option_${opt}`] || ""} onChange={e => setEditing(ed => ({ ...ed!, [`option_${opt}`]: e.target.value }))} />
+                      <div className="mt-1"><ImageUploadButton value={(editing as any)?.[`option_${opt}_image_url`]} onChange={url => setEditing(e => ({ ...e!, [`option_${opt}_image_url`]: url }))} folder="mock-questions" size="sm" /></div>
+                    </div>
+                  ))}
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -156,6 +160,7 @@ export default function AdminMockQuestions() {
                 <div>
                   <label className="text-xs text-muted-foreground">Explanation</label>
                   <Textarea value={editing?.explanation || ""} onChange={e => setEditing(ed => ({ ...ed!, explanation: e.target.value }))} placeholder="Why this answer is correct" rows={2} />
+                  <div className="mt-1"><ImageUploadButton value={(editing as any)?.explanation_image_url} onChange={url => setEditing(e => ({ ...e!, explanation_image_url: url }))} folder="mock-questions" /></div>
                 </div>
                 <Button onClick={handleSave} disabled={saving} className="w-full bg-gradient-gold text-primary-foreground font-bold">
                   {saving ? "Saving..." : "Save Question"}
