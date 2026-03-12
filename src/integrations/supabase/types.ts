@@ -315,6 +315,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          image_url: string | null
           message: string
           status: string | null
           type: string
@@ -323,6 +324,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          image_url?: string | null
           message: string
           status?: string | null
           type?: string
@@ -331,10 +333,53 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          image_url?: string | null
           message?: string
           status?: string | null
           type?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      girls_nda_content: {
+        Row: {
+          body: string | null
+          created_at: string
+          icon: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          link: string | null
+          sort_order: number | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link?: string | null
+          sort_order?: number | null
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link?: string | null
+          sort_order?: number | null
+          title?: string
+          type?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -377,13 +422,19 @@ export type Database = {
           created_at: string
           difficulty: string | null
           explanation: string | null
+          explanation_image_url: string | null
           id: string
           is_active: boolean | null
           option_a: string
+          option_a_image_url: string | null
           option_b: string
+          option_b_image_url: string | null
           option_c: string
+          option_c_image_url: string | null
           option_d: string
+          option_d_image_url: string | null
           question: string
+          question_image_url: string | null
           sort_order: number | null
           test_id: string
         }
@@ -392,13 +443,19 @@ export type Database = {
           created_at?: string
           difficulty?: string | null
           explanation?: string | null
+          explanation_image_url?: string | null
           id?: string
           is_active?: boolean | null
           option_a: string
+          option_a_image_url?: string | null
           option_b: string
+          option_b_image_url?: string | null
           option_c: string
+          option_c_image_url?: string | null
           option_d: string
+          option_d_image_url?: string | null
           question: string
+          question_image_url?: string | null
           sort_order?: number | null
           test_id: string
         }
@@ -407,13 +464,19 @@ export type Database = {
           created_at?: string
           difficulty?: string | null
           explanation?: string | null
+          explanation_image_url?: string | null
           id?: string
           is_active?: boolean | null
           option_a?: string
+          option_a_image_url?: string | null
           option_b?: string
+          option_b_image_url?: string | null
           option_c?: string
+          option_c_image_url?: string | null
           option_d?: string
+          option_d_image_url?: string | null
           question?: string
+          question_image_url?: string | null
           sort_order?: number | null
           test_id?: string
         }
@@ -674,14 +737,20 @@ export type Database = {
           created_at: string
           difficulty: string | null
           explanation: string | null
+          explanation_image_url: string | null
           id: string
           is_active: boolean | null
           option_a: string
+          option_a_image_url: string | null
           option_b: string
+          option_b_image_url: string | null
           option_c: string
+          option_c_image_url: string | null
           option_d: string
+          option_d_image_url: string | null
           paper: string
           question: string
+          question_image_url: string | null
           subject: string
           topic: string | null
           year: number
@@ -691,14 +760,20 @@ export type Database = {
           created_at?: string
           difficulty?: string | null
           explanation?: string | null
+          explanation_image_url?: string | null
           id?: string
           is_active?: boolean | null
           option_a: string
+          option_a_image_url?: string | null
           option_b: string
+          option_b_image_url?: string | null
           option_c: string
+          option_c_image_url?: string | null
           option_d: string
+          option_d_image_url?: string | null
           paper?: string
           question: string
+          question_image_url?: string | null
           subject?: string
           topic?: string | null
           year: number
@@ -708,14 +783,20 @@ export type Database = {
           created_at?: string
           difficulty?: string | null
           explanation?: string | null
+          explanation_image_url?: string | null
           id?: string
           is_active?: boolean | null
           option_a?: string
+          option_a_image_url?: string | null
           option_b?: string
+          option_b_image_url?: string | null
           option_c?: string
+          option_c_image_url?: string | null
           option_d?: string
+          option_d_image_url?: string | null
           paper?: string
           question?: string
+          question_image_url?: string | null
           subject?: string
           topic?: string | null
           year?: number
@@ -729,6 +810,7 @@ export type Database = {
           created_at: string
           explanation: string | null
           id: string
+          image_url: string | null
           issue_description: string | null
           issue_type: string
           options: Json | null
@@ -744,6 +826,7 @@ export type Database = {
           created_at?: string
           explanation?: string | null
           id?: string
+          image_url?: string | null
           issue_description?: string | null
           issue_type?: string
           options?: Json | null
@@ -759,6 +842,7 @@ export type Database = {
           created_at?: string
           explanation?: string | null
           id?: string
+          image_url?: string | null
           issue_description?: string | null
           issue_type?: string
           options?: Json | null
@@ -1045,13 +1129,19 @@ export type Database = {
           created_at: string
           difficulty: string | null
           explanation: string | null
+          explanation_image_url: string | null
           id: string
           is_active: boolean | null
           option_a: string
+          option_a_image_url: string | null
           option_b: string
+          option_b_image_url: string | null
           option_c: string
+          option_c_image_url: string | null
           option_d: string
+          option_d_image_url: string | null
           question: string
+          question_image_url: string | null
           topic_id: string
         }
         Insert: {
@@ -1059,13 +1149,19 @@ export type Database = {
           created_at?: string
           difficulty?: string | null
           explanation?: string | null
+          explanation_image_url?: string | null
           id?: string
           is_active?: boolean | null
           option_a: string
+          option_a_image_url?: string | null
           option_b: string
+          option_b_image_url?: string | null
           option_c: string
+          option_c_image_url?: string | null
           option_d: string
+          option_d_image_url?: string | null
           question: string
+          question_image_url?: string | null
           topic_id: string
         }
         Update: {
@@ -1073,13 +1169,19 @@ export type Database = {
           created_at?: string
           difficulty?: string | null
           explanation?: string | null
+          explanation_image_url?: string | null
           id?: string
           is_active?: boolean | null
           option_a?: string
+          option_a_image_url?: string | null
           option_b?: string
+          option_b_image_url?: string | null
           option_c?: string
+          option_c_image_url?: string | null
           option_d?: string
+          option_d_image_url?: string | null
           question?: string
+          question_image_url?: string | null
           topic_id?: string
         }
         Relationships: [
