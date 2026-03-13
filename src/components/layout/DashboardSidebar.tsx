@@ -6,7 +6,8 @@ import {
   LayoutDashboard, BookOpen, FileText, Brain, MessageSquare, Users, Dumbbell,
   Trophy, BarChart3, Target, Shield, Bookmark, StickyNote, Bell,
   Settings, FolderOpen, HelpCircle, Star, Swords, Zap, UserCircle,
-  GraduationCap, Heart, Calculator, Globe, Newspaper, ChevronDown, ChevronRight
+  GraduationCap, Heart, Calculator, Globe, Newspaper, ChevronDown, ChevronRight,
+  HeartPulse, AlertTriangle, ClipboardList
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel,
@@ -15,11 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-interface NavItem {
-  titleKey: string;
-  icon: React.ElementType;
-  href: string;
-}
+interface NavItem { titleKey: string; icon: React.ElementType; href: string; }
 
 const mainNav: NavItem[] = [
   { titleKey: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
@@ -59,10 +56,8 @@ const ssbNav: NavItem[] = [
   { titleKey: "WAT", icon: FileText, href: "/ssb/wat" },
   { titleKey: "SRT", icon: FileText, href: "/ssb/srt" },
   { titleKey: "SDT", icon: FileText, href: "/ssb/sdt" },
-  { titleKey: "GD", icon: MessageSquare, href: "/ssb/gd" },
-  { titleKey: "Interview", icon: MessageSquare, href: "/ssb/interview" },
   { titleKey: "Personality Tips", icon: Star, href: "/ssb/personality" },
-  { titleKey: "Screenout", icon: Target, href: "/ssb/screenout" },
+  { titleKey: "Screenout", icon: AlertTriangle, href: "/ssb/screenout" },
 ];
 
 const communityNav: NavItem[] = [
@@ -77,7 +72,9 @@ const communityNav: NavItem[] = [
 const fitnessNav: NavItem[] = [
   { titleKey: "Fitness Plan", icon: Dumbbell, href: "/fitness" },
   { titleKey: "Running Tracker", icon: Dumbbell, href: "/fitness/running" },
-  { titleKey: "Medical Standards", icon: Heart, href: "/fitness/medical" },
+  { titleKey: "Am I Fit?", icon: Zap, href: "/fitness/eligibility" },
+  { titleKey: "Medical Standards", icon: HeartPulse, href: "/fitness/medical" },
+  { titleKey: "Am I Medically Fit?", icon: HeartPulse, href: "/fitness/medical-check" },
 ];
 
 const resourceNav: NavItem[] = [
@@ -96,7 +93,14 @@ const adminNav: NavItem[] = [
   { titleKey: "Resources", icon: FolderOpen, href: "/admin/resources" },
   { titleKey: "FAQ", icon: HelpCircle, href: "/admin/faq" },
   { titleKey: "SSB Sets", icon: Shield, href: "/admin/ssb" },
+  { titleKey: "OIR Questions", icon: Brain, href: "/admin/oir" },
+  { titleKey: "Screenout", icon: AlertTriangle, href: "/admin/screenout" },
+  { titleKey: "Vocabulary", icon: GraduationCap, href: "/admin/vocabulary" },
+  { titleKey: "Daily Tasks", icon: ClipboardList, href: "/admin/daily-tasks" },
+  { titleKey: "Fitness Stds", icon: Dumbbell, href: "/admin/fitness" },
+  { titleKey: "Medical Stds", icon: HeartPulse, href: "/admin/medical" },
   { titleKey: "Success Stories", icon: Star, href: "/admin/success-stories" },
+  { titleKey: "Girls NDA", icon: Heart, href: "/admin/girls-nda" },
   { titleKey: "Guide Editor", icon: BookOpen, href: "/admin/guide" },
   { titleKey: "Reports", icon: HelpCircle, href: "/admin/reports" },
 ];
@@ -112,7 +116,6 @@ function CollapsibleNavGroup({ label, items, defaultOpen = false }: { label: str
   const location = useLocation();
   const isActive = items.some(i => location.pathname === i.href || location.pathname.startsWith(i.href + "/"));
   const [open, setOpen] = useState(defaultOpen || isActive);
-
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <SidebarGroup>
@@ -128,10 +131,7 @@ function CollapsibleNavGroup({ label, items, defaultOpen = false }: { label: str
               {items.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.href} tooltip={item.titleKey}>
-                    <Link to={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.titleKey}</span>
-                    </Link>
+                    <Link to={item.href}><item.icon className="h-4 w-4" /><span>{item.titleKey}</span></Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -147,18 +147,13 @@ function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
   const location = useLocation();
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="font-mono text-[10px] tracking-[3px] text-primary/70 uppercase">
-        {label}
-      </SidebarGroupLabel>
+      <SidebarGroupLabel className="font-mono text-[10px] tracking-[3px] text-primary/70 uppercase">{label}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton asChild isActive={location.pathname === item.href} tooltip={item.titleKey}>
-                <Link to={item.href}>
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.titleKey}</span>
-                </Link>
+                <Link to={item.href}><item.icon className="h-4 w-4" /><span>{item.titleKey}</span></Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
@@ -171,7 +166,6 @@ function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
 export default function DashboardSidebar() {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
-
   useEffect(() => {
     if (!user) return;
     supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin")
@@ -186,7 +180,6 @@ export default function DashboardSidebar() {
           <span className="font-display text-lg text-primary tracking-widest">DNA</span>
         </Link>
       </SidebarHeader>
-
       <SidebarContent>
         <NavGroup label="Main" items={mainNav} />
         <CollapsibleNavGroup label="Study" items={studyNav} defaultOpen />
@@ -195,9 +188,8 @@ export default function DashboardSidebar() {
         <CollapsibleNavGroup label="Community" items={communityNav} />
         <CollapsibleNavGroup label="Fitness" items={fitnessNav} />
         <CollapsibleNavGroup label="Resources" items={resourceNav} />
-        {isAdmin && <NavGroup label="Admin" items={adminNav} />}
+        {isAdmin && <CollapsibleNavGroup label="Admin" items={adminNav} />}
       </SidebarContent>
-
       <SidebarFooter>
         <NavGroup label="" items={bottomNav} />
       </SidebarFooter>

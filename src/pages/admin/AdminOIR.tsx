@@ -87,7 +87,7 @@ export default function AdminOIR() {
                 <div><Label className="text-xs">Difficulty</Label><Select value={form.difficulty} onValueChange={v => setForm(p => ({ ...p, difficulty: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="easy">Easy</SelectItem><SelectItem value="medium">Medium</SelectItem><SelectItem value="hard">Hard</SelectItem></SelectContent></Select></div>
               </div>
               <div><Label className="text-xs">Explanation</Label><Textarea value={form.explanation} onChange={e => setForm(p => ({ ...p, explanation: e.target.value }))} /></div>
-              <div><Label className="text-xs">Explanation Image</Label><div className="flex gap-2"><Input value={form.explanation_image_url} onChange={e => setForm(p => ({ ...p, explanation_image_url: e.target.value }))} placeholder="URL" className="flex-1" /><ImageUploadButton bucket="question-images" onUpload={url => setForm(p => ({ ...p, explanation_image_url: url }))} /></div></div>
+              <div><Label className="text-xs">Explanation Image</Label><div className="flex gap-2"><Input value={form.explanation_image_url} onChange={e => setForm(p => ({ ...p, explanation_image_url: e.target.value }))} placeholder="URL" className="flex-1" /><ImageUploadButton bucket="question-images" onChange={url => setForm(p => ({ ...p, explanation_image_url: url || "" }))} /></div></div>
             </div>
             <DialogFooter><Button onClick={save} className="bg-gradient-gold text-primary-foreground font-bold">{editing ? "Update" : "Add"}</Button></DialogFooter>
           </DialogContent>
