@@ -79,7 +79,7 @@ export default function AdminOIR() {
                 <div key={opt} className="space-y-1">
                   <Label className="text-xs">Option {opt.toUpperCase()}</Label>
                   <Input value={(form as any)[`option_${opt}`]} onChange={e => setForm(p => ({ ...p, [`option_${opt}`]: e.target.value }))} />
-                  <div className="flex gap-2"><Input value={(form as any)[`option_${opt}_image_url`]} onChange={e => setForm(p => ({ ...p, [`option_${opt}_image_url`]: e.target.value }))} placeholder="Image URL (optional)" className="flex-1 text-xs" /><ImageUploadButton bucket="question-images" onUpload={url => setForm(p => ({ ...p, [`option_${opt}_image_url`]: url }))} /></div>
+                  <div className="flex gap-2"><Input value={(form as any)[`option_${opt}_image_url`]} onChange={e => setForm(p => ({ ...p, [`option_${opt}_image_url`]: e.target.value }))} placeholder="Image URL (optional)" className="flex-1 text-xs" /><ImageUploadButton bucket="question-images" onChange={url => setForm(p => ({ ...p, [`option_${opt}_image_url`]: url || "" }))} /></div>
                 </div>
               ))}
               <div className="grid grid-cols-2 gap-3">
