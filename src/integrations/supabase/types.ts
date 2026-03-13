@@ -233,6 +233,42 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_tasks: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          sort_order: number | null
+          target_value: number | null
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          target_value?: number | null
+          title: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          target_value?: number | null
+          title?: string
+        }
+        Relationships: []
+      }
       error_log: {
         Row: {
           correct_answer: string
@@ -341,6 +377,45 @@ export type Database = {
         }
         Relationships: []
       }
+      fitness_standards: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          key: string
+          label: string
+          sort_order: number | null
+          value: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          key: string
+          label: string
+          sort_order?: number | null
+          value: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          key?: string
+          label?: string
+          sort_order?: number | null
+          value?: string
+        }
+        Relationships: []
+      }
       girls_nda_content: {
         Row: {
           body: string | null
@@ -413,6 +488,39 @@ export type Database = {
           sort_order?: number | null
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      medical_content: {
+        Row: {
+          body: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          section: string
+          sort_order: number | null
+          title: string
+          type: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          section: string
+          sort_order?: number | null
+          title: string
+          type?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          section?: string
+          sort_order?: number | null
+          title?: string
+          type?: string | null
         }
         Relationships: []
       }
@@ -595,6 +703,69 @@ export type Database = {
           title?: string
           type?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      oir_questions: {
+        Row: {
+          correct_option: string
+          created_at: string | null
+          difficulty: string | null
+          explanation: string | null
+          explanation_image_url: string | null
+          id: string
+          is_active: boolean | null
+          option_a: string
+          option_a_image_url: string | null
+          option_b: string
+          option_b_image_url: string | null
+          option_c: string
+          option_c_image_url: string | null
+          option_d: string
+          option_d_image_url: string | null
+          question: string
+          question_image_url: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          correct_option?: string
+          created_at?: string | null
+          difficulty?: string | null
+          explanation?: string | null
+          explanation_image_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          option_a: string
+          option_a_image_url?: string | null
+          option_b: string
+          option_b_image_url?: string | null
+          option_c: string
+          option_c_image_url?: string | null
+          option_d: string
+          option_d_image_url?: string | null
+          question: string
+          question_image_url?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          correct_option?: string
+          created_at?: string | null
+          difficulty?: string | null
+          explanation?: string | null
+          explanation_image_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          option_a?: string
+          option_a_image_url?: string | null
+          option_b?: string
+          option_b_image_url?: string | null
+          option_c?: string
+          option_c_image_url?: string | null
+          option_d?: string
+          option_d_image_url?: string | null
+          question?: string
+          question_image_url?: string | null
+          sort_order?: number | null
         }
         Relationships: []
       }
@@ -923,6 +1094,39 @@ export type Database = {
           notes?: string | null
           time_minutes?: number
           user_id?: string
+        }
+        Relationships: []
+      }
+      screenout_content: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          fix: string | null
+          id: string
+          is_active: boolean | null
+          sort_order: number | null
+          title: string
+          type: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          fix?: string | null
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          title: string
+          type?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          fix?: string | null
+          id?: string
+          is_active?: boolean | null
+          sort_order?: number | null
+          title?: string
+          type?: string | null
         }
         Relationships: []
       }
@@ -1271,6 +1475,45 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vocabulary_words: {
+        Row: {
+          antonym: string | null
+          created_at: string | null
+          difficulty: string | null
+          id: string
+          is_active: boolean | null
+          meaning: string
+          sort_order: number | null
+          synonym: string | null
+          usage_example: string | null
+          word: string
+        }
+        Insert: {
+          antonym?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string
+          is_active?: boolean | null
+          meaning: string
+          sort_order?: number | null
+          synonym?: string | null
+          usage_example?: string | null
+          word: string
+        }
+        Update: {
+          antonym?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string
+          is_active?: boolean | null
+          meaning?: string
+          sort_order?: number | null
+          synonym?: string | null
+          usage_example?: string | null
+          word?: string
         }
         Relationships: []
       }

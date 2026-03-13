@@ -77,6 +77,8 @@ import RealtimeChat from "@/pages/community/RealtimeChat";
 import FitnessPlan from "@/pages/fitness/FitnessPlan";
 import RunningTracker from "@/pages/fitness/RunningTracker";
 import MedicalStandards from "@/pages/fitness/MedicalStandards";
+import FitnessEligibility from "@/pages/fitness/FitnessEligibility";
+import MedicalEligibility from "@/pages/fitness/MedicalEligibility";
 
 // Resources
 import Resources from "@/pages/resources/Resources";
@@ -100,6 +102,12 @@ import AdminMockQuestions from "@/pages/admin/AdminMockQuestions";
 import AdminGuide from "@/pages/admin/AdminGuide";
 import AdminReports from "@/pages/admin/AdminReports";
 import AdminGirlsNDA from "@/pages/admin/AdminGirlsNDA";
+import AdminVocabulary from "@/pages/admin/AdminVocabulary";
+import AdminDailyTasks from "@/pages/admin/AdminDailyTasks";
+import AdminOIR from "@/pages/admin/AdminOIR";
+import AdminScreenout from "@/pages/admin/AdminScreenout";
+import AdminFitness from "@/pages/admin/AdminFitness";
+import AdminMedical from "@/pages/admin/AdminMedical";
 import QuestionBank from "@/pages/QuestionBank";
 import Premium from "@/pages/Premium";
 
@@ -186,6 +194,8 @@ function AppRoutes() {
       <Route path="/fitness" element={<ProtectedRoute><FitnessPlan /></ProtectedRoute>} />
       <Route path="/fitness/running" element={<ProtectedRoute><RunningTracker /></ProtectedRoute>} />
       <Route path="/fitness/medical" element={<ProtectedRoute><MedicalStandards /></ProtectedRoute>} />
+      <Route path="/fitness/eligibility" element={<ProtectedRoute><FitnessEligibility /></ProtectedRoute>} />
+      <Route path="/fitness/medical-check" element={<ProtectedRoute><MedicalEligibility /></ProtectedRoute>} />
 
       {/* Protected — Resources */}
       <Route path="/resources" element={<ProtectedRoute><Resources /></ProtectedRoute>} />
@@ -212,6 +222,12 @@ function AppRoutes() {
       <Route path="/admin/guide" element={<ProtectedRoute><AdminGuide /></ProtectedRoute>} />
       <Route path="/admin/reports" element={<ProtectedRoute><AdminReports /></ProtectedRoute>} />
       <Route path="/admin/girls-nda" element={<ProtectedRoute><AdminGirlsNDA /></ProtectedRoute>} />
+      <Route path="/admin/vocabulary" element={<ProtectedRoute><AdminVocabulary /></ProtectedRoute>} />
+      <Route path="/admin/daily-tasks" element={<ProtectedRoute><AdminDailyTasks /></ProtectedRoute>} />
+      <Route path="/admin/oir" element={<ProtectedRoute><AdminOIR /></ProtectedRoute>} />
+      <Route path="/admin/screenout" element={<ProtectedRoute><AdminScreenout /></ProtectedRoute>} />
+      <Route path="/admin/fitness" element={<ProtectedRoute><AdminFitness /></ProtectedRoute>} />
+      <Route path="/admin/medical" element={<ProtectedRoute><AdminMedical /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />
@@ -222,11 +238,9 @@ function AppRoutes() {
 function AppWithSplash() {
   const [splashDone, setSplashDone] = useState(false);
   const hasSeenSplash = sessionStorage.getItem("splash_seen");
-
   if (!hasSeenSplash && !splashDone) {
     return <SplashScreen onComplete={() => { sessionStorage.setItem("splash_seen", "1"); setSplashDone(true); }} />;
   }
-
   return (
     <>
       <SpotlightGlow />
