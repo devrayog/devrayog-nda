@@ -74,7 +74,7 @@ export default function AdminOIR() {
             <DialogHeader><DialogTitle>{editing ? "Edit OIR Question" : "Add OIR Question"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label className="text-xs">Question Text</Label><Textarea value={form.question} onChange={e => setForm(p => ({ ...p, question: e.target.value }))} placeholder="What comes next in the series?" /></div>
-              <div><Label className="text-xs">Question Image (optional)</Label><div className="flex gap-2"><Input value={form.question_image_url} onChange={e => setForm(p => ({ ...p, question_image_url: e.target.value }))} placeholder="URL" className="flex-1" /><ImageUploadButton bucket="question-images" onUpload={url => setForm(p => ({ ...p, question_image_url: url }))} /></div></div>
+              <div><Label className="text-xs">Question Image (optional)</Label><div className="flex gap-2"><Input value={form.question_image_url} onChange={e => setForm(p => ({ ...p, question_image_url: e.target.value }))} placeholder="URL" className="flex-1" /><ImageUploadButton bucket="question-images" onChange={url => setForm(p => ({ ...p, question_image_url: url || "" }))} /></div></div>
               {["a", "b", "c", "d"].map(opt => (
                 <div key={opt} className="space-y-1">
                   <Label className="text-xs">Option {opt.toUpperCase()}</Label>
