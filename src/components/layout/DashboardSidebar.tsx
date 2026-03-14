@@ -87,6 +87,7 @@ const resourceNav: NavItem[] = [
 
 const adminNav: NavItem[] = [
   { titleKey: "Admin Panel", icon: Shield, href: "/admin" },
+  { titleKey: "Users", icon: Users, href: "/admin/users" },
   { titleKey: "Topics & MCQs", icon: BookOpen, href: "/admin/topics" },
   { titleKey: "Current Affairs", icon: Newspaper, href: "/admin/current-affairs" },
   { titleKey: "PYQ Manage", icon: FolderOpen, href: "/admin/pyq" },

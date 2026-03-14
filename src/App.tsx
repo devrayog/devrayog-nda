@@ -248,6 +248,7 @@ function AppWithSplash() {
     <>
       <SpotlightGlow />
       <NoiseOverlay />
+      <InstallAppPrompt />
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
