@@ -230,6 +230,7 @@ function AppRoutes() {
       <Route path="/admin/screenout" element={<ProtectedRoute><AdminScreenout /></ProtectedRoute>} />
       <Route path="/admin/fitness" element={<ProtectedRoute><AdminFitness /></ProtectedRoute>} />
       <Route path="/admin/medical" element={<ProtectedRoute><AdminMedical /></ProtectedRoute>} />
+      <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />
