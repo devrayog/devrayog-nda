@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Brain, Send, Clock, Play, RotateCcw, CheckCircle, XCircle, ArrowRight, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
