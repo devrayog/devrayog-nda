@@ -72,6 +72,8 @@ interface MCQQuestion {
   options: string[];
   correct: number;
   explanation: string;
+  questionImage?: string | null;
+  optionImages?: (string | null)[];
 }
 
 interface WATWord {
