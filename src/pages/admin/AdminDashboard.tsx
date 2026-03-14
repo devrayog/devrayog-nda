@@ -78,6 +78,7 @@ export default function AdminDashboard() {
   }
 
   const adminLinks = [
+    { href: "/admin/users", icon: Users, title: "👥 User Management", desc: "View all users, assign premium", color: "text-primary" },
     { href: "/admin/ai", icon: Bot, title: "🤖 AI Assistant", desc: "Auto-add questions, content, analytics", color: "text-success" },
     { href: "/admin/topics", icon: BookOpen, title: "Topics & MCQs", desc: "Add/edit study topics & questions", color: "text-primary" },
     { href: "/admin/current-affairs", icon: Newspaper, title: "Current Affairs", desc: "Publish & manage news articles", color: "text-success" },
@@ -87,9 +88,7 @@ export default function AdminDashboard() {
     { href: "/admin/ssb", icon: Shield, title: "SSB Sets", desc: "Manage PPDT/TAT/WAT/SRT/SDT sets", color: "text-accent" },
     { href: "/admin/success-stories", icon: Star, title: "Success Stories", desc: "Add real NDA selection stories", color: "text-success" },
     { href: "/ssb/personality", icon: Users, title: "Personality Tips", desc: "Edit OLQ & communication tips", color: "text-cyan" },
-    { href: "/mentors", icon: Users, title: "Mentors", desc: "Add & manage mentor profiles", color: "text-primary" },
     { href: "/tests", icon: FileText, title: "Mock Tests", desc: "Add admin mock test sets", color: "text-accent" },
-    { href: "/formulas", icon: BookOpen, title: "Formulas", desc: "Add formulas with categories", color: "text-warning" },
     { href: "/admin/guide", icon: BookOpen, title: "Guide Editor", desc: "Edit the platform guide page", color: "text-success" },
     { href: "/admin/reports", icon: MessageSquare, title: "Question Reports", desc: "View user-reported issues", color: "text-destructive" },
     { href: "/admin/girls-nda", icon: Heart, title: "Girls NDA", desc: "Edit Girls NDA section content", color: "text-pink-400" },

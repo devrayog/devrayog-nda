@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Brain, Send, Clock, Play, RotateCcw, CheckCircle, XCircle, ArrowRight, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
@@ -71,6 +72,8 @@ interface MCQQuestion {
   options: string[];
   correct: number;
   explanation: string;
+  questionImage?: string | null;
+  optionImages?: (string | null)[];
 }
 
 interface WATWord {
@@ -200,6 +203,30 @@ export default function SSBPractice() {
     setStarted(true);
     setLoading(true);
     try {
+      // For OIR: try admin-added questions first
+      if (testType === "oir") {
+        const { data: adminQs } = await supabase
+          .from("oir_questions")
+          .select("*")
+          .eq("is_active", true)
+          .order("sort_order");
+        
+        if (adminQs && adminQs.length > 0) {
+          const shuffled = adminQs.sort(() => Math.random() - 0.5).slice(0, 10);
+          const mapped: MCQQuestion[] = shuffled.map((q: any) => ({
+            question: q.question,
+            options: [q.option_a, q.option_b, q.option_c, q.option_d],
+            correct: { a: 0, b: 1, c: 2, d: 3 }[q.correct_option as string] ?? 0,
+            explanation: q.explanation || "",
+            questionImage: q.question_image_url,
+            optionImages: [q.option_a_image_url, q.option_b_image_url, q.option_c_image_url, q.option_d_image_url],
+          }));
+          setMcqs(mapped);
+          setLoading(false);
+          return;
+        }
+      }
+      // Fallback to AI
       const raw = await fetchNonStreaming(config.prompt);
       const match = raw.match(/\[[\s\S]*\]/);
       if (match) {

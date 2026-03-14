@@ -843,6 +843,7 @@ export type Database = {
           full_name: string | null
           id: string
           is_girl: boolean | null
+          is_premium: boolean | null
           medium: string | null
           service: string | null
           state: string | null
@@ -866,6 +867,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_girl?: boolean | null
+          is_premium?: boolean | null
           medium?: string | null
           service?: string | null
           state?: string | null
@@ -889,6 +891,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_girl?: boolean | null
+          is_premium?: boolean | null
           medium?: string | null
           service?: string | null
           state?: string | null
@@ -1199,6 +1202,7 @@ export type Database = {
           description: string | null
           emoji: string | null
           id: string
+          image_url: string | null
           is_active: boolean | null
           name: string
           slug: string
@@ -1213,6 +1217,7 @@ export type Database = {
           description?: string | null
           emoji?: string | null
           id?: string
+          image_url?: string | null
           is_active?: boolean | null
           name: string
           slug: string
@@ -1227,6 +1232,7 @@ export type Database = {
           description?: string | null
           emoji?: string | null
           id?: string
+          image_url?: string | null
           is_active?: boolean | null
           name?: string
           slug?: string

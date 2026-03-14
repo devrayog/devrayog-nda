@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 const PROVIDERS = [
   { value: "openai", label: "OpenAI (GPT-4o, GPT-5)", placeholder: "sk-...", baseUrl: "https://api.openai.com/v1/chat/completions", model: "gpt-4o-mini" },
@@ -26,6 +27,8 @@ export default function AdminAPIKeySettings() {
   const [savedKey, setSavedKey] = useState("");
   const [savedProvider, setSavedProvider] = useState("");
   const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<"success" | "error" | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -62,7 +65,41 @@ export default function AdminAPIKeySettings() {
     setSavedKey(apiKey);
     setSavedProvider(provider);
     setSaving(false);
+    setTestResult(null);
     toast({ title: apiKey ? `✅ ${prov?.label || "Custom"} API key saved! All AI features will use this.` : "Custom key removed. Using default." });
+  };
+
+  const testConnection = async () => {
+    setTesting(true);
+    setTestResult(null);
+    try {
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+        body: JSON.stringify({ messages: [{ role: "user", content: "Say 'API key working!' in exactly 3 words." }] }),
+      });
+      if (!resp.ok) {
+        const err = await resp.text();
+        console.error("Test failed:", resp.status, err);
+        setTestResult("error");
+        toast({ title: `❌ Connection failed (${resp.status})`, description: "Check your API key and provider selection.", variant: "destructive" });
+      } else {
+        // Read a bit of the stream to confirm it works
+        const reader = resp.body?.getReader();
+        if (reader) {
+          const { value } = await reader.read();
+          reader.cancel();
+          if (value) {
+            setTestResult("success");
+            toast({ title: "✅ API key is working! AI features will use your key." });
+          }
+        }
+      }
+    } catch (e) {
+      setTestResult("error");
+      toast({ title: "❌ Connection test failed", description: String(e), variant: "destructive" });
+    }
+    setTesting(false);
   };
 
   const removeKey = async () => {
@@ -73,7 +110,7 @@ export default function AdminAPIKeySettings() {
       upsert("custom_ai_base_url", ""),
       upsert("custom_ai_model", ""),
     ]);
-    setApiKey(""); setSavedKey(""); setSavedProvider("");
+    setApiKey(""); setSavedKey(""); setSavedProvider(""); setTestResult(null);
     setSaving(false);
     toast({ title: "Custom API key removed. Using default AI." });
   };
@@ -85,11 +122,11 @@ export default function AdminAPIKeySettings() {
       <CardHeader><CardTitle className="text-sm">🔑 Custom AI API Key</CardTitle></CardHeader>
       <CardContent className="space-y-3">
         <p className="text-xs text-muted-foreground">
-          Select your AI provider and add your API key. ALL AI features across the platform (Chat, Mock Tests, Study Plans, Motivation, etc.) will use YOUR key.
+          Select your AI provider and add your API key. ALL AI features across the platform will use YOUR key.
         </p>
         <div>
           <label className="text-xs text-muted-foreground">AI Provider</label>
-          <Select value={provider} onValueChange={setProvider}>
+          <Select value={provider} onValueChange={v => { setProvider(v); setTestResult(null); }}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               {PROVIDERS.map(p => (
@@ -102,7 +139,7 @@ export default function AdminAPIKeySettings() {
           <Input
             type="password"
             value={apiKey}
-            onChange={e => setApiKey(e.target.value)}
+            onChange={e => { setApiKey(e.target.value); setTestResult(null); }}
             placeholder={currentProv?.placeholder || "API Key"}
             className="font-mono text-xs"
           />
@@ -117,13 +154,21 @@ export default function AdminAPIKeySettings() {
           </div>
         )}
         {savedKey && (
-          <div className="flex items-center justify-between bg-success/10 p-2 rounded text-xs">
-            <span className="text-success font-bold">✓ Active: {PROVIDERS.find(p => p.value === savedProvider)?.label || "Custom"} — {savedKey.slice(0, 8)}...</span>
-            <Button size="sm" variant="ghost" className="text-destructive text-xs h-6" onClick={removeKey}>Remove</Button>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between bg-success/10 p-2 rounded text-xs">
+              <span className="text-success font-bold">✓ Active: {PROVIDERS.find(p => p.value === savedProvider)?.label || "Custom"} — {savedKey.slice(0, 8)}...</span>
+              <Button size="sm" variant="ghost" className="text-destructive text-xs h-6" onClick={removeKey}>Remove</Button>
+            </div>
+            <Button onClick={testConnection} disabled={testing} variant="outline" size="sm" className="w-full border-gold text-xs">
+              {testing ? <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Testing...</> :
+               testResult === "success" ? <><CheckCircle className="h-3 w-3 mr-1 text-success" /> Connected!</> :
+               testResult === "error" ? <><XCircle className="h-3 w-3 mr-1 text-destructive" /> Failed — Retry</> :
+               "🔌 Test Connection"}
+            </Button>
           </div>
         )}
         <p className="text-[10px] text-muted-foreground">
-          Supported: OpenAI, Gemini, Claude, Groq, Together, Sarvam, OpenRouter, or any OpenAI-compatible API.
+          Supported: OpenAI, Gemini, Claude, Groq, Together, Sarvam, OpenRouter, or any OpenAI-compatible API. Save first, then test.
         </p>
       </CardContent>
     </Card>

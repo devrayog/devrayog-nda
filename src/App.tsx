@@ -108,8 +108,10 @@ import AdminOIR from "@/pages/admin/AdminOIR";
 import AdminScreenout from "@/pages/admin/AdminScreenout";
 import AdminFitness from "@/pages/admin/AdminFitness";
 import AdminMedical from "@/pages/admin/AdminMedical";
+import AdminUsers from "@/pages/admin/AdminUsers";
 import QuestionBank from "@/pages/QuestionBank";
 import Premium from "@/pages/Premium";
+import InstallAppPrompt from "@/components/InstallAppPrompt";
 
 const queryClient = new QueryClient();
 
@@ -228,6 +230,7 @@ function AppRoutes() {
       <Route path="/admin/screenout" element={<ProtectedRoute><AdminScreenout /></ProtectedRoute>} />
       <Route path="/admin/fitness" element={<ProtectedRoute><AdminFitness /></ProtectedRoute>} />
       <Route path="/admin/medical" element={<ProtectedRoute><AdminMedical /></ProtectedRoute>} />
+      <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />
@@ -245,6 +248,7 @@ function AppWithSplash() {
     <>
       <SpotlightGlow />
       <NoiseOverlay />
+      <InstallAppPrompt />
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
