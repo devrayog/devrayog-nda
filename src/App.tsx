@@ -236,6 +236,10 @@ function AppRoutes() {
       <Route path="/admin/fitness" element={<ProtectedRoute><AdminFitness /></ProtectedRoute>} />
       <Route path="/admin/medical" element={<ProtectedRoute><AdminMedical /></ProtectedRoute>} />
       <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
+      <Route path="/admin/premium-settings" element={<ProtectedRoute><AdminPremiumSettings /></ProtectedRoute>} />
+      <Route path="/admin/announcements" element={<ProtectedRoute><AdminAnnouncements /></ProtectedRoute>} />
+      <Route path="/admin/seo" element={<ProtectedRoute><AdminSEO /></ProtectedRoute>} />
+      <Route path="/install" element={<ProtectedRoute><InstallApp /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />
