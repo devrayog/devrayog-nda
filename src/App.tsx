@@ -109,9 +109,14 @@ import AdminScreenout from "@/pages/admin/AdminScreenout";
 import AdminFitness from "@/pages/admin/AdminFitness";
 import AdminMedical from "@/pages/admin/AdminMedical";
 import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminPremiumSettings from "@/pages/admin/AdminPremiumSettings";
+import AdminAnnouncements from "@/pages/admin/AdminAnnouncements";
+import AdminSEO from "@/pages/admin/AdminSEO";
 import QuestionBank from "@/pages/QuestionBank";
 import Premium from "@/pages/Premium";
+import InstallApp from "@/pages/InstallApp";
 import InstallAppPrompt from "@/components/InstallAppPrompt";
+import AnnouncementPopup from "@/components/AnnouncementPopup";
 
 const queryClient = new QueryClient();
 
