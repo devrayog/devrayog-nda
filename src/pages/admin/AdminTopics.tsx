@@ -24,6 +24,7 @@ interface Topic {
   weight: string;
   sort_order: number;
   is_active: boolean;
+  image_url: string | null;
 }
 
 const emptyTopic = {
