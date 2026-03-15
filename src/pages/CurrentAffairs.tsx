@@ -218,10 +218,10 @@ export default function CurrentAffairs() {
                   <Brain className="h-5 w-5 text-primary" />
                   <h2 className="font-display text-lg text-gradient-gold">AI-CURATED NEWS</h2>
                 </div>
-                <Button size="sm" onClick={generateAI} disabled={loading} className="bg-gradient-gold text-primary-foreground font-bold">
+                <PremiumButton size="sm" onClick={generateAI} disabled={loading} feature="AI Current Affairs" className="bg-gradient-gold text-primary-foreground font-bold">
                   <RefreshCw className={`h-3 w-3 mr-1.5 ${loading ? "animate-spin" : ""}`} />
                   {aiContent ? "Refresh" : "Generate"}
-                </Button>
+                </PremiumButton>
               </div>
               {!aiContent && !loading && (
                 <p className="text-muted-foreground text-sm text-center py-4">Click "Generate" for AI-curated current affairs relevant to NDA.</p>
