@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Shield, Plus, Pencil, Trash2, BookOpen, Lock, ChevronRight } from "lucide-react";
+import ImageUploadButton from "@/components/ImageUploadButton";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
