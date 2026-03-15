@@ -94,7 +94,7 @@ export default function AdminAnnouncements() {
               <label className="text-xs text-muted-foreground">Image (optional)</label>
               <div className="flex items-center gap-2">
                 <Input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="https://... or upload" className="flex-1" />
-                <ImageUploadButton bucket="question-images" onUpload={setImageUrl} />
+                <ImageUploadButton bucket="question-images" onChange={(url) => setImageUrl(url || "")} />
               </div>
               {imageUrl && <img src={imageUrl} alt="preview" className="mt-2 rounded-lg max-h-32 object-cover" />}
             </div>
