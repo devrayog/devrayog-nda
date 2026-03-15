@@ -70,10 +70,10 @@ export default function StudyPlan() {
               <p className="text-muted-foreground text-xs">AI-generated daily & weekly plans</p>
             </div>
           </div>
-          <Button onClick={generatePlan} disabled={loading} className="bg-gradient-gold text-primary-foreground font-bold shadow-lg">
+          <PremiumButton onClick={generatePlan} disabled={loading} feature="AI Study Plan" className="bg-gradient-gold text-primary-foreground font-bold shadow-lg">
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
             {plan ? "Regenerate" : "Generate"}
-          </Button>
+          </PremiumButton>
         </motion.div>
 
         {/* Stats */}

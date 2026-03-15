@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PremiumButton } from "@/components/PremiumGate";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
