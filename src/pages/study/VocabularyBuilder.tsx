@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PremiumButton } from "@/components/PremiumGate";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -72,7 +73,7 @@ export default function VocabularyBuilder() {
       <div className="p-6 max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3"><BookOpen className="h-8 w-8 text-primary" /><h1 className="font-display text-4xl text-gradient-gold">VOCABULARY BUILDER</h1></div>
-          <Button onClick={generateAIWords} disabled={loadingAI} variant="outline" className="border-primary/30"><Sparkles className="h-4 w-4 mr-2" />{loadingAI ? "Generating..." : "AI Words"}</Button>
+          <PremiumButton onClick={generateAIWords} disabled={loadingAI} variant="outline" feature="AI Vocabulary" className="border-primary/30"><Sparkles className="h-4 w-4 mr-2" />{loadingAI ? "Generating..." : "AI Words"}</PremiumButton>
         </div>
         <Card className="glass-card border-gold"><CardContent className="p-4"><div className="flex items-center justify-between mb-2"><span className="font-mono text-xs text-muted-foreground">WORDS LEARNED</span><span className="font-display text-lg">{learned.size}/{words.length}</span></div><Progress value={progress} className="h-2" /></CardContent></Card>
         <Tabs defaultValue="flashcard">

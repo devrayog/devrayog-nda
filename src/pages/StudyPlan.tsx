@@ -1,5 +1,6 @@
 import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { PremiumButton } from "@/components/PremiumGate";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Brain, Target, RefreshCw, Clock, BookOpen, Dumbbell, Coffee, Sparkles } from "lucide-react";
@@ -70,10 +71,10 @@ export default function StudyPlan() {
               <p className="text-muted-foreground text-xs">AI-generated daily & weekly plans</p>
             </div>
           </div>
-          <Button onClick={generatePlan} disabled={loading} className="bg-gradient-gold text-primary-foreground font-bold shadow-lg">
+          <PremiumButton onClick={generatePlan} disabled={loading} feature="AI Study Plan" className="bg-gradient-gold text-primary-foreground font-bold shadow-lg">
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
             {plan ? "Regenerate" : "Generate"}
-          </Button>
+          </PremiumButton>
         </motion.div>
 
         {/* Stats */}

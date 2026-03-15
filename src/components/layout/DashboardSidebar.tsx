@@ -7,7 +7,7 @@ import {
   Trophy, BarChart3, Target, Shield, Bookmark, StickyNote, Bell,
   Settings, FolderOpen, HelpCircle, Star, Swords, Zap, UserCircle,
   GraduationCap, Heart, Calculator, Globe, Newspaper, ChevronDown, ChevronRight,
-  HeartPulse, AlertTriangle, ClipboardList
+  HeartPulse, AlertTriangle, ClipboardList, Crown, Download, Megaphone, Image
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel,
@@ -25,6 +25,8 @@ const mainNav: NavItem[] = [
   { titleKey: "Achievements", icon: Trophy, href: "/achievements" },
   { titleKey: "Activity Log", icon: BarChart3, href: "/activity" },
   { titleKey: "DNA Score", icon: Target, href: "/dna-score" },
+  { titleKey: "Premium", icon: Crown, href: "/premium" },
+  { titleKey: "Install App", icon: Download, href: "/install" },
 ];
 
 const studyNav: NavItem[] = [
@@ -56,6 +58,8 @@ const ssbNav: NavItem[] = [
   { titleKey: "WAT", icon: FileText, href: "/ssb/wat" },
   { titleKey: "SRT", icon: FileText, href: "/ssb/srt" },
   { titleKey: "SDT", icon: FileText, href: "/ssb/sdt" },
+  { titleKey: "GD Practice", icon: Users, href: "/ssb/gd" },
+  { titleKey: "Interview", icon: MessageSquare, href: "/ssb/interview" },
   { titleKey: "Personality Tips", icon: Star, href: "/ssb/personality" },
   { titleKey: "Screenout", icon: AlertTriangle, href: "/ssb/screenout" },
 ];
@@ -104,13 +108,9 @@ const adminNav: NavItem[] = [
   { titleKey: "Girls NDA", icon: Heart, href: "/admin/girls-nda" },
   { titleKey: "Guide Editor", icon: BookOpen, href: "/admin/guide" },
   { titleKey: "Reports", icon: HelpCircle, href: "/admin/reports" },
-];
-
-const bottomNav: NavItem[] = [
-  { titleKey: "Profile", icon: UserCircle, href: "/profile" },
-  { titleKey: "Settings", icon: Settings, href: "/settings" },
-  { titleKey: "Feedback", icon: MessageSquare, href: "/feedback" },
-  { titleKey: "Girls NDA", icon: Heart, href: "/girls" },
+  { titleKey: "Announcements", icon: Megaphone, href: "/admin/announcements" },
+  { titleKey: "SEO Settings", icon: Globe, href: "/admin/seo" },
+  { titleKey: "Premium Settings", icon: Crown, href: "/admin/premium-settings" },
 ];
 
 function CollapsibleNavGroup({ label, items, defaultOpen = false }: { label: string; items: NavItem[]; defaultOpen?: boolean }) {
@@ -167,11 +167,27 @@ function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
 export default function DashboardSidebar() {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
+
   useEffect(() => {
     if (!user) return;
     supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin")
       .then(({ data }) => { if (data && data.length > 0) setIsAdmin(true); });
+    supabase.from("profiles").select("is_girl, service, cleared_written").eq("user_id", user.id).single()
+      .then(({ data }) => { if (data) setProfile(data); });
   }, [user]);
+
+  const meta = user?.user_metadata || {};
+  // Determine which sections to show based on profile
+  const showSSB = meta.cleared_written === "yes" || profile?.cleared_written === "yes" || meta.service !== undefined;
+  const showGirls = meta.is_girl === true || meta.is_girl === "true" || profile?.is_girl === true;
+
+  const bottomNav: NavItem[] = [
+    { titleKey: "Profile", icon: UserCircle, href: "/profile" },
+    { titleKey: "Settings", icon: Settings, href: "/settings" },
+    { titleKey: "Feedback", icon: MessageSquare, href: "/feedback" },
+    ...(showGirls ? [{ titleKey: "Girls NDA", icon: Heart, href: "/girls" }] : []),
+  ];
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">
@@ -185,7 +201,7 @@ export default function DashboardSidebar() {
         <NavGroup label="Main" items={mainNav} />
         <CollapsibleNavGroup label="Study" items={studyNav} defaultOpen />
         <CollapsibleNavGroup label="Tests" items={testNav} />
-        <CollapsibleNavGroup label="SSB Prep" items={ssbNav} />
+        {showSSB && <CollapsibleNavGroup label="SSB Prep" items={ssbNav} />}
         <CollapsibleNavGroup label="Community" items={communityNav} />
         <CollapsibleNavGroup label="Fitness" items={fitnessNav} />
         <CollapsibleNavGroup label="Resources" items={resourceNav} />

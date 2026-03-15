@@ -109,9 +109,14 @@ import AdminScreenout from "@/pages/admin/AdminScreenout";
 import AdminFitness from "@/pages/admin/AdminFitness";
 import AdminMedical from "@/pages/admin/AdminMedical";
 import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminPremiumSettings from "@/pages/admin/AdminPremiumSettings";
+import AdminAnnouncements from "@/pages/admin/AdminAnnouncements";
+import AdminSEO from "@/pages/admin/AdminSEO";
 import QuestionBank from "@/pages/QuestionBank";
 import Premium from "@/pages/Premium";
+import InstallApp from "@/pages/InstallApp";
 import InstallAppPrompt from "@/components/InstallAppPrompt";
+import AnnouncementPopup from "@/components/AnnouncementPopup";
 
 const queryClient = new QueryClient();
 
@@ -231,6 +236,10 @@ function AppRoutes() {
       <Route path="/admin/fitness" element={<ProtectedRoute><AdminFitness /></ProtectedRoute>} />
       <Route path="/admin/medical" element={<ProtectedRoute><AdminMedical /></ProtectedRoute>} />
       <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
+      <Route path="/admin/premium-settings" element={<ProtectedRoute><AdminPremiumSettings /></ProtectedRoute>} />
+      <Route path="/admin/announcements" element={<ProtectedRoute><AdminAnnouncements /></ProtectedRoute>} />
+      <Route path="/admin/seo" element={<ProtectedRoute><AdminSEO /></ProtectedRoute>} />
+      <Route path="/install" element={<ProtectedRoute><InstallApp /></ProtectedRoute>} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />
@@ -249,6 +258,7 @@ function AppWithSplash() {
       <SpotlightGlow />
       <NoiseOverlay />
       <InstallAppPrompt />
+      <AnnouncementPopup />
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>

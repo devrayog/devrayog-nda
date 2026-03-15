@@ -79,6 +79,7 @@ export default function AdminDashboard() {
 
   const adminLinks = [
     { href: "/admin/users", icon: Users, title: "👥 User Management", desc: "View all users, assign premium", color: "text-primary" },
+    { href: "/admin/premium-settings", icon: Shield, title: "💎 Premium Settings", desc: "Toggle premium, set pricing & WhatsApp", color: "text-primary" },
     { href: "/admin/ai", icon: Bot, title: "🤖 AI Assistant", desc: "Auto-add questions, content, analytics", color: "text-success" },
     { href: "/admin/topics", icon: BookOpen, title: "Topics & MCQs", desc: "Add/edit study topics & questions", color: "text-primary" },
     { href: "/admin/current-affairs", icon: Newspaper, title: "Current Affairs", desc: "Publish & manage news articles", color: "text-success" },
@@ -87,7 +88,8 @@ export default function AdminDashboard() {
     { href: "/admin/faq", icon: HelpCircle, title: "FAQ Management", desc: "Add frequently asked questions", color: "text-warning" },
     { href: "/admin/ssb", icon: Shield, title: "SSB Sets", desc: "Manage PPDT/TAT/WAT/SRT/SDT sets", color: "text-accent" },
     { href: "/admin/success-stories", icon: Star, title: "Success Stories", desc: "Add real NDA selection stories", color: "text-success" },
-    { href: "/ssb/personality", icon: Users, title: "Personality Tips", desc: "Edit OLQ & communication tips", color: "text-cyan" },
+    { href: "/admin/announcements", icon: MessageSquare, title: "📢 Announcements", desc: "Daily popup for all users", color: "text-warning" },
+    { href: "/admin/seo", icon: BookOpen, title: "🔍 SEO Settings", desc: "Meta tags, keywords, OG images", color: "text-primary" },
     { href: "/tests", icon: FileText, title: "Mock Tests", desc: "Add admin mock test sets", color: "text-accent" },
     { href: "/admin/guide", icon: BookOpen, title: "Guide Editor", desc: "Edit the platform guide page", color: "text-success" },
     { href: "/admin/reports", icon: MessageSquare, title: "Question Reports", desc: "View user-reported issues", color: "text-destructive" },
