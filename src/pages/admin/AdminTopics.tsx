@@ -166,6 +166,13 @@ export default function AdminTopics() {
                   <label className="text-xs text-muted-foreground">Sort Order</label>
                   <Input type="number" value={editing?.sort_order || 0} onChange={e => setEditing(ed => ({ ...ed!, sort_order: parseInt(e.target.value) || 0 }))} />
                 </div>
+                <div>
+                  <label className="text-xs text-muted-foreground">Reference Image (optional)</label>
+                  <div className="flex items-center gap-2">
+                    <ImageUploadButton value={editing?.image_url} onChange={(url) => setEditing(ed => ({ ...ed!, image_url: url }))} bucket="question-images" />
+                    {editing?.image_url && <img src={editing.image_url} alt="" className="h-12 rounded" />}
+                  </div>
+                </div>
                 <Button onClick={handleSave} disabled={saving} className="w-full bg-gradient-gold text-primary-foreground font-bold">
                   {saving ? "Saving..." : "Save Topic"}
                 </Button>
