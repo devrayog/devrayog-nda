@@ -37,6 +37,7 @@ const emptyTopic = {
   weight: "Medium",
   sort_order: 0,
   is_active: true,
+  image_url: null as string | null,
 };
 
 export default function AdminTopics() {
