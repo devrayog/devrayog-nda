@@ -169,9 +169,7 @@ export default function MockTestList() {
                         <p className="text-[10px] text-muted-foreground">{test.desc}</p>
                         <div className="flex gap-3 mt-0.5"><span className="text-[9px] font-mono text-primary">{test.questions} Qs</span><span className="text-[9px] font-mono text-primary">{test.time} min</span></div>
                       </div>
-                      <Link to={`/tests/take/${test.id}?subject=${test.subject}&questions=${test.questions}&time=${test.time}`}>
-                        <Button size="sm" variant="outline" className="border-gold font-bold">Start</Button>
-                      </Link>
+                      <PremiumButton size="sm" variant="outline" onClick={() => window.location.href = `/tests/take/${test.id}?subject=${test.subject}&questions=${test.questions}&time=${test.time}`} feature="AI Generated Test" className="border-gold font-bold">Start</PremiumButton>
                     </CardContent>
                   </Card>
                 </motion.div>

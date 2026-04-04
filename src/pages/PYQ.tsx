@@ -286,7 +286,7 @@ export default function PYQ() {
                 <FolderOpen className="h-12 w-12 text-primary/30 mx-auto mb-4" />
                 <h2 className="font-display text-xl text-gradient-gold mb-2">NO PYQs YET</h2>
                 <p className="text-muted-foreground text-sm mb-4">PYQ questions will be added by admins.</p>
-                <Button onClick={generateAnalysis} disabled={aiLoading} className="bg-gradient-gold text-primary-foreground font-bold"><Brain className="h-4 w-4 mr-2" /> Generate AI PYQ Analysis</Button>
+                <PremiumButton onClick={generateAnalysis} disabled={aiLoading} feature="PYQ AI Analysis" className="bg-gradient-gold text-primary-foreground font-bold"><Brain className="h-4 w-4 mr-2" /> Generate AI PYQ Analysis</PremiumButton>
               </CardContent></Card>
             )}
           </TabsContent>
