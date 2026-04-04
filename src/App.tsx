@@ -272,11 +272,13 @@ const App = () => (
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <AppWithSplash />
-          </TooltipProvider>
+          <PageVisibilityProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <AppWithSplash />
+            </TooltipProvider>
+          </PageVisibilityProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
