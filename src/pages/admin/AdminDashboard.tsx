@@ -177,6 +177,12 @@ export default function AdminDashboard() {
             <h2 className="font-display text-xl text-gradient-gold">ADMIN SETTINGS</h2>
             <AdminAPIKeySettings />
           </TabsContent>
+
+          <TabsContent value="pages" className="space-y-4 mt-4">
+            <h2 className="font-display text-xl text-gradient-gold">PAGE VISIBILITY</h2>
+            <p className="text-xs text-muted-foreground">Toggle pages on/off for all users. Disabled pages won't appear in navigation.</p>
+            <AdminPageToggles />
+          </TabsContent>
         </Tabs>
       </div>
     </DashboardLayout>
