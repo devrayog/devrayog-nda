@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import AdminBroadcast from "@/components/admin/AdminBroadcast";
 import AdminAPIKeySettings from "@/components/admin/AdminAPIKeySettings";
+import AdminPageToggles from "@/components/admin/AdminPageToggles";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -144,6 +145,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="broadcast">Broadcast</TabsTrigger>
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="pages">Page Toggles</TabsTrigger>
           </TabsList>
 
           <TabsContent value="broadcast" className="mt-4">
@@ -174,6 +176,12 @@ export default function AdminDashboard() {
           <TabsContent value="settings" className="space-y-4 mt-4">
             <h2 className="font-display text-xl text-gradient-gold">ADMIN SETTINGS</h2>
             <AdminAPIKeySettings />
+          </TabsContent>
+
+          <TabsContent value="pages" className="space-y-4 mt-4">
+            <h2 className="font-display text-xl text-gradient-gold">PAGE VISIBILITY</h2>
+            <p className="text-xs text-muted-foreground">Toggle pages on/off for all users. Disabled pages won't appear in navigation.</p>
+            <AdminPageToggles />
           </TabsContent>
         </Tabs>
       </div>

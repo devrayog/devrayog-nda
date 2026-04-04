@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { PremiumButton } from "@/components/PremiumGate";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -114,9 +115,7 @@ export default function MockTestList() {
                         <span className="text-[10px] font-mono text-destructive flex items-center gap-1"><Zap className="h-3 w-3" /> {test.marking}</span>
                       </div>
                     </div>
-                    <Link to={`/tests/take/${test.id}?subject=${test.subject}&questions=${test.questions}&time=${test.time}`}>
-                      <Button className="bg-gradient-gold text-primary-foreground font-bold tracking-wider">Start Test</Button>
-                    </Link>
+                    <PremiumButton onClick={() => window.location.href = `/tests/take/${test.id}?subject=${test.subject}&questions=${test.questions}&time=${test.time}`} feature="NDA Standard Mock Test" className="bg-gradient-gold text-primary-foreground font-bold tracking-wider">Start Test</PremiumButton>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -170,9 +169,7 @@ export default function MockTestList() {
                         <p className="text-[10px] text-muted-foreground">{test.desc}</p>
                         <div className="flex gap-3 mt-0.5"><span className="text-[9px] font-mono text-primary">{test.questions} Qs</span><span className="text-[9px] font-mono text-primary">{test.time} min</span></div>
                       </div>
-                      <Link to={`/tests/take/${test.id}?subject=${test.subject}&questions=${test.questions}&time=${test.time}`}>
-                        <Button size="sm" variant="outline" className="border-gold font-bold">Start</Button>
-                      </Link>
+                      <PremiumButton size="sm" variant="outline" onClick={() => window.location.href = `/tests/take/${test.id}?subject=${test.subject}&questions=${test.questions}&time=${test.time}`} feature="AI Generated Test" className="border-gold font-bold">Start</PremiumButton>
                     </CardContent>
                   </Card>
                 </motion.div>

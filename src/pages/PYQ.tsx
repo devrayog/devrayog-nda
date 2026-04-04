@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { FolderOpen, Brain, CheckCircle, XCircle, Download, FileText, Plus, Trash2 } from "lucide-react";
 import QuestionReportButton from "@/components/QuestionReportButton";
+import { PremiumButton } from "@/components/PremiumGate";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -205,7 +206,7 @@ export default function PYQ() {
                 <Button key={s} size="sm" variant={filterSubject === s ? "default" : "outline"} onClick={() => setFilterSubject(s)}
                   className={filterSubject === s ? "bg-gradient-gold text-primary-foreground" : "border-gold"}>{s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}</Button>
               ))}
-              <Button size="sm" variant="outline" onClick={generateAnalysis} disabled={aiLoading} className="border-gold ml-auto"><Brain className="h-3 w-3 mr-1" /> AI Analysis</Button>
+              <PremiumButton size="sm" variant="outline" onClick={generateAnalysis} disabled={aiLoading} feature="PYQ AI Analysis" className="border-gold ml-auto"><Brain className="h-3 w-3 mr-1" /> AI Analysis</PremiumButton>
             </div>
 
             <AnimatePresence>
@@ -285,7 +286,7 @@ export default function PYQ() {
                 <FolderOpen className="h-12 w-12 text-primary/30 mx-auto mb-4" />
                 <h2 className="font-display text-xl text-gradient-gold mb-2">NO PYQs YET</h2>
                 <p className="text-muted-foreground text-sm mb-4">PYQ questions will be added by admins.</p>
-                <Button onClick={generateAnalysis} disabled={aiLoading} className="bg-gradient-gold text-primary-foreground font-bold"><Brain className="h-4 w-4 mr-2" /> Generate AI PYQ Analysis</Button>
+                <PremiumButton onClick={generateAnalysis} disabled={aiLoading} feature="PYQ AI Analysis" className="bg-gradient-gold text-primary-foreground font-bold"><Brain className="h-4 w-4 mr-2" /> Generate AI PYQ Analysis</PremiumButton>
               </CardContent></Card>
             )}
           </TabsContent>
