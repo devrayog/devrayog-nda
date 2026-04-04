@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import AdminBroadcast from "@/components/admin/AdminBroadcast";
 import AdminAPIKeySettings from "@/components/admin/AdminAPIKeySettings";
+import AdminPageToggles from "@/components/admin/AdminPageToggles";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
