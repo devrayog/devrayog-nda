@@ -206,7 +206,7 @@ export default function PYQ() {
                 <Button key={s} size="sm" variant={filterSubject === s ? "default" : "outline"} onClick={() => setFilterSubject(s)}
                   className={filterSubject === s ? "bg-gradient-gold text-primary-foreground" : "border-gold"}>{s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}</Button>
               ))}
-              <Button size="sm" variant="outline" onClick={generateAnalysis} disabled={aiLoading} className="border-gold ml-auto"><Brain className="h-3 w-3 mr-1" /> AI Analysis</Button>
+              <PremiumButton size="sm" variant="outline" onClick={generateAnalysis} disabled={aiLoading} feature="PYQ AI Analysis" className="border-gold ml-auto"><Brain className="h-3 w-3 mr-1" /> AI Analysis</PremiumButton>
             </div>
 
             <AnimatePresence>
