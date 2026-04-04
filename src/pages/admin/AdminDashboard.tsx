@@ -145,6 +145,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="broadcast">Broadcast</TabsTrigger>
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="pages">Page Toggles</TabsTrigger>
           </TabsList>
 
           <TabsContent value="broadcast" className="mt-4">
