@@ -115,9 +115,7 @@ export default function MockTestList() {
                         <span className="text-[10px] font-mono text-destructive flex items-center gap-1"><Zap className="h-3 w-3" /> {test.marking}</span>
                       </div>
                     </div>
-                    <Link to={`/tests/take/${test.id}?subject=${test.subject}&questions=${test.questions}&time=${test.time}`}>
-                      <Button className="bg-gradient-gold text-primary-foreground font-bold tracking-wider">Start Test</Button>
-                    </Link>
+                    <PremiumButton onClick={() => window.location.href = `/tests/take/${test.id}?subject=${test.subject}&questions=${test.questions}&time=${test.time}`} feature="NDA Standard Mock Test" className="bg-gradient-gold text-primary-foreground font-bold tracking-wider">Start Test</PremiumButton>
                   </CardContent>
                 </Card>
               </motion.div>
