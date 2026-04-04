@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePageVisibility } from "@/contexts/PageVisibilityContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import {
@@ -115,8 +116,13 @@ const adminNav: NavItem[] = [
 
 function CollapsibleNavGroup({ label, items, defaultOpen = false }: { label: string; items: NavItem[]; defaultOpen?: boolean }) {
   const location = useLocation();
-  const isActive = items.some(i => location.pathname === i.href || location.pathname.startsWith(i.href + "/"));
+  const { isPageVisible } = usePageVisibility();
+  const visibleItems = items.filter(i => isPageVisible(i.href));
+  const isActive = visibleItems.some(i => location.pathname === i.href || location.pathname.startsWith(i.href + "/"));
   const [open, setOpen] = useState(defaultOpen || isActive);
+
+  if (visibleItems.length === 0) return null;
+
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <SidebarGroup>
@@ -129,7 +135,7 @@ function CollapsibleNavGroup({ label, items, defaultOpen = false }: { label: str
         <CollapsibleContent>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {visibleItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.href} tooltip={item.titleKey}>
                     <Link to={item.href}><item.icon className="h-4 w-4" /><span>{item.titleKey}</span></Link>
@@ -146,12 +152,17 @@ function CollapsibleNavGroup({ label, items, defaultOpen = false }: { label: str
 
 function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
   const location = useLocation();
+  const { isPageVisible } = usePageVisibility();
+  const visibleItems = items.filter(i => isPageVisible(i.href));
+  
+  if (visibleItems.length === 0) return null;
+  
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="font-mono text-[10px] tracking-[3px] text-primary/70 uppercase">{label}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => (
+          {visibleItems.map((item) => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton asChild isActive={location.pathname === item.href} tooltip={item.titleKey}>
                 <Link to={item.href}><item.icon className="h-4 w-4" /><span>{item.titleKey}</span></Link>
@@ -178,7 +189,6 @@ export default function DashboardSidebar() {
   }, [user]);
 
   const meta = user?.user_metadata || {};
-  // Determine which sections to show based on profile
   const showSSB = meta.cleared_written === "yes" || profile?.cleared_written === "yes" || meta.service !== undefined;
   const showGirls = meta.is_girl === true || meta.is_girl === "true" || profile?.is_girl === true;
 
