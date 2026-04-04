@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { PremiumButton } from "@/components/PremiumGate";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
