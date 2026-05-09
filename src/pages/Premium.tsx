@@ -139,7 +139,7 @@ export default function Premium() {
             <p className="font-display text-6xl mb-1">₹0</p>
             <p className="font-mono text-xs text-muted-foreground tracking-widest mb-2">FOREVER FREE</p>
             <p className="text-sm text-muted-foreground mb-6 pb-6 border-b border-border">Core study material, daily quiz, and community access.</p>
-            <Link to="/signup"><Button variant="outline" className="w-full border-gold text-primary font-bold tracking-wider">Start Free →</Button></Link>
+            <Link to="/signup"><Button variant="outline" className="w-full border-gold text-primary font-bold tracking-wider">Join Waitlist →</Button></Link>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}

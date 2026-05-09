@@ -117,8 +117,8 @@ export default function Login() {
             </Button>
 
             <p className="text-center text-sm text-muted-foreground mt-6">
-              {t("auth.no_account")}{" "}
-              <Link to="/signup" className="text-primary font-bold hover:underline">{t("auth.signup_btn")}</Link>
+              No credentials yet?{" "}
+              <Link to="/signup" className="text-primary font-bold hover:underline">Join the Waitlist</Link>
             </p>
           </div>
         </div>
