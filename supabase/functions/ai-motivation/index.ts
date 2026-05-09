@@ -55,8 +55,14 @@ INSTRUCTIONS:
     });
   } catch (e: any) {
     console.error("motivation error:", e);
-    return new Response(JSON.stringify({ error: e?.message || "Unknown error" }), {
-      status: e?.status || 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // Graceful fallback — never block UI with rate-limit/credit errors
+    const fallback = e?.status === 429
+      ? "Thoda thaam, cadet. AI mentor abhi busy hai — par tu nahi. Ek question solve kar abhi. 🎖️"
+      : e?.status === 402
+      ? "AI credits khatam. Tu apni training jaari rakh — ek topic revise kar abhi. 🇮🇳"
+      : "Keep pushing, cadet. Your dream is waiting. Ek mock test attempt kar abhi. 🎖️";
+    return new Response(JSON.stringify({ motivation: fallback, fallback: true }), {
+      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
