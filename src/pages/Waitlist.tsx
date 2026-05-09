@@ -59,7 +59,7 @@ export default function Waitlist() {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.from("waitlist").insert([parsed.data]);
+    const { error } = await supabase.from("waitlist").insert([parsed.data as Required<typeof form>]);
     setLoading(false);
     if (error) {
       if (error.code === "23505") toast.error("Soldier, you've already enlisted with this email.");
