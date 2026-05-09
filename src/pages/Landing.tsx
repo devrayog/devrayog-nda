@@ -95,7 +95,7 @@ export default function Landing() {
           >
             <Link to="/signup">
               <Button size="lg" className="bg-gradient-gold text-primary-foreground font-bold tracking-widest text-lg px-8 py-6 shadow-gold hover:scale-105 transition-transform">
-                {t("landing.cta_start")} <ArrowRight className="ml-2 h-5 w-5" />
+                JOIN THE WAITLIST <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link to="/login">
@@ -258,11 +258,11 @@ export default function Landing() {
             variants={fadeUp} custom={0}
             className="glass-card rounded-2xl p-12 max-w-2xl mx-auto"
           >
-            <h2 className="font-display text-4xl text-gradient-gold mb-4">READY TO JOIN DNA?</h2>
-            <p className="text-muted-foreground mb-8">100% free to start. No card needed. AI builds your profile from Day 1.</p>
+            <h2 className="font-display text-4xl text-gradient-gold mb-4">ENLIST IN THE BATTALION</h2>
+            <p className="text-muted-foreground mb-8">Limited recruitment window. Credentials dispatched within 48–72 hours via email & WhatsApp.</p>
             <Link to="/signup">
               <Button size="lg" className="bg-gradient-gold text-primary-foreground font-bold tracking-widest text-lg px-10 py-6 shadow-gold">
-                START MY NDA JOURNEY <ArrowRight className="ml-2" />
+                JOIN THE WAITLIST <ArrowRight className="ml-2" />
               </Button>
             </Link>
           </motion.div>
