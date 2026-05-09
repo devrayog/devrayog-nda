@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 
-// NDA 1 2026: April 12, 2026 — Maths at 10:00 AM IST, GAT at 2:00 PM IST
-const EXAM_DATE = new Date("2026-04-12T04:30:00Z"); // 10:00 AM IST = 04:30 UTC
+// Default fallback: NDA 1 2026 — April 12, 2026, 10:00 AM IST
+const DEFAULT_EXAM_DATE = new Date("2026-04-12T04:30:00Z");
 
 interface TimeLeft {
   days: number;
@@ -11,8 +12,8 @@ interface TimeLeft {
   seconds: number;
 }
 
-function calcTimeLeft(): TimeLeft {
-  const diff = Math.max(0, EXAM_DATE.getTime() - Date.now());
+function calcTimeLeft(target: Date): TimeLeft {
+  const diff = Math.max(0, target.getTime() - Date.now());
   return {
     days: Math.floor(diff / (1000 * 60 * 60 * 24)),
     hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
@@ -41,12 +42,24 @@ function Digit({ value, label }: { value: number; label: string }) {
 }
 
 export default function ExamCountdown({ compact = false }: { compact?: boolean }) {
-  const [time, setTime] = useState(calcTimeLeft);
+  const [target, setTarget] = useState<Date>(DEFAULT_EXAM_DATE);
+  const [time, setTime] = useState(() => calcTimeLeft(DEFAULT_EXAM_DATE));
 
   useEffect(() => {
-    const id = setInterval(() => setTime(calcTimeLeft()), 1000);
-    return () => clearInterval(id);
+    supabase.from("admin_settings").select("value").eq("key", "exam_countdown_datetime").maybeSingle()
+      .then(({ data }) => {
+        if (data?.value) {
+          const d = new Date(data.value);
+          if (!isNaN(d.getTime())) setTarget(d);
+        }
+      });
   }, []);
+
+  useEffect(() => {
+    setTime(calcTimeLeft(target));
+    const id = setInterval(() => setTime(calcTimeLeft(target)), 1000);
+    return () => clearInterval(id);
+  }, [target]);
 
   if (compact) {
     return (

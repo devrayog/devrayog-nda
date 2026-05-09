@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Brain, FileText, Target, Shield, Swords, BarChart3, Flame, Clock } from "lucide-react";
 import { motion } from "framer-motion";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import ExamCountdown from "@/components/ExamCountdown";
 import DailyMotivation from "@/components/DailyMotivation";
 import AchievementsSummary from "@/components/AchievementsSummary";
@@ -32,6 +33,12 @@ export default function Dashboard() {
 
   // Check achievements on mount
   useEffect(() => { checkAchievements(); }, [checkAchievements]);
+
+  const [countdownLabel, setCountdownLabel] = useState("NDA 1 2026 — April 12 • Maths 10:00 AM • GAT 2:00 PM");
+  useEffect(() => {
+    supabase.from("admin_settings").select("value").eq("key", "exam_countdown_label").maybeSingle()
+      .then(({ data }) => { if (data?.value) setCountdownLabel(data.value); });
+  }, []);
 
   const name = user?.user_metadata?.full_name || "Cadet";
   const attempt = user?.user_metadata?.attempt || "1st";
@@ -85,7 +92,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Clock className="h-5 w-5 text-primary" />
                   <p className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">
-                    NDA 1 2026 — April 12 • Maths 10:00 AM • GAT 2:00 PM
+                    {countdownLabel}
                   </p>
                 </div>
                 <div className="flex justify-center">
