@@ -92,7 +92,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Clock className="h-5 w-5 text-primary" />
                   <p className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">
-                    NDA 1 2026 — April 12 • Maths 10:00 AM • GAT 2:00 PM
+                    {countdownLabel}
                   </p>
                 </div>
                 <div className="flex justify-center">
