@@ -34,6 +34,12 @@ export default function Dashboard() {
   // Check achievements on mount
   useEffect(() => { checkAchievements(); }, [checkAchievements]);
 
+  const [countdownLabel, setCountdownLabel] = useState("NDA 1 2026 — April 12 • Maths 10:00 AM • GAT 2:00 PM");
+  useEffect(() => {
+    supabase.from("admin_settings").select("value").eq("key", "exam_countdown_label").maybeSingle()
+      .then(({ data }) => { if (data?.value) setCountdownLabel(data.value); });
+  }, []);
+
   const name = user?.user_metadata?.full_name || "Cadet";
   const attempt = user?.user_metadata?.attempt || "1st";
   const targetExam = user?.user_metadata?.target_exam || "NDA 1 2026";
