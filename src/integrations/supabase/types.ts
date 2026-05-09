@@ -1523,6 +1523,54 @@ export type Database = {
         }
         Relationships: []
       }
+      waitlist: {
+        Row: {
+          created_at: string
+          current_attempt: string
+          email: string
+          from_location: string
+          id: string
+          location: string
+          name: string
+          notes: string | null
+          phone: string
+          status: string
+          target_exam: string
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          current_attempt: string
+          email: string
+          from_location: string
+          id?: string
+          location: string
+          name: string
+          notes?: string | null
+          phone: string
+          status?: string
+          target_exam: string
+          updated_at?: string
+          whatsapp: string
+        }
+        Update: {
+          created_at?: string
+          current_attempt?: string
+          email?: string
+          from_location?: string
+          id?: string
+          location?: string
+          name?: string
+          notes?: string | null
+          phone?: string
+          status?: string
+          target_exam?: string
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       leaderboard_profiles: {
