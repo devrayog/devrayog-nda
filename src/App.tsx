@@ -243,6 +243,7 @@ function AppRoutes() {
       <Route path="/admin/premium-settings" element={<ProtectedRoute><AdminPremiumSettings /></ProtectedRoute>} />
       <Route path="/admin/announcements" element={<ProtectedRoute><AdminAnnouncements /></ProtectedRoute>} />
       <Route path="/admin/seo" element={<ProtectedRoute><AdminSEO /></ProtectedRoute>} />
+      <Route path="/admin/countdown" element={<ProtectedRoute><AdminCountdown /></ProtectedRoute>} />
       <Route path="/install" element={<ProtectedRoute><InstallApp /></ProtectedRoute>} />
 
       {/* Catch all */}
