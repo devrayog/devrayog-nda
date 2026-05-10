@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Users, MessageSquare, BarChart3, Lock, Megaphone, BookOpen, HelpCircle, Newspaper, FolderOpen, FileText, Video, Download, Star, Bot, Heart } from "lucide-react";
+import { Shield, Users, MessageSquare, BarChart3, Lock, Megaphone, BookOpen, HelpCircle, Newspaper, FolderOpen, FileText, Video, Download, Star, Bot, Heart, ClipboardList } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import AdminBroadcast from "@/components/admin/AdminBroadcast";
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
   }
 
   const adminLinks = [
-    { href: "/admin/countdown", icon: BarChart3, title: "⏱️ Exam Countdown", desc: "Set exam date & time for dashboard", color: "text-cyan" },
+    { href: "/admin/waitlist", icon: ClipboardList, title: "📋 Waitlist", desc: "View all waitlist entries", color: "text-primary" },
     { href: "/admin/users", icon: Users, title: "👥 User Management", desc: "View all users, assign premium", color: "text-primary" },
     { href: "/admin/premium-settings", icon: Shield, title: "💎 Premium Settings", desc: "Toggle premium, set pricing & WhatsApp", color: "text-primary" },
     { href: "/admin/ai", icon: Bot, title: "🤖 AI Assistant", desc: "Auto-add questions, content, analytics", color: "text-success" },
