@@ -115,6 +115,7 @@ import AdminPremiumSettings from "@/pages/admin/AdminPremiumSettings";
 import AdminAnnouncements from "@/pages/admin/AdminAnnouncements";
 import AdminSEO from "@/pages/admin/AdminSEO";
 import AdminCountdown from "@/pages/admin/AdminCountdown";
+import AdminWaitlist from "@/pages/admin/AdminWaitlist";
 import QuestionBank from "@/pages/QuestionBank";
 import Premium from "@/pages/Premium";
 import InstallApp from "@/pages/InstallApp";
@@ -244,6 +245,7 @@ function AppRoutes() {
       <Route path="/admin/announcements" element={<ProtectedRoute><AdminAnnouncements /></ProtectedRoute>} />
       <Route path="/admin/seo" element={<ProtectedRoute><AdminSEO /></ProtectedRoute>} />
       <Route path="/admin/countdown" element={<ProtectedRoute><AdminCountdown /></ProtectedRoute>} />
+      <Route path="/admin/waitlist" element={<ProtectedRoute><AdminWaitlist /></ProtectedRoute>} />
       <Route path="/install" element={<ProtectedRoute><InstallApp /></ProtectedRoute>} />
 
       {/* Catch all */}
