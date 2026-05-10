@@ -79,7 +79,7 @@ export default function AdminDashboard() {
   }
 
   const adminLinks = [
-    { href: "/admin/countdown", icon: BarChart3, title: "⏱️ Exam Countdown", desc: "Set exam date & time for dashboard", color: "text-cyan" },
+    { href: "/admin/waitlist", icon: ClipboardList, title: "📋 Waitlist", desc: "View all waitlist entries", color: "text-primary" },
     { href: "/admin/users", icon: Users, title: "👥 User Management", desc: "View all users, assign premium", color: "text-primary" },
     { href: "/admin/premium-settings", icon: Shield, title: "💎 Premium Settings", desc: "Toggle premium, set pricing & WhatsApp", color: "text-primary" },
     { href: "/admin/ai", icon: Bot, title: "🤖 AI Assistant", desc: "Auto-add questions, content, analytics", color: "text-success" },
