@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Shield, Home, ArrowLeft, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
+import SEO from "@/components/SEO";
 
 const NotFound = () => {
   const location = useLocation();

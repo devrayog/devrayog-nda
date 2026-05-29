@@ -94,6 +94,7 @@ export default function Premium() {
 
   return (
     <div className="min-h-screen">
+      <SEO title="Premium — ₹11/month Unlimited NDA Prep" description="Unlock unlimited mock tests, AI study plans, full SSB modules, 15 years PYQ bank, and 1:1 mentor access. ₹11/month or ₹108/year." path="/premium" />
       <Navbar />
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-center justify-center pt-20 overflow-hidden">
