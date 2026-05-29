@@ -14,6 +14,7 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      <SEO title="Mission Failed — Page Not Found" description="The page you're looking for doesn't exist. Head back to base and continue your NDA preparation." path="/404" />
       <Navbar />
 
       {/* Ambient background */}

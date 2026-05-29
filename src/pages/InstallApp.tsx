@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Smartphone, Apple, Globe, Check } from "lucide-react";
 import { useState, useEffect } from "react";
+import SEO from "@/components/SEO";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -33,6 +34,7 @@ export default function InstallApp() {
 
   return (
     <DashboardLayout>
+      <SEO title="Install the App — Devrayog NDA AI" description="Install Devrayog NDA AI on your phone or desktop for offline-ready NDA prep, notifications, and a native app feel." path="/install" />
       <div className="p-6 max-w-2xl mx-auto space-y-6">
         <div className="text-center">
           <Smartphone className="h-16 w-16 text-primary mx-auto mb-4" />

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Shield, Brain, MessageSquare, Eye, Pencil, AlertTriangle, UserCheck, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import SEO from "@/components/SEO";
 import { Suspense, lazy } from "react";
 
 const FloatingBadge = lazy(() => import("@/components/3d/FloatingBadge"));
@@ -29,6 +30,7 @@ const SSB_SECTIONS = [
 export default function SSBOverview() {
   return (
     <DashboardLayout>
+      <SEO title="SSB Preparation — OIR, PPDT, TAT, WAT, SRT & More" description="Complete 5-day SSB interview prep: OIR, PPDT, TAT, WAT, SRT, SDT, GD, personal interview, and screen-out analysis." path="/ssb" />
       <div className="p-6 max-w-5xl mx-auto space-y-6">
         {/* Hero with 3D */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>

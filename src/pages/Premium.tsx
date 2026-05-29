@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Star, ArrowRight, Check, X, Crown, Zap, MessageCircle, Clock, Rocket, Lock, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePremiumGate } from "@/hooks/usePremiumGate";

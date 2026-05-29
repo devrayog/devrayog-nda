@@ -1,9 +1,11 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SEO from "@/components/SEO";
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO title="Privacy Policy — Devrayog NDA AI" description="Learn how Devrayog NDA AI collects, uses, and protects your personal information, profile data, and AI interactions." path="/privacy" />
       <Navbar />
       <main className="flex-1 pt-20 px-4 pb-12">
         <div className="max-w-3xl mx-auto prose prose-sm dark:prose-invert">

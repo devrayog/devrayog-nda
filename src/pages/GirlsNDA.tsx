@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Heart, Shield, Trophy, Brain, Users, Star, Sparkles, Target, BookOpen, Dumbbell } from "lucide-react";
 import { motion } from "framer-motion";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
@@ -57,6 +58,7 @@ export default function GirlsNDA() {
 
   return (
     <DashboardLayout>
+      <SEO title="Girls in NDA — Preparation, Fitness & SSB Tips" description="Dedicated NDA prep for girl aspirants: eligibility, fitness standards, SSB tips, community, and women success stories." path="/girls" />
       <div className="p-6 max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
