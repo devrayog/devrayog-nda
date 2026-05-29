@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Star, ArrowRight, Check, X, Crown, Zap, MessageCircle, Clock, Rocket, Lock, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePremiumGate } from "@/hooks/usePremiumGate";
@@ -93,6 +94,7 @@ export default function Premium() {
 
   return (
     <div className="min-h-screen">
+      <SEO title="Premium — ₹11/month Unlimited NDA Prep" description="Unlock unlimited mock tests, AI study plans, full SSB modules, 15 years PYQ bank, and 1:1 mentor access. ₹11/month or ₹108/year." path="/premium" />
       <Navbar />
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-center justify-center pt-20 overflow-hidden">

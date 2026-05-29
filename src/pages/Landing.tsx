@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Brain, Shield, Globe, BarChart3, ArrowRight, Swords, Target, Users, Crown } from "lucide-react";
 import { motion } from "framer-motion";
+import SEO from "@/components/SEO";
 import { Suspense, lazy } from "react";
 import { AuroraFlow, TiltCard, FloatingParticles, GlassShimmer } from "@/components/ModernAnimations";
 const ShieldGlobe = lazy(() => import("@/components/3d/ShieldGlobe"));
@@ -34,6 +35,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen">
+      <SEO title="Devrayog NDA AI — India's #1 AI-Powered NDA Exam Prep" description="Free AI-powered NDA exam preparation. Personalized study plans, mock tests, SSB prep, current affairs, fitness eligibility & more." path="/" />
       <Navbar />
 
       {/* Guide Banner */}

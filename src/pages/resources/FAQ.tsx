@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { HelpCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import SEO from "@/components/SEO";
 
 const STATIC_FAQS = [
   { q: "What is NDA exam?", a: "NDA (National Defence Academy) exam is conducted by UPSC twice a year. Paper I: Maths (300 marks), Paper II: GAT (600 marks)." },
@@ -27,6 +28,7 @@ export default function FAQPage() {
 
   return (
     <DashboardLayout>
+      <SEO title="NDA FAQ — Eligibility, Pattern, SSB & More" description="Answers to the most asked NDA questions: eligibility, exam pattern, SSB interview, girls in NDA, DNA Score, and more." path="/faq" />
       <div className="p-6 max-w-3xl mx-auto space-y-6">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3 mb-2">

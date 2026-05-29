@@ -9,6 +9,7 @@ import {
   Trophy, Zap, Calendar, FileText, Star, HelpCircle, ArrowRight, Sparkles, Lightbulb,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 
 const sections = [
@@ -332,6 +333,7 @@ export default function Guide() {
   const activeSections = dbSections && dbSections.length > 0 ? dbSections : sections;
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO title="Platform Guide — Devrayog NDA AI" description="Complete walkthrough of every feature: dashboard, AI tutor, mock tests, SSB modules, study plans, fitness tracker, and more." path="/guide" />
       <Navbar />
       <main className="flex-1 pt-20 px-4 pb-12">
         <div className="max-w-4xl mx-auto">

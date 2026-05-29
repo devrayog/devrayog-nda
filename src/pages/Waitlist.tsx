@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { z } from "zod";
 import { motion } from "framer-motion";
 import { Shield, Mail, Phone, MapPin, Target, CheckCircle2, ArrowRight, Swords } from "lucide-react";
+import SEO from "@/components/SEO";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,7 @@ export default function Waitlist() {
 
   return (
     <div className="min-h-screen relative">
+      <SEO title="Join the Waitlist — Devrayog NDA AI" description="Reserve your seat for India's #1 AI-powered NDA prep. Get credentials within 48-72 hours and start your defence journey." path="/signup" />
       <Navbar />
       <Suspense fallback={null}>
         <MilitaryParticles className="fixed inset-0 opacity-30 pointer-events-none" />

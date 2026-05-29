@@ -1,12 +1,14 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import SEO from "@/components/SEO";
 
 export default function TermsOfService() {
   const { t } = useLanguage();
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO title="Terms of Service — Devrayog NDA AI" description="Read the Terms of Service governing use of the Devrayog NDA AI platform, accounts, content, and user responsibilities." path="/terms" />
       <Navbar />
       <main className="flex-1 pt-20 px-4 pb-12">
         <div className="max-w-3xl mx-auto prose prose-sm dark:prose-invert">

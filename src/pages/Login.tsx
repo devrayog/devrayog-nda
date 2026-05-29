@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import SEO from "@/components/SEO";
 
 export default function Login() {
   const { t } = useLanguage();
@@ -38,6 +39,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO title="Login — Devrayog NDA AI" description="Sign in to access your AI-powered NDA prep dashboard, mock tests, SSB prep, and personalized study plans." path="/login" />
       <Navbar />
       <main className="flex-1 flex items-center justify-center pt-16 px-4">
         <div className="w-full max-w-md">
