@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://devrayog-nda.lovable.app/sitemap.xml
