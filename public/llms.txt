@@ -1,0 +1,23 @@
+# Devrayog NDA AI
+
+> AI-powered preparation platform for India's National Defence Academy (NDA) exam — study plans, mock tests, SSB interview prep, fitness and medical eligibility, in Hindi and English.
+
+Devrayog NDA AI is a web app for Indian defence aspirants preparing for the NDA written exam (Mathematics and General Ability Test) and the SSB interview. It is built by an NDA aspirant and generates personalised study plans, AI mock tests, current affairs digests, vocabulary drills, previous-year-paper analysis, OIR/PPDT/TAT/WAT/SRT/SDT practice, fitness plans and medical-standards checks. The interface switches between Hindi and English, and Premium costs ₹11/month or ₹108/year.
+
+Access is invitation-based: new visitors join a waitlist and receive login credentials by email or WhatsApp within about 48–72 hours. Most study, test and community surfaces require a signed-in session, so they are not listed here.
+
+## Pages
+
+- [Home](/): What the platform is, who it is for, and how to join the waitlist.
+- [Premium](/premium): Plan pricing (₹11/month or ₹108/year) and what Premium unlocks.
+- [Guide](/guide): How to use the platform end to end — onboarding, study plan, mock tests, SSB prep.
+
+## Legal
+
+- [Terms of Service](/terms): Rules for using the platform.
+- [Privacy Policy](/privacy): What data is collected and how it is handled.
+
+## Optional
+
+- [Terms of Service](/terms): Legal details, skippable for a summary of the product.
+- [Privacy Policy](/privacy): Legal details, skippable for a summary of the product.
