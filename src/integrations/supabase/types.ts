@@ -416,6 +416,39 @@ export type Database = {
         }
         Relationships: []
       }
+      free_mock_questions: {
+        Row: {
+          correct_index: number
+          created_at: string
+          difficulty: string
+          explanation: string
+          id: string
+          options: Json
+          question_text: string
+          subject: string
+        }
+        Insert: {
+          correct_index: number
+          created_at?: string
+          difficulty?: string
+          explanation?: string
+          id?: string
+          options: Json
+          question_text: string
+          subject: string
+        }
+        Update: {
+          correct_index?: number
+          created_at?: string
+          difficulty?: string
+          explanation?: string
+          id?: string
+          options?: Json
+          question_text?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       girls_nda_content: {
         Row: {
           body: string | null
